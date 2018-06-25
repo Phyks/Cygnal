@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import NoSleep from 'nosleep.js';
+
 import { MOCK_LOCATION } from '@/constants';
 import Map from '@/components/Map.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
@@ -39,8 +41,10 @@ export default {
     },
     created() {
         this.initializePositionWatching();
+        this.setNoSleep();
     },
     beforeDestroy() {
+        this.disableNoSleep();
         this.disablePositionWatching();
     },
     data() {
@@ -50,6 +54,7 @@ export default {
             heading: null,
             lat: null,
             lng: null,
+            noSleep: null,
             watchID: null,
         };
     },
@@ -92,6 +97,16 @@ export default {
                 this.heading = position.coords.heading;
             } else {
                 this.heading = null;
+            }
+        },
+        setNoSleep() {
+            this.noSleep = new NoSleep();
+            console.log(this.noSleep);
+            this.noSleep.enable();
+        },
+        disableNoSleep() {
+            if (this.noSleep) {
+                this.noSleep.disable();
             }
         },
     },
