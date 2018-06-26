@@ -58,6 +58,11 @@ adapt its behavior:
     means `localhost` only).
 * `PORT=` to specify the port to listen on (defaults to `8081`).
 
+### Serving
+
+You can use the `wsgi.py` script at the root of the git repository to serve
+the server side part.
+
 
 ## Contributing
 

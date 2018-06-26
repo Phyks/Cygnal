@@ -11,7 +11,7 @@ from server.jsonapi import DateAwareJSONEncoder
 from server.models import db, Report
 
 
-if __name__ == "__main__":
+def init():
     db.connect()
     db.create_tables([Report])
 
@@ -22,6 +22,11 @@ if __name__ == "__main__":
             json_dumps=functools.partial(json.dumps, cls=DateAwareJSONEncoder)
         )
     )
+
+
+if __name__ == "__main__":
+    init()
+
     bottle.run(
       host=os.environ.get('HOST', '127.0.0.1'),
       port=int(os.environ.get('PORT', '8081'))
