@@ -2,6 +2,7 @@
 # coding: utf-8
 import functools
 import json
+import os
 
 import bottle
 
@@ -21,4 +22,7 @@ if __name__ == "__main__":
             json_dumps=functools.partial(json.dumps, cls=DateAwareJSONEncoder)
         )
     )
-    bottle.run(host='0.0.0.0', port='8081')
+    bottle.run(
+      host=os.environ.get('HOST', '127.0.0.1'),
+      port=int(os.environ.get('PORT', '8081'))
+    )
