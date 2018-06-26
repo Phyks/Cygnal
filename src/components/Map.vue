@@ -26,7 +26,7 @@ L.Icon.Default.mergeOptions({
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 15;
 export const MAX_ZOOM = 18;
-export const TILE_SERVER = 'http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png';
+export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
 
 
 export default {
