@@ -12,9 +12,13 @@ export function saveReport(type, lat, lng) {
             lat,
             lng,
         }),
-    });
+    })
+        .catch(exc => console.error(`Unable to post report: ${exc}.`));
 }
 
 export function getReports() {
-    // TODO
+    return fetch(`${BASE_URL}api/v1/reports`)
+        .then(response => response.json())
+        .then(response => response.data)
+        .catch(exc => console.error(`Unable to fetch reports: ${exc}.`));
 }

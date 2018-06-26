@@ -2,7 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <v-flex xs12 fill-height v-if="lat && lng">
-                <Map :lat="lat" :lng="lng" :heading="heading"></Map>
+                <Map :lat="lat" :lng="lng" :heading="heading" :markers="reportsMarkers"></Map>
                 <v-btn
                     fixed
                     dark
@@ -30,9 +30,14 @@
 <script>
 import NoSleep from 'nosleep.js';
 
-import { MOCK_LOCATION } from '@/constants';
+import * as api from '@/api';
 import Map from '@/components/Map.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
+import { distance, mockLocation } from '@/tools';
+
+const MOCK_LOCATION = false;
+const MOCK_LOCATION_UPDATE_INTERVAL = 30 * 1000;
+const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
 
 export default {
     components: {
@@ -42,10 +47,22 @@ export default {
     created() {
         this.initializePositionWatching();
         this.setNoSleep();
+        this.fetchReports();
     },
     beforeDestroy() {
         this.disableNoSleep();
         this.disablePositionWatching();
+    },
+    computed: {
+        reportsMarkers() {
+            if (!this.reports) {
+                return [];
+            }
+            return this.reports.map(report => ({
+                id: report.id,
+                latLng: [report.attributes.lat, report.attributes.lng],
+            }));
+        },
     },
     data() {
         return {
@@ -55,6 +72,7 @@ export default {
             lat: null,
             lng: null,
             noSleep: null,
+            reports: null,
             watchID: null,
         };
     },
@@ -62,15 +80,17 @@ export default {
         initializePositionWatching() {
             this.disablePositionWatching(); // Ensure at most one at the same time
 
-            if (!('geolocation' in navigator)) {
-                this.error = this.$t('geolocation.unavailable');
-            }
-
             if (MOCK_LOCATION) {
-                this.lat = MOCK_LOCATION.lat;
-                this.lng = MOCK_LOCATION.lng;
-                this.heading = MOCK_LOCATION.heading;
+                this.setPosition(mockLocation());
+                this.watchID = setInterval(
+                    () => this.setPosition(mockLocation()),
+                    MOCK_LOCATION_UPDATE_INTERVAL,
+                );
             } else {
+                if (!('geolocation' in navigator)) {
+                    this.error = this.$t('geolocation.unavailable');
+                }
+
                 this.watchID = navigator.geolocation.watchPosition(
                     this.setPosition,
                     this.handlePositionError,
@@ -84,13 +104,26 @@ export default {
         },
         disablePositionWatching() {
             if (this.watchID !== null) {
-                navigator.geolocation.clearWatch(this.watchID);
+                if (MOCK_LOCATION) {
+                    clearInterval(this.watchID);
+                } else {
+                    navigator.geolocation.clearWatch(this.watchID);
+                }
             }
         },
         handlePositionError(error) {
             this.error = `Error ${error.code}: ${error.message}`;
         },
         setPosition(position) {
+            if (this.lat && this.lng) {
+                const distanceFromPreviousPoint = distance(
+                    [this.lat, this.lng],
+                    [position.coords.latitude, position.coords.longitude],
+                );
+                if (distanceFromPreviousPoint > UPDATE_REPORTS_DISTANCE_THRESHOLD) {
+                    this.fetchReports();
+                }
+            }
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
             if (position.coords.heading) {
@@ -101,13 +134,17 @@ export default {
         },
         setNoSleep() {
             this.noSleep = new NoSleep();
-            console.log(this.noSleep);
             this.noSleep.enable();
         },
         disableNoSleep() {
             if (this.noSleep) {
                 this.noSleep.disable();
             }
+        },
+        fetchReports() {
+            api.getReports().then((reports) => {
+                this.reports = reports;
+            });
         },
     },
 };

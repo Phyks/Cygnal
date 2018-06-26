@@ -3,6 +3,7 @@
         <v-lmap :center="latlng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
             <v-lts :lat-lng="latlng" :options="markerOptions"></v-lts>
+            <v-lmarker v-for="marker in markers" :key="marker.id" :lat-lng="marker.latLng"></v-lmarker>
         </v-lmap>
     </div>
 </template>
@@ -33,6 +34,7 @@ export default {
         heading: Number,
         lat: Number,
         lng: Number,
+        markers: Array,
     },
     computed: {
         latlng() {
