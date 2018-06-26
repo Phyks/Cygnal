@@ -13,6 +13,8 @@ export function saveReport(type, lat, lng) {
             lng,
         }),
     })
+        .then(response => response.json())
+        .then(response => response.data)
         .catch(exc => console.error(`Unable to post report: ${exc}.`));
 }
 

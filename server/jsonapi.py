@@ -3,12 +3,23 @@
 """
 Helpers to implement a JSON API with Bottle.
 """
+import datetime
 import json
 import re
 
 import bottle
 
 FILTER_RE = re.compile(r"filter\[([A-z0-9_]+)\]")
+
+
+class DateAwareJSONEncoder(json.JSONEncoder):
+    """
+    Extend the default JSON encoder to serialize datetimes to iso strings.
+    """
+    def default(self, o):  # pylint: disable=locally-disabled,E0202
+        if isinstance(o, (datetime.date, datetime.datetime)):
+            return o.isoformat()
+        return json.JSONEncoder.default(self, o)
 
 
 @bottle.hook('after_request')

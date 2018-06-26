@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import * as api from '@/api';
-
 import GCUMIcon from '@/assets/gcum.svg';
 import ObstacleIcon from '@/assets/obstacle.svg';
 import PotHoleIcon from '@/assets/pothole.svg';
@@ -60,7 +58,11 @@ export default {
     },
     methods: {
         saveReport(type) {
-            return api.saveReport(type, this.lat, this.lng)
+            return this.$store.dispatch('saveReport', {
+                type,
+                lat: this.lat,
+                lng: this.lng,
+            })
                 .then(() => {
                     this.isActive = !this.isActive;
                 });

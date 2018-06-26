@@ -10,8 +10,9 @@ import 'leaflet/dist/leaflet.css';
 import 'vuetify/dist/vuetify.min.css';
 
 import App from './App.vue';
-import router from './router';
 import i18n from './i18n';
+import router from './router';
+import store from './store';
 
 Vue.use(Vuetify);
 
@@ -28,6 +29,7 @@ new Vue({
     el: '#app',
     router,
     i18n,
+    store,
     components: { App },
     template: '<App/>',
 });

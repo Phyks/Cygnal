@@ -30,7 +30,6 @@
 <script>
 import NoSleep from 'nosleep.js';
 
-import * as api from '@/api';
 import Map from '@/components/Map.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 import { distance, mockLocation } from '@/tools';
@@ -47,7 +46,7 @@ export default {
     created() {
         this.initializePositionWatching();
         this.setNoSleep();
-        this.fetchReports();
+        this.$store.dispatch('fetchReports');
     },
     beforeDestroy() {
         this.disableNoSleep();
@@ -55,10 +54,7 @@ export default {
     },
     computed: {
         reportsMarkers() {
-            if (!this.reports) {
-                return [];
-            }
-            return this.reports.map(report => ({
+            return this.$store.state.reports.map(report => ({
                 id: report.id,
                 latLng: [report.attributes.lat, report.attributes.lng],
             }));
@@ -72,7 +68,6 @@ export default {
             lat: null,
             lng: null,
             noSleep: null,
-            reports: null,
             watchID: null,
         };
     },
@@ -121,7 +116,7 @@ export default {
                     [position.coords.latitude, position.coords.longitude],
                 );
                 if (distanceFromPreviousPoint > UPDATE_REPORTS_DISTANCE_THRESHOLD) {
-                    this.fetchReports();
+                    this.$store.dispatch('fetchReports');
                 }
             }
             this.lat = position.coords.latitude;
@@ -140,11 +135,6 @@ export default {
             if (this.noSleep) {
                 this.noSleep.disable();
             }
-        },
-        fetchReports() {
-            api.getReports().then((reports) => {
-                this.reports = reports;
-            });
         },
     },
 };

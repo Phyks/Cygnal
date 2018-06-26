@@ -38,4 +38,4 @@ class Report(BaseModel):
                 k: v for k, v in model_to_dict(self).items()
                 if k != "id"
             }
-      }
+        }

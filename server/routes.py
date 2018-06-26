@@ -93,7 +93,7 @@ def post_report():
         return jsonapi.JsonApiError(400, "Invalid JSON payload: " + str(exc))
 
     try:
-        Report.create(
+        r = Report.create(
             type=payload['type'],
             lat=payload['lat'],
             lng=payload['lng']
@@ -102,5 +102,5 @@ def post_report():
         return jsonapi.JsonApiError(400, "Invalid report payload: " + str(exc))
 
     return {
-        "status": "ok"
+        "data": r.to_json()
     }
