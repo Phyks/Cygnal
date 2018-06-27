@@ -49,7 +49,7 @@ export default {
         radiusFromAccuracy() {
             if (this.accuracy) {
                 return this.accuracy / (
-                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.lat)) /
+                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.lat * (Math.PI / 180))) /
                     (2 ** (this.zoom + 8))
                 );
             }
