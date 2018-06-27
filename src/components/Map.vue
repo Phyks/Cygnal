@@ -2,7 +2,12 @@
     <div class="fill-height fill-width">
         <v-lmap :center="latlng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
-            <v-lts :lat-lng="latlng" :options="markerOptions"></v-lts>
+
+            <v-lts v-if="heading" :lat-lng="latlng" :options="markerOptions"></v-lts>
+            <v-lcirclemarker v-else :lat-lng="latlng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
+
+            <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="latlng" :radius="radiusFromAccuracy"></v-lcircle>
+
             <v-lmarker v-for="marker in markers" :key="marker.id" :lat-lng="marker.latLng"></v-lmarker>
         </v-lmap>
     </div>
@@ -13,6 +18,8 @@ import L from 'leaflet';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+import { EARTH_RADIUS } from '@/constants';
 
 // Fix for a bug in Leaflet default icon
 // see https://github.com/PaulLeCam/react-leaflet/issues/255#issuecomment-261904061
@@ -26,24 +33,46 @@ L.Icon.Default.mergeOptions({
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 15;
 export const MAX_ZOOM = 18;
-export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
+export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
 
 
 export default {
     props: {
+        accuracy: {
+            type: Number,
+            default: null,
+        },
         heading: Number,
         lat: Number,
         lng: Number,
         markers: Array,
     },
     computed: {
+        radiusFromAccuracy() {
+            if (this.accuracy) {
+                return this.accuracy / (
+                    (EARTH_RADIUS * 2 * Math.PI * Math.cos(this.lat)) /
+                    (2 ** (this.zoom + 8))
+                );
+            }
+            return null;
+        },
+        shouldDisplayAccuracy() {
+            return (
+                this.accuracy &&
+                this.accuracy < 100 &&
+                this.radiusFromAccuracy > this.markerRadius
+            );
+        },
         latlng() {
             return [this.lat, this.lng];
         },
         markerOptions() {
             return {
                 fillColor: '#00ff00',
+                color: '#000000',
                 heading: this.heading,
+                weight: 1,
             };
         },
     },
@@ -51,6 +80,7 @@ export default {
         return {
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
             zoom: DEFAULT_ZOOM,
+            markerRadius: 10.0,
             minZoom: MIN_ZOOM,
             maxZoom: MAX_ZOOM,
             tileServer: TILE_SERVER,

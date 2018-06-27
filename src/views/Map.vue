@@ -2,7 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <v-flex xs12 fill-height v-if="lat && lng">
-                <Map :lat="lat" :lng="lng" :heading="heading" :markers="reportsMarkers"></Map>
+                <Map :lat="lat" :lng="lng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers"></Map>
                 <v-btn
                     fixed
                     dark
@@ -18,10 +18,15 @@
                 <ReportDialog v-model="dialog" :lat="lat" :lng="lng"></ReportDialog>
             </v-flex>
             <v-flex xs12 fill-height v-else class="pa-3">
-                <p>{{ error }}</p>
-                <p class="text-xs-center">
-                    <v-btn color="blue" dark @click="initializePositionWatching">Retry</v-btn>
-                </p>
+                <template v-if="error">
+                    <p class="text-xs-center">{{ error }}</p>
+                    <p class="text-xs-center">
+                        <v-btn color="blue" dark @click="initializePositionWatching">Retry</v-btn>
+                    </p>
+                </template>
+                <template v-else>
+                    <p class="text-xs-center">{{ $t('geolocation.fetching') }}</p>
+                </template>
             </v-flex>
         </v-layout>
     </v-container>
@@ -32,11 +37,8 @@ import NoSleep from 'nosleep.js';
 
 import Map from '@/components/Map.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
+import * as constants from '@/constants';
 import { distance, mockLocation } from '@/tools';
-
-const MOCK_LOCATION = false;
-const MOCK_LOCATION_UPDATE_INTERVAL = 30 * 1000;
-const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
 
 export default {
     components: {
@@ -62,8 +64,9 @@ export default {
     },
     data() {
         return {
+            accuracy: null,
             dialog: false,
-            error: this.$t('geolocation.enable'),
+            error: null,
             heading: null,
             lat: null,
             lng: null,
@@ -75,11 +78,11 @@ export default {
         initializePositionWatching() {
             this.disablePositionWatching(); // Ensure at most one at the same time
 
-            if (MOCK_LOCATION) {
+            if (constants.MOCK_LOCATION) {
                 this.setPosition(mockLocation());
                 this.watchID = setInterval(
                     () => this.setPosition(mockLocation()),
-                    MOCK_LOCATION_UPDATE_INTERVAL,
+                    constants.MOCK_LOCATION_UPDATE_INTERVAL,
                 );
             } else {
                 if (!('geolocation' in navigator)) {
@@ -99,7 +102,7 @@ export default {
         },
         disablePositionWatching() {
             if (this.watchID !== null) {
-                if (MOCK_LOCATION) {
+                if (constants.MOCK_LOCATION) {
                     clearInterval(this.watchID);
                 } else {
                     navigator.geolocation.clearWatch(this.watchID);
@@ -115,17 +118,14 @@ export default {
                     [this.lat, this.lng],
                     [position.coords.latitude, position.coords.longitude],
                 );
-                if (distanceFromPreviousPoint > UPDATE_REPORTS_DISTANCE_THRESHOLD) {
+                if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
                     this.$store.dispatch('fetchReports');
                 }
             }
             this.lat = position.coords.latitude;
             this.lng = position.coords.longitude;
-            if (position.coords.heading) {
-                this.heading = position.coords.heading;
-            } else {
-                this.heading = null;
-            }
+            this.heading = position.coords.heading ? position.coords.heading : null;
+            this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },
         setNoSleep() {
             this.noSleep = new NoSleep();

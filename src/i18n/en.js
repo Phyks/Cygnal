@@ -1,7 +1,7 @@
 // Keys should be sorted alphabetically
 export default {
     geolocation: {
-        enable: 'Please accept the geolocation permission request to use the app.',
+        fetching: 'Fetching current position…',
         unavailable: 'Sorry, geolocation is not available in your browser.',
     },
     menu: {

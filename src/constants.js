@@ -1,0 +1,6 @@
+export const MOCK_LOCATION = false;
+export const MOCK_LOCATION_UPDATE_INTERVAL = 30 * 1000;
+
+export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
+
+export const EARTH_RADIUS = 6378137;

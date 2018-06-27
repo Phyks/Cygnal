@@ -1,3 +1,5 @@
+import { EARTH_RADIUS } from '@/constants';
+
 export function distance(latLng1, latLng2) {
     const lat1 = (latLng1[0] * Math.PI) / 180;
     const lng1 = (latLng1[1] * Math.PI) / 180;
@@ -10,7 +12,6 @@ export function distance(latLng1, latLng2) {
         (Math.cos(lat1) * Math.cos(lat2) * (Math.sin((lng2 - lng1) / 2.0) ** 2))
     );
     const c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const EARTH_RADIUS = 6371000;
 
     return EARTH_RADIUS * c;
 }
@@ -22,9 +23,10 @@ export function mockLocation() {
     const LNG_MAX = 2.392742;
     return {
         coords: {
+            accuracy: 10, // In meters
             latitude: (Math.random() * (LAT_MAX - LAT_MIN)) + LAT_MIN,
             longitude: (Math.random() * (LNG_MAX - LNG_MIN)) + LNG_MIN,
-            heading: 20 * (Math.PI / 180),
+            heading: null, // 20 * (Math.PI / 180),
         },
     };
 }

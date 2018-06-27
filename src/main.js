@@ -19,6 +19,8 @@ Vue.use(Vuetify);
 Vue.component('v-lmap', Vue2Leaflet.LMap);
 Vue.component('v-ltilelayer', Vue2Leaflet.LTileLayer);
 Vue.component('v-lmarker', Vue2Leaflet.LMarker);
+Vue.component('v-lcirclemarker', Vue2Leaflet.LCircleMarker);
+Vue.component('v-lcircle', Vue2Leaflet.LCircle);
 Vue.component('v-lpolyline', Vue2Leaflet.LPolyline);
 Vue.component('v-lts', Vue2LeafletTracksymbol);
 
