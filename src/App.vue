@@ -50,3 +50,10 @@ export default {
     text-decoration: none;
 }
 </style>
+
+<style>
+.bottom-sheet.dialog {
+    webkit-transition: .1s cubic-bezier(.25, .8, .5, 1);
+    transition: .1s cubic-bezier(.25, .8, .5, 1);
+}
+</style>
