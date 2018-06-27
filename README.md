@@ -59,6 +59,9 @@ adapt its behavior:
 * `HOST=` to specify the host to listen to (defaults to `127.0.0.1` which
     means `localhost` only).
 * `PORT=` to specify the port to listen on (defaults to `8081`).
+* `DATABASE=` to specify a [database URL](http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#db-url) to connect to (defaults to
+    `sqlite:///reports.db` which means a SQLite database named `reports.db` in
+    the current working directory).
 
 ### Serving
 

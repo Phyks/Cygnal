@@ -3,11 +3,14 @@
 """
 Models and database definition
 """
+import os
+
 import arrow
 import peewee
+from playhouse.db_url import connect
 from playhouse.shortcuts import model_to_dict
 
-db = peewee.SqliteDatabase('reports.db')
+db = connect(os.environ.get('DATABASE', 'sqlite:///reports.db'))
 
 
 class BaseModel(peewee.Model):
