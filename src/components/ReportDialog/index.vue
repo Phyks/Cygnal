@@ -11,26 +11,9 @@
 </template>
 
 <script>
-import GCUMIcon from '@/assets/gcum.svg';
-import ObstacleIcon from '@/assets/obstacle.svg';
-import PotHoleIcon from '@/assets/pothole.svg';
+import { REPORT_TYPES } from '@/constants';
 
 import ReportTile from './ReportTile.vue';
-
-const REPORT_TYPES = {
-    gcum: {
-        label: 'reportLabels.gcum',
-        image: GCUMIcon,
-    },
-    interrupt: {
-        label: 'reportLabels.interrupt',
-        image: ObstacleIcon,
-    },
-    pothole: {
-        label: 'reportLabels.pothole',
-        image: PotHoleIcon,
-    },
-};
 
 export default {
     components: {

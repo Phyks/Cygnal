@@ -58,6 +58,7 @@ export default {
         reportsMarkers() {
             return this.$store.state.reports.map(report => ({
                 id: report.id,
+                type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],
             }));
         },

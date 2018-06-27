@@ -8,7 +8,7 @@
 
             <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="latlng" :radius="radiusFromAccuracy"></v-lcircle>
 
-            <v-lmarker v-for="marker in markers" :key="marker.id" :lat-lng="marker.latLng"></v-lmarker>
+            <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
         </v-lmap>
     </div>
 </template>
@@ -19,7 +19,8 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-import { EARTH_RADIUS } from '@/constants';
+import * as constants from '@/constants';
+import ReportMarker from './ReportMarker.vue';
 
 // Fix for a bug in Leaflet default icon
 // see https://github.com/PaulLeCam/react-leaflet/issues/255#issuecomment-261904061
@@ -30,13 +31,10 @@ L.Icon.Default.mergeOptions({
     shadowUrl,
 });
 
-export const DEFAULT_ZOOM = 17;
-export const MIN_ZOOM = 15;
-export const MAX_ZOOM = 18;
-export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
-
-
 export default {
+    components: {
+        ReportMarker,
+    },
     props: {
         accuracy: {
             type: Number,
@@ -51,7 +49,7 @@ export default {
         radiusFromAccuracy() {
             if (this.accuracy) {
                 return this.accuracy / (
-                    (EARTH_RADIUS * 2 * Math.PI * Math.cos(this.lat)) /
+                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.lat)) /
                     (2 ** (this.zoom + 8))
                 );
             }
@@ -79,11 +77,11 @@ export default {
     data() {
         return {
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-            zoom: DEFAULT_ZOOM,
+            zoom: constants.DEFAULT_ZOOM,
             markerRadius: 10.0,
-            minZoom: MIN_ZOOM,
-            maxZoom: MAX_ZOOM,
-            tileServer: TILE_SERVER,
+            minZoom: constants.MIN_ZOOM,
+            maxZoom: constants.MAX_ZOOM,
+            tileServer: constants.TILE_SERVER,
         };
     },
 };
