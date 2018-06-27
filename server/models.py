@@ -6,11 +6,23 @@ Models and database definition
 import os
 
 import arrow
+import bottle
 import peewee
 from playhouse.db_url import connect
 from playhouse.shortcuts import model_to_dict
 
 db = connect(os.environ.get('DATABASE', 'sqlite:///reports.db'))
+
+
+@bottle.hook('before_request')
+def _connect_db():
+    db.connect()
+
+
+@bottle.hook('after_request')
+def _close_db():
+    if not db.is_closed():
+        db.close()
 
 
 class BaseModel(peewee.Model):

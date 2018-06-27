@@ -14,6 +14,8 @@ from server.models import db, Report
 def init():
     db.connect()
     db.create_tables([Report])
+    if not db.is_closed():
+        db.close()
 
     # Use DateAwareJSONEncoder to dump JSON strings
     # From http://stackoverflow.com/questions/21282040/bottle-framework-how-to-return-datetime-in-json-response#comment55718456_21282666.  pylint: disable=locally-disabled,line-too-long
