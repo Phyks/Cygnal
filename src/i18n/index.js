@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
+import { storageAvailable } from '@/tools';
+
 import en from './en';
 import fr from './fr';
 
@@ -31,21 +33,29 @@ export function getBrowserLocales() {
     return locales;
 }
 
-const messages = {
+export const messages = {
     en,
     fr,
 };
 
-
-const locales = getBrowserLocales();
-
-let locale = 'en'; // Safe default
-// Get best matching locale
-for (let i = 0; i < locales.length; i += 1) {
-    if (messages[locales[i]]) {
-        locale = locales[i];
-        break; // Break at first matching locale
+let locale = null;
+if (storageAvailable('localStorage')) {
+    locale = localStorage.getItem('i18nSetting');
+    if (!messages[locale]) {
+        locale = null;
     }
+} else {
+    // Get best matching locale from browser
+    const locales = getBrowserLocales();
+    for (let i = 0; i < locales.length; i += 1) {
+        if (messages[locales[i]]) {
+            locale = locales[i];
+            break; // Break at first matching locale
+        }
+    }
+}
+if (!locale) {
+    locale = 'en'; // Safe default
 }
 
 export default new VueI18n({

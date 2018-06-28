@@ -2,7 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <v-flex xs12 fill-height v-if="lat && lng">
-                <Map :lat="lat" :lng="lng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers"></Map>
+                <Map :lat="lat" :lng="lng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onLongPress="showReportDialog"></Map>
                 <v-btn
                     fixed
                     dark
@@ -11,11 +11,11 @@
                     right
                     color="orange"
                     class="overlayButton"
-                    @click.native.stop="dialog = !dialog"
+                    @click.native.stop="() => showReportDialog()"
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
-                <ReportDialog v-model="dialog" :lat="lat" :lng="lng"></ReportDialog>
+                <ReportDialog v-model="dialog" :lat="reportLat" :lng="reportLng"></ReportDialog>
             </v-flex>
             <v-flex xs12 fill-height v-else class="pa-3">
                 <template v-if="error">
@@ -49,10 +49,12 @@ export default {
         this.initializePositionWatching();
         this.setNoSleep();
         this.$store.dispatch('fetchReports');
+        window.addEventListener('keydown', this.hideReportDialogOnEsc);
     },
     beforeDestroy() {
         this.disableNoSleep();
         this.disablePositionWatching();
+        window.removeEventListener('keydown', this.hideReportDialogOnEsc);
     },
     computed: {
         reportsMarkers() {
@@ -72,6 +74,8 @@ export default {
             lat: null,
             lng: null,
             noSleep: null,
+            reportLat: null,
+            reportLng: null,
             watchID: null,
         };
     },
@@ -135,6 +139,27 @@ export default {
         disableNoSleep() {
             if (this.noSleep) {
                 this.noSleep.disable();
+            }
+        },
+        showReportDialog(latlng) {
+            if (latlng) {
+                this.reportLat = latlng.lat;
+                this.reportLng = latlng.lng;
+            } else {
+                this.reportLat = this.lat;
+                this.reportLng = this.lng;
+            }
+            this.dialog = !this.dialog;
+        },
+        hideReportDialogOnEsc(event) {
+            let isEscape = false;
+            if ('key' in event) {
+                isEscape = (event.key === 'Escape' || event.key === 'Esc');
+            } else {
+                isEscape = (event.keyCode === 27);
+            }
+            if (isEscape) {
+                this.dialog = false;
             }
         },
     },

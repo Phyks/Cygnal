@@ -1,6 +1,6 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap :center="latlng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }">
+        <v-lmap :center="latlng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="latlng" :options="markerOptions"></v-lts>
@@ -44,6 +44,7 @@ export default {
         lat: Number,
         lng: Number,
         markers: Array,
+        onLongPress: Function,
     },
     computed: {
         radiusFromAccuracy() {
@@ -83,6 +84,13 @@ export default {
             maxZoom: constants.MAX_ZOOM,
             tileServer: constants.TILE_SERVER,
         };
+    },
+    methods: {
+        handleLongPress(event) {
+            if (this.onLongPress) {
+                this.onLongPress(event.latlng);
+            }
+        },
     },
 };
 </script>

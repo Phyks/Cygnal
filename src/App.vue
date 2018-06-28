@@ -12,8 +12,14 @@
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
-                    <v-list-tile @click="">
-                        <v-list-tile-title @click="goToAbout">{{ $t("menu.About") }}</v-list-tile-title>
+                    <v-list-tile @click="goToMap">
+                        <v-list-tile-title>{{ $t("menu.Map") }}</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile @click="goToAbout">
+                        <v-list-tile-title>{{ $t("menu.About") }}</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile @click="goToSettings">
+                        <v-list-tile-title>{{ $t("menu.Settings") }}</v-list-tile-title>
                     </v-list-tile>
                 </v-list>
             </v-menu>
@@ -35,6 +41,12 @@ export default {
     methods: {
         goToAbout() {
             this.$router.push({ name: 'About' });
+        },
+        goToMap() {
+            this.$router.push({ name: 'Map' });
+        },
+        goToSettings() {
+            this.$router.push({ name: 'Settings' });
         },
     },
 };
