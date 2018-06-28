@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
-
 import { messages } from '@/i18n';
 import { storageAvailable } from '@/tools';
 

@@ -47,7 +47,7 @@ export default {
     },
     created() {
         this.initializePositionWatching();
-        this.setNoSleep();
+        this.listenForFirstInteraction();
         this.$store.dispatch('fetchReports');
         window.addEventListener('keydown', this.hideReportDialogOnEsc);
     },
@@ -161,6 +161,26 @@ export default {
             if (isEscape) {
                 this.dialog = false;
             }
+        },
+        handleFirstUserInteraction() {
+            this.setNoSleep();
+
+            window.removeEventListener('mousemove', this.handleFirstUserInteraction, false);
+            window.removeEventListener('mousedown', this.handleFirstUserInteraction, false);
+            window.removeEventListener('keypress', this.handleFirstUserInteraction, false);
+            window.removeEventListener('DOMMouseScroll', this.handleFirstUserInteraction, false);
+            window.removeEventListener('mousewheel', this.handleFirstUserInteraction, false);
+            window.removeEventListener('touchmove', this.handleFirstUserInteraction, false);
+            window.removeEventListener('MSPointerMove', this.handleFirstUserInteraction, false);
+        },
+        listenForFirstInteraction() {
+            window.addEventListener('mousemove', this.handleFirstUserInteraction, false);
+            window.addEventListener('mousedown', this.handleFirstUserInteraction, false);
+            window.addEventListener('keypress', this.handleFirstUserInteraction, false);
+            window.addEventListener('DOMMouseScroll', this.handleFirstUserInteraction, false);
+            window.addEventListener('mousewheel', this.handleFirstUserInteraction, false);
+            window.addEventListener('touchmove', this.handleFirstUserInteraction, false);
+            window.addEventListener('MSPointerMove', this.handleFirstUserInteraction, false);
         },
     },
 };
