@@ -1,7 +1,7 @@
 <template>
     <v-container fluid class="no-padding">
         <v-layout row wrap>
-            <v-flex xs12 class="text-xs-center">
+            <v-flex xs12 sm4 offset-sm4 class="text-xs-center">
                 <h2>{{ $t('menu.Settings') }}</h2>
                 <form>
                     <v-select
