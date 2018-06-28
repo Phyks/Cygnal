@@ -63,10 +63,17 @@ adapt its behavior:
     `sqlite:///reports.db` which means a SQLite database named `reports.db` in
     the current working directory).
 
-### Serving
+### Serving in production
 
 You can use the `wsgi.py` script at the root of the git repository to serve
 the server side part.
+
+### Useful scripts
+
+The `scripts` folder contain some useful scripts:
+
+* `purge_old_gcum.py` deletes `gcum`-type report older than one hour. You
+    should set a crontask to call it regularly.
 
 
 ## Contributing
