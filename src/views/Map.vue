@@ -81,6 +81,7 @@ export default {
     },
     methods: {
         initializePositionWatching() {
+            this.error = null; // Reset any error
             this.disablePositionWatching(); // Ensure at most one at the same time
 
             if (constants.MOCK_LOCATION) {
