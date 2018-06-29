@@ -2,7 +2,7 @@
     <v-container fluid>
         <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-                <p>{{ $t('about.summary') }}</p>
+                <p>{{ $t('about.summary') }} {{ $t('about.geolocationDescription') }}</p>
 
                 <h2 class="body-2">{{ $t('about.usage') }}</h2>
                 <p>{{ $t('about.usageDescription') }}</p>

@@ -5,11 +5,23 @@ Cyclassist
 > realtime on bike lanes!
 
 This app is made of two parts: a client webapp and a server part to store and
-serve the issues.
+serve the issues. This code is the code running behind https://cyclo.phyks.me/.
 
-## Client part
+As of current version, only the client side part (code running on your local
+device) handles your geolocation. **Your geolocation is never sent** to the
+server or any external resource.
 
-### Build setup
+## OpenData
+
+The data collected by https://cyclo.phyks.me/ is available under an
+[ODbL](https://opendatacommons.org/licenses/odbl/) license. You can get the
+most up to date JSON dump of available reports at https://cyclo.phyks.me/api/v1/reports.
+
+## Hosting your own
+
+### Client part
+
+#### Build setup
 
 ``` bash
 # Install JS dependencies
@@ -25,7 +37,7 @@ yarn build
 yarn build --report
 ```
 
-### Useful environment variables
+#### Useful environment variables
 
 You can pass a few environment variables to the `yarn build|dev` commands to
 adapt the behavior to your needs.
@@ -37,9 +49,9 @@ adapt the behavior to your needs.
     one.
 
 
-## Server part
+### Server part
 
-### Build setup
+#### Build setup
 
 ``` bash
 # Install Python dependencies
@@ -51,7 +63,7 @@ python -m server
 
 It is better to use a dedicated `virtualenv` if you can :)
 
-### Useful environment variables
+#### Useful environment variables
 
 You can pass a few environment variables to the `python -m server` command to
 adapt its behavior:
@@ -63,12 +75,12 @@ adapt its behavior:
     `sqlite:///reports.db` which means a SQLite database named `reports.db` in
     the current working directory).
 
-### Serving in production
+#### Serving in production
 
 You can use the `wsgi.py` script at the root of the git repository to serve
 the server side part.
 
-### Useful scripts
+#### Useful scripts
 
 The `scripts` folder contain some useful scripts:
 
