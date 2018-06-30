@@ -109,3 +109,15 @@ to spawn the server-side part, listening on `localhost:8081`.
 
 This software is licensed under an MIT license, unless explicitly mentionned
 otherwise.
+
+Icons are made from the original works:
+* [Bike icon](https://commons.wikimedia.org/wiki/File:Ic_directions_bike_48px.svg)
+    licensed under CC BY on Wikimedia.
+* [Car icon](https://commons.wikimedia.org/wiki/File:Car_icon_top.svg)
+    licensed under CC BY-SA on Wikimedia.
+* [Pothole icon](https://commons.wikimedia.org/wiki/File:France_road_sign_A2a.svg)
+    licensed under CC BY-SA on Wikimedia.
+* [Work icons](https://www.vecteezy.com/vector-art/87351-road-traffic-cartoon-icons-vector)
+    were designed by Vecteezy.
+* [Trash icon](https://pixabay.com/en/trash-waste-trashcan-garbage-99257/) is
+    coming from Pixabay under CC0 license.
