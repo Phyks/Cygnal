@@ -1,5 +1,5 @@
 <template>
-    <v-bottom-sheet class="overlayDialog" v-model="isActive">
+    <v-bottom-sheet v-model="isActive">
         <v-card>
             <v-container fluid>
                 <v-layout row wrap>
@@ -57,5 +57,11 @@ export default {
 <style scoped>
 .overlayDialog {
     z-index: 1003 !important;
+}
+</style>
+
+<style>
+.dialog__content {
+    z-index: 1002 !important;
 }
 </style>
