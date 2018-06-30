@@ -56,6 +56,6 @@ export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
 export const EARTH_RADIUS = 6378137;
 
 export const DEFAULT_ZOOM = 17;
-export const MIN_ZOOM = 15;
+export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;
 export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
