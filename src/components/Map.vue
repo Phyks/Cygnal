@@ -1,6 +1,6 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap :center="latLng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @moveend="onMoveEnd" @movestart="onMoveStart">
+        <v-lmap ref="map" :center="latLng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @moveend="onMoveEnd" @movestart="onMoveStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
@@ -19,6 +19,7 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
+import compassNorthIcon from '@/assets/compassNorth.svg';
 import * as constants from '@/constants';
 import ReportMarker from './ReportMarker.vue';
 
@@ -75,6 +76,16 @@ export default {
             };
         },
     },
+    mounted() {
+        const map = this.$refs.map.mapObject;
+        const north = L.control({ position: 'topright' });
+        north.onAdd = () => {
+            const div = L.DomUtil.create('div', 'compassIcon legend');
+            div.innerHTML = `<img src="${compassNorthIcon}">`;
+            return div;
+        };
+        north.addTo(map);
+    },
     data() {
         return {
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
@@ -98,6 +109,15 @@ export default {
 <style>
 .application .leaflet-bar a {
     color: black;
+}
+
+.compassIcon {
+    background-color: white;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
+    -webkite-box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
 }
 </style>
 
