@@ -1,12 +1,12 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap ref="map" :center="latLng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @moveend="onMoveEnd" @movestart="onMoveStart">
+        <v-lmap ref="map" :center="latLng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @mousedown="onMouseDown" @mouseup="onMouseUp" @moveend="onMoveEndWrapper" @movestart="onMoveStartWrapper">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
             <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
 
-            <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="latlng" :radius="radiusFromAccuracy"></v-lcircle>
+            <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
 
             <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
         </v-lmap>
@@ -53,7 +53,7 @@ export default {
         radiusFromAccuracy() {
             if (this.accuracy) {
                 return this.accuracy / (
-                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.latLng[0] *
+                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0] *
                         (Math.PI / 180))) /
                     (2 ** (this.zoom + 8))
                 );
@@ -94,12 +94,29 @@ export default {
             minZoom: constants.MIN_ZOOM,
             maxZoom: constants.MAX_ZOOM,
             tileServer: constants.TILE_SERVER,
+            isMouseDown: false,
         };
     },
     methods: {
         handleLongPress(event) {
             if (this.onLongPress) {
                 this.onLongPress(event.latlng);
+            }
+        },
+        onMouseDown() {
+            this.isMouseDown = true;
+        },
+        onMouseUp() {
+            this.isMouseDown = false;
+        },
+        onMoveStartWrapper(ev) {
+            if (this.isMouseDown) {
+                this.onMoveStart(ev);
+            }
+        },
+        onMoveEndWrapper(ev) {
+            if (this.isMouseDown) {
+                this.onMoveEnd(ev);
             }
         },
     },
