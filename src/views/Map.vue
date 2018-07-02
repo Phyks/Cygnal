@@ -2,7 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <v-flex xs12 fill-height v-if="latLng">
-                <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onLongPress="showReportDialog"></Map>
+                <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
                     fixed
                     dark

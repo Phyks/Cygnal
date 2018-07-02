@@ -1,6 +1,6 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @mousedown="onMouseDown" @mouseup="onMouseUp" @movestart="onMoveStart" @zoomstart="onZoomStart">
+        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @mousedown="onMouseDown" @mouseup="onMouseUp" @movestart="onMoveStart" @zoomstart="onZoomStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
@@ -43,7 +43,7 @@ export default {
         },
         heading: Number,
         markers: Array,
-        onLongPress: Function,
+        onPress: Function,
         positionLatLng: Array,
     },
     computed: {
@@ -106,9 +106,9 @@ export default {
         };
     },
     methods: {
-        handleLongPress(event) {
-            if (this.onLongPress) {
-                this.onLongPress(event.latlng);
+        handleClick(event) {
+            if (this.onPress) {
+                this.onPress(event.latlng);
             }
         },
         onMouseDown() {
@@ -132,6 +132,7 @@ export default {
             north.onAdd = () => {
                 const div = L.DomUtil.create('div', 'compassIcon legend');
                 div.innerHTML = `<img src="${compassNorthIcon}">`;
+                L.DomEvent.disableClickPropagation(div);
                 return div;
             };
             this.map.addControl(north);
@@ -144,6 +145,7 @@ export default {
                     btn.type = 'button';
                     btn.addEventListener('click', this.recenterMap);
                     btn.innerHTML = '<div class="btn__content"><i aria-hidden="true" class="icon material-icons">my_location</i></div>';
+                    L.DomEvent.disableClickPropagation(btn);
                     return btn;
                 };
                 this.map.addControl(this.recenterButton);
