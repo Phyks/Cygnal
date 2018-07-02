@@ -49,7 +49,7 @@ export const REPORT_TYPES = {
 };
 
 export const MOCK_LOCATION = false;
-export const MOCK_LOCATION_UPDATE_INTERVAL = 30 * 1000;
+export const MOCK_LOCATION_UPDATE_INTERVAL = 10 * 1000;
 
 export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
 

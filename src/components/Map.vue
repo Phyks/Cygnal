@@ -1,6 +1,6 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap ref="map" :center="latLng" :zoom="this.zoom" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @mousedown="onMouseDown" @mouseup="onMouseUp" @moveend="onMoveEndWrapper" @movestart="onMoveStartWrapper">
+        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @contextmenu="handleLongPress" @mousedown="onMouseDown" @mouseup="onMouseUp" @movestart="onMoveStart" @zoomstart="onZoomStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
@@ -42,11 +42,8 @@ export default {
             default: null,
         },
         heading: Number,
-        latLng: Array,
         markers: Array,
         onLongPress: Function,
-        onMoveEnd: Function,
-        onMoveStart: Function,
         positionLatLng: Array,
     },
     computed: {
@@ -77,14 +74,22 @@ export default {
         },
     },
     mounted() {
-        const map = this.$refs.map.mapObject;
-        const north = L.control({ position: 'topright' });
-        north.onAdd = () => {
-            const div = L.DomUtil.create('div', 'compassIcon legend');
-            div.innerHTML = `<img src="${compassNorthIcon}">`;
-            return div;
-        };
-        north.addTo(map);
+        this.map = this.$refs.map.mapObject;
+        if (this.map.getZoom() !== this.zoom) {
+            this.isProgrammaticZoom = true;
+            this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+        }
+        this.map.setView(this.positionLatLng, this.zoom);
+        this.showCompass();
+    },
+    updated() {
+        if (!this.recenterButton) {
+            if (this.map.getZoom() !== this.zoom) {
+                this.isProgrammaticZoom = true;
+                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+            }
+            this.map.setView(this.positionLatLng, this.zoom);
+        }
     },
     data() {
         return {
@@ -95,6 +100,9 @@ export default {
             maxZoom: constants.MAX_ZOOM,
             tileServer: constants.TILE_SERVER,
             isMouseDown: false,
+            isProgrammaticZoom: false,
+            recenterButton: null,
+            map: null,
         };
     },
     methods: {
@@ -109,15 +117,51 @@ export default {
         onMouseUp() {
             this.isMouseDown = false;
         },
-        onMoveStartWrapper(ev) {
-            if (this.isMouseDown) {
-                this.onMoveStart(ev);
+        onMoveStart() {
+            if (this.isMouseDown && !this.recenterButton) {
+                this.showRecenterButton();
             }
         },
-        onMoveEndWrapper(ev) {
-            if (this.isMouseDown) {
-                this.onMoveEnd(ev);
+        onZoomStart() {
+            if (!this.isProgrammaticZoom) {
+                this.showRecenterButton();
             }
+        },
+        showCompass() {
+            const north = L.control({ position: 'topright' });
+            north.onAdd = () => {
+                const div = L.DomUtil.create('div', 'compassIcon legend');
+                div.innerHTML = `<img src="${compassNorthIcon}">`;
+                return div;
+            };
+            this.map.addControl(north);
+        },
+        showRecenterButton() {
+            if (!this.recenterButton) {
+                this.recenterButton = L.control({ position: 'bottomleft' });
+                this.recenterButton.onAdd = () => {
+                    const btn = L.DomUtil.create('button', 'overlayButton btn btn--floating btn--large theme--dark blue legend');
+                    btn.type = 'button';
+                    btn.addEventListener('click', this.recenterMap);
+                    btn.innerHTML = '<div class="btn__content"><i aria-hidden="true" class="icon material-icons">my_location</i></div>';
+                    return btn;
+                };
+                this.map.addControl(this.recenterButton);
+            }
+        },
+        hideRecenterButton() {
+            if (this.recenterButton) {
+                this.map.removeControl(this.recenterButton);
+                this.recenterButton = null;
+            }
+        },
+        recenterMap() {
+            this.hideRecenterButton();
+            if (this.map.getZoom() !== this.zoom) {
+                this.isProgrammaticZoom = true;
+                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+            }
+            this.map.setView(this.positionLatLng, this.zoom);
         },
     },
 };
@@ -131,10 +175,15 @@ export default {
 .compassIcon {
     background-color: white;
     border-radius: 50%;
-    width: 56px;
-    height: 56px;
+    width: 42px;
+    height: 42px;
     box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
     -webkite-box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
+}
+
+.compassIcon img {
+    width: 100%;
+    height: 100%;
 }
 </style>
 

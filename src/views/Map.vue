@@ -2,24 +2,12 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <v-flex xs12 fill-height v-if="latLng">
-                <Map :latLng="mapLatLng" :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onLongPress="showReportDialog" :onMoveEnd="onMapMoveEnd" :onMoveStart="onMapMoveStart"></Map>
+                <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onLongPress="showReportDialog"></Map>
                 <v-btn
                     fixed
                     dark
                     fab
-                    bottom
-                    left
-                    color="blue"
-                    class="overlayButton"
-                    v-if="hasMapMoved"
-                    @click.native.stop="recenterMap"
-                    >
-                    <v-icon>my_location</v-icon>
-                </v-btn>
-                <v-btn
-                    fixed
-                    dark
-                    fab
+                    large
                     bottom
                     right
                     color="orange"
@@ -77,12 +65,6 @@ export default {
                 latLng: [report.attributes.lat, report.attributes.lng],
             }));
         },
-        mapLatLng() {
-            if (this.hasMapMoved) {
-                return this.mapMovedLatLng;
-            }
-            return this.latLng;
-        },
     },
     data() {
         return {
@@ -90,10 +72,8 @@ export default {
             centering: false,
             dialog: false,
             error: null,
-            hasMapMoved: false,
             heading: null,
             latLng: null,
-            mapMovedLatLng: null,
             noSleep: null,
             reportLat: null,
             reportLng: null,
@@ -202,23 +182,6 @@ export default {
             window.addEventListener('mousewheel', this.handleFirstUserInteraction, false);
             window.addEventListener('touchmove', this.handleFirstUserInteraction, false);
             window.addEventListener('MSPointerMove', this.handleFirstUserInteraction, false);
-        },
-        recenterMap() {
-            this.mapMovedLatLng = null;
-            this.centering = true;
-            this.hasMapMoved = false;
-        },
-        onMapMoveStart() {
-            if (!this.centering) {
-                this.hasMapMoved = true;
-            }
-        },
-        onMapMoveEnd(ev) {
-            const latLng = ev.target.getCenter();
-            if (!this.hasMapMoved) {
-                this.mapMovedLatLng = [latLng.lat, latLng.lng];
-            }
-            this.centering = false;
         },
     },
 };
