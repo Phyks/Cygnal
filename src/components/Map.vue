@@ -1,6 +1,6 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @mousedown="onMouseDown" @mouseup="onMouseUp" @movestart="onMoveStart" @zoomstart="onZoomStart">
+        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @movestart="onMoveStart" @zoomstart="onZoomStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
@@ -79,6 +79,10 @@ export default {
             this.isProgrammaticZoom = true;
             this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
         }
+        if (this.map.getCenter() !== this.positionLatLng) {
+            this.isProgrammaticMove = true;
+            this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+        }
         this.map.setView(this.positionLatLng, this.zoom);
         this.showCompass();
     },
@@ -87,6 +91,10 @@ export default {
             if (this.map.getZoom() !== this.zoom) {
                 this.isProgrammaticZoom = true;
                 this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+            }
+            if (this.map.getCenter() !== this.positionLatLng) {
+                this.isProgrammaticMove = true;
+                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
             this.map.setView(this.positionLatLng, this.zoom);
         }
@@ -101,6 +109,7 @@ export default {
             tileServer: constants.TILE_SERVER,
             isMouseDown: false,
             isProgrammaticZoom: false,
+            isProgrammaticMove: false,
             recenterButton: null,
             map: null,
         };
@@ -111,14 +120,8 @@ export default {
                 this.onPress(event.latlng);
             }
         },
-        onMouseDown() {
-            this.isMouseDown = true;
-        },
-        onMouseUp() {
-            this.isMouseDown = false;
-        },
         onMoveStart() {
-            if (this.isMouseDown && !this.recenterButton) {
+            if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }
         },
@@ -162,6 +165,10 @@ export default {
             if (this.map.getZoom() !== this.zoom) {
                 this.isProgrammaticZoom = true;
                 this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+            }
+            if (this.map.getCenter() !== this.positionLatLng) {
+                this.isProgrammaticMove = true;
+                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
             this.map.setView(this.positionLatLng, this.zoom);
         },
