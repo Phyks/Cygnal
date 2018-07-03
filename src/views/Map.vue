@@ -1,10 +1,17 @@
 <template>
     <v-container fluid fill-height class="no-padding">
-        <v-layout row wrap fill-height>
+        <v-layout v-if="isIntro" row wrap class="text-xs-center blue lighten-2">
+            <v-flex xs8 offset-xs2>
+                <p><img src="static/icon.svg" alt="Logo"/></p></p>
+                <p>{{ $t('about.summary') }}</p>
+                <v-btn round color="green" dark @click="introButtonClick">{{ $t('intro.start') }}</v-btn>
+            </v-flex>
+        </v-layout>
+        <v-layout v-else row wrap fill-height>
             <v-flex xs12 fill-height v-if="latLng">
                 <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
-                    fixed
+                    absolute
                     dark
                     fab
                     large
@@ -46,16 +53,12 @@ export default {
         Map,
         ReportDialog,
     },
-    created() {
-        this.initializePositionWatching();
-        this.listenForFirstInteraction();
-        this.$store.dispatch('fetchReports');
-        window.addEventListener('keydown', this.hideReportDialogOnEsc);
-    },
     beforeDestroy() {
-        this.disableNoSleep();
-        this.disablePositionWatching();
-        window.removeEventListener('keydown', this.hideReportDialogOnEsc);
+        if (!this.isIntro) {
+            this.disableNoSleep();
+            this.disablePositionWatching();
+            window.removeEventListener('keydown', this.hideReportDialogOnEsc);
+        }
     },
     computed: {
         reportsMarkers() {
@@ -73,6 +76,7 @@ export default {
             dialog: false,
             error: null,
             heading: null,
+            isIntro: true,
             latLng: null,
             noSleep: null,
             reportLat: null,
@@ -163,25 +167,12 @@ export default {
                 this.dialog = false;
             }
         },
-        handleFirstUserInteraction() {
+        introButtonClick() {
             this.setNoSleep();
-
-            window.removeEventListener('mousemove', this.handleFirstUserInteraction, false);
-            window.removeEventListener('mousedown', this.handleFirstUserInteraction, false);
-            window.removeEventListener('keypress', this.handleFirstUserInteraction, false);
-            window.removeEventListener('DOMMouseScroll', this.handleFirstUserInteraction, false);
-            window.removeEventListener('mousewheel', this.handleFirstUserInteraction, false);
-            window.removeEventListener('touchmove', this.handleFirstUserInteraction, false);
-            window.removeEventListener('MSPointerMove', this.handleFirstUserInteraction, false);
-        },
-        listenForFirstInteraction() {
-            window.addEventListener('mousemove', this.handleFirstUserInteraction, false);
-            window.addEventListener('mousedown', this.handleFirstUserInteraction, false);
-            window.addEventListener('keypress', this.handleFirstUserInteraction, false);
-            window.addEventListener('DOMMouseScroll', this.handleFirstUserInteraction, false);
-            window.addEventListener('mousewheel', this.handleFirstUserInteraction, false);
-            window.addEventListener('touchmove', this.handleFirstUserInteraction, false);
-            window.addEventListener('MSPointerMove', this.handleFirstUserInteraction, false);
+            this.isIntro = false;
+            this.initializePositionWatching();
+            this.$store.dispatch('fetchReports');
+            window.addEventListener('keydown', this.hideReportDialogOnEsc);
         },
     },
 };
@@ -191,14 +182,17 @@ export default {
 .no-padding {
     padding: 0;
 }
-
-.overlayButton {
-    z-index: 1000 !important;
-}
 </style>
 
 <style>
-.overlay {
+.v-overlay, .v-dialog__content {
     z-index: 1002 !important;
+}
+
+.overlayButton {
+    z-index: 1000 !important;
+    position: absolute !important;
+    bottom: 24px !important;
+    border-radius: 50% !important;
 }
 </style>

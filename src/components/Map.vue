@@ -10,6 +10,20 @@
 
             <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
         </v-lmap>
+        <v-btn
+            absolute
+            dark
+            fab
+            large
+            bottom
+            left
+            color="blue"
+            class="overlayButton"
+            v-if="recenterButton"
+            @click.native.stop="recenterMap"
+            >
+            <v-icon>my_location</v-icon>
+        </v-btn>
     </div>
 </template>
 
@@ -79,25 +93,38 @@ export default {
             this.isProgrammaticZoom = true;
             this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
         }
-        if (this.map.getCenter() !== this.positionLatLng) {
+        if (
+            this.map.getCenter().lat !== this.positionLatLng[0] &&
+            this.map.getCenter().lng !== this.positionLatLng[1]
+        ) {
             this.isProgrammaticMove = true;
             this.map.once('moveend', () => { this.isProgrammaticMove = false; });
         }
         this.map.setView(this.positionLatLng, this.zoom);
         this.showCompass();
     },
-    updated() {
-        if (!this.recenterButton) {
-            if (this.map.getZoom() !== this.zoom) {
-                this.isProgrammaticZoom = true;
-                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+    watch: {
+        positionLatLng: (newPositionLatLng) => {
+            if (!this.map) {
+                // Map should have been created
+                return;
             }
-            if (this.map.getCenter() !== this.positionLatLng) {
-                this.isProgrammaticMove = true;
-                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+            if (!this.recenterButton) {
+                // Handle programmatic navigation
+                if (this.map.getZoom() !== this.zoom) {
+                    this.isProgrammaticZoom = true;
+                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                }
+                if (
+                    this.map.getCenter().lat !== newPositionLatLng[0] &&
+                    this.map.getCenter().lng !== newPositionLatLng[1]
+                ) {
+                    this.isProgrammaticMove = true;
+                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+                }
+                this.map.setView(this.positionLatLng, this.zoom);
             }
-            this.map.setView(this.positionLatLng, this.zoom);
-        }
+        },
     },
     data() {
         return {
@@ -110,7 +137,7 @@ export default {
             isMouseDown: false,
             isProgrammaticZoom: false,
             isProgrammaticMove: false,
-            recenterButton: null,
+            recenterButton: false,
             map: null,
         };
     },
@@ -120,7 +147,8 @@ export default {
                 this.onPress(event.latlng);
             }
         },
-        onMoveStart() {
+        onMoveStart(ev) {
+            console.log(ev, this.isProgrammaticMove);
             if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }
@@ -142,22 +170,12 @@ export default {
         },
         showRecenterButton() {
             if (!this.recenterButton) {
-                this.recenterButton = L.control({ position: 'bottomleft' });
-                this.recenterButton.onAdd = () => {
-                    const btn = L.DomUtil.create('button', 'overlayButton btn btn--floating btn--large theme--dark blue legend');
-                    btn.type = 'button';
-                    btn.addEventListener('click', this.recenterMap);
-                    btn.innerHTML = '<div class="btn__content"><i aria-hidden="true" class="icon material-icons">my_location</i></div>';
-                    L.DomEvent.disableClickPropagation(btn);
-                    return btn;
-                };
-                this.map.addControl(this.recenterButton);
+                this.recenterButton = true;
             }
         },
         hideRecenterButton() {
             if (this.recenterButton) {
-                this.map.removeControl(this.recenterButton);
-                this.recenterButton = null;
+                this.recenterButton = false;
             }
         },
         recenterMap() {
@@ -166,7 +184,10 @@ export default {
                 this.isProgrammaticZoom = true;
                 this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
             }
-            if (this.map.getCenter() !== this.positionLatLng) {
+            if (
+                this.map.getCenter().lat !== this.positionLatLng[0] &&
+                this.map.getCenter().lng !== this.positionLatLng[1]
+            ) {
                 this.isProgrammaticMove = true;
                 this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }

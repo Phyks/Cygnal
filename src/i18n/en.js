@@ -12,6 +12,9 @@ export default {
         fetching: 'Fetching current position…',
         unavailable: 'Sorry, geolocation is not available in your browser.',
     },
+    intro: {
+        start: "Let's go!",
+    },
     menu: {
         About: 'Help',
         Map: 'Map',
