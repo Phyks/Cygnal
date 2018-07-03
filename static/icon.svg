@@ -5,11 +5,38 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg8"
    version="1.1"
    viewBox="0 0 50.799999 50.800002"
    height="192"
-   width="192">
+   width="192"
+   sodipodi:docname="icon.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   inkscape:export-filename="/home/phyks/Code/cyclassist/static/icon48.png"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1916"
+     inkscape:window-height="1041"
+     id="namedview903"
+     showgrid="false"
+     inkscape:zoom="3.1377863"
+     inkscape:cx="45.830896"
+     inkscape:cy="89.993967"
+     inkscape:window-x="0"
+     inkscape:window-y="37"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g4296" />
   <defs
      id="defs2" />
   <metadata
@@ -20,13 +47,27 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
      transform="translate(0,-246.19998)"
      id="layer1">
+    <g
+       transform="matrix(1.0442734,0,0,1.0442734,17.909141,272.53907)"
+       id="g4296">
+      <path
+         style="fill:none"
+         d="M 0,0 H 24 V 24 H 0 Z"
+         id="path4286"
+         inkscape:connector-curvature="0" />
+      <path
+         d="M 7.8634714,21 H 29.863471 l -11,-19 z M 19.863471,18 h -2 v -2 h 2 z m 0,-4 h -2 v -4 h 2 z"
+         id="path4288"
+         style="fill:#231f20;fill-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
     <g
        transform="matrix(0.60218115,0,0,0.60218115,2.6432865,249.18067)"
        id="g1611">
@@ -38,17 +79,6 @@
          style="fill:#231f20;fill-opacity:1"
          d="m 32,9.6 c 1.98,0 3.6,-1.61 3.6,-3.6 0,-1.99 -1.62,-3.6 -3.6,-3.6 -1.99,0 -3.6,1.61 -3.6,3.6 0,1.99 1.61,3.6 3.6,3.6 z M 38,24 c -5.52,0 -10,4.48 -10,10 0,5.52 4.48,10 10,10 5.52,0 10,-4.48 10,-10 0,-5.52 -4.48,-10 -10,-10 z m 0,17 c -3.87,0 -7,-3.13 -7,-7 0,-3.87 3.13,-7 7,-7 3.87,0 7,3.13 7,7 0,3.87 -3.13,7 -7,7 z m -8.4,-21 8.4,0 0,-3.6 -6.4,0 -3.87,-6.53 C 27.14,8.87 26.05,8.2 24.8,8.2 c -0.94,0 -1.79,0.38 -2.4,1 L 15,16.59 c -0.62,0.62 -1,1.47 -1,2.41 0,1.26 0.67,2.32 1.7,2.94 l 6.7,4.06 0,10 3.6,0 0,-12.96 -4.5,-3.34 4.64,-4.66 z M 10,24 C 4.48,24 0,28.48 0,34 0,39.52 4.48,44 10,44 15.52,44 20,39.52 20,34 20,28.48 15.52,24 10,24 Z m 0,17 c -3.87,0 -7,-3.13 -7,-7 0,-3.87 3.13,-7 7,-7 3.87,0 7,3.13 7,7 0,3.87 -3.13,7 -7,7 z"
          id="path1599" />
-    </g>
-    <g
-       transform="matrix(1.0442734,0,0,1.0442734,24.587076,272.65832)"
-       id="g4296">
-      <path
-         style="fill:none"
-         d="M 0,0 24,0 24,24 0,24 Z"
-         id="path4286" />
-      <path
-         d="M 1,21 23,21 12,2 1,21 Z m 12,-3 -2,0 0,-2 2,0 0,2 z m 0,-4 -2,0 0,-4 2,0 0,4 z"
-         id="path4288" />
     </g>
   </g>
 </svg>
