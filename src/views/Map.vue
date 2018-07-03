@@ -138,8 +138,17 @@ export default {
             this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },
         setNoSleep() {
-            this.noSleep = new NoSleep();
-            this.noSleep.enable();
+            let preventSuspend = localStorage.getItem('preventSuspend');
+            if (preventSuspend) {
+                preventSuspend = JSON.parse(preventSuspend);
+            } else {
+                preventSuspend = true;
+            }
+
+            if (preventSuspend) {
+                this.noSleep = new NoSleep();
+                this.noSleep.enable();
+            }
         },
         disableNoSleep() {
             if (this.noSleep) {

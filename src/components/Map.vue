@@ -148,7 +148,6 @@ export default {
             }
         },
         onMoveStart(ev) {
-            console.log(ev, this.isProgrammaticMove);
             if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }

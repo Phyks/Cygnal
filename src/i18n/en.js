@@ -35,6 +35,7 @@ export default {
     },
     settings: {
         locale: 'Language',
+        preventSuspend: 'Prevent device from going to sleep',
         save: 'Save',
     },
 };

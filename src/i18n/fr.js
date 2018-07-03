@@ -12,6 +12,9 @@ export default {
         fetching: 'En attente de votre position…',
         unavailable: "Désolé, la géolocalisation n'est pas disponible dans votre navigateur.",
     },
+    intro: {
+        start: "C'est parti !",
+    },
     menu: {
         About: 'Aide',
         Map: 'Carte',
@@ -32,6 +35,7 @@ export default {
     },
     settings: {
         locale: 'Langue',
+        preventSuspend: "Empêcher l'appareil de passer en veille",
         save: 'Sauver',
     },
 };
