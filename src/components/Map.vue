@@ -147,7 +147,7 @@ export default {
                 this.onPress(event.latlng);
             }
         },
-        onMoveStart(ev) {
+        onMoveStart() {
             if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }
