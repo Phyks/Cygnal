@@ -64,6 +64,14 @@ export default {
 </style>
 
 <style>
+body, html, .application {
+    height: 100%;
+}
+
+.application--wrap {
+    min-height: 100% !important;
+}
+
 .bottom-sheet.dialog {
     webkit-transition: .1s cubic-bezier(.25, .8, .5, 1);
     transition: .1s cubic-bezier(.25, .8, .5, 1);
