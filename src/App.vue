@@ -23,6 +23,9 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
+            <div>
+                <v-progress-linear v-if="isLoading" :indeterminate="true" class="progressBar"></v-progress-linear>
+            </div>
         </v-toolbar>
         <v-content>
             <router-view/>
@@ -32,6 +35,11 @@
 
 <script>
 export default {
+    computed: {
+        isLoading() {
+            return this.$store.state.isLoading;
+        },
+    },
     data() {
         return {
             title: 'Cycl\'Assist',
@@ -60,6 +68,13 @@ export default {
 .noLinkDecoration {
     color: rgba(0, 0, 0, .87);
     text-decoration: none;
+}
+
+.progressBar {
+    margin: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 </style>
 

@@ -21,7 +21,13 @@ export default {
         Settings: 'Préférences',
     },
     misc: {
+        discard: 'Annuler',
+        retry: 'Réessayer',
         spaceBeforeDoublePunctuations: ' ',
+    },
+    reportDialog: {
+        unableToSendDescription: "Une erreur de réseau empêche l'envoi du dernier signalement.",
+        unableToSendTitle: "Impossible d'envoyer le dernier signalement",
     },
     reportLabels: {
         gcum: 'GCUM',

@@ -21,7 +21,13 @@ export default {
         Settings: 'Settings',
     },
     misc: {
+        discard: 'Discard',
+        retry: 'Retry',
         spaceBeforeDoublePunctuations: '',
+    },
+    reportDialog: {
+        unableToSendDescription: 'There was a network issue preventing from sending the latest report.',
+        unableToSendTitle: 'Unable to send latest report',
     },
     reportLabels: {
         gcum: 'GCUM',
