@@ -21,7 +21,7 @@ export function mockLocation() {
     const LNG_MIN = 2.281279;
     const LAT_MAX = 48.886123;
     const LNG_MAX = 2.392742;
-    return {
+    const newLocation = {
         coords: {
             accuracy: 10, // In meters
             latitude: (Math.random() * (LAT_MAX - LAT_MIN)) + LAT_MIN,
@@ -29,6 +29,8 @@ export function mockLocation() {
             heading: null, // 20 * (Math.PI / 180),
         },
     };
+    console.log('New mock location: ', newLocation);
+    return newLocation;
 }
 
 export function storageAvailable(type) {

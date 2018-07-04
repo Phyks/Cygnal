@@ -104,7 +104,7 @@ export default {
         this.showCompass();
     },
     watch: {
-        positionLatLng: (newPositionLatLng) => {
+        positionLatLng(newPositionLatLng) {
             if (!this.map) {
                 // Map should have been created
                 return;
@@ -122,7 +122,7 @@ export default {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
                 }
-                this.map.setView(this.positionLatLng, this.zoom);
+                this.map.setView(newPositionLatLng, this.zoom);
             }
         },
     },
