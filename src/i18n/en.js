@@ -25,6 +25,9 @@ export default {
         retry: 'Retry',
         spaceBeforeDoublePunctuations: '',
     },
+    reportCard: {
+        Reported: 'Reported',
+    },
     reportDialog: {
         unableToSendDescription: 'There was a network issue preventing from sending the latest report.',
         unableToSendTitle: 'Unable to send latest report',

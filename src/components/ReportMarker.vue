@@ -1,5 +1,5 @@
 <template>
-    <v-lmarker :lat-lng="marker.latLng" :icon="icons[marker.type]"></v-lmarker>
+    <v-lmarker :lat-lng="marker.latLng" :icon="icons[marker.type]" @click="onClick"></v-lmarker>
 </template>
 
 <script>
@@ -16,7 +16,13 @@ export default {
         });
         return {
             icons,
+            showCard: false,
         };
+    },
+    methods: {
+        onClick() {
+            this.$store.dispatch('showReportDetails', this.marker.id);
+        },
     },
 };
 </script>

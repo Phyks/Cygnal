@@ -1,3 +1,4 @@
+import moment from 'moment';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
@@ -56,6 +57,11 @@ if (storageAvailable('localStorage')) {
 }
 if (!locale) {
     locale = 'en'; // Safe default
+}
+
+if (locale) {
+    // Set moment locale
+    moment.locale(locale);
 }
 
 export default new VueI18n({

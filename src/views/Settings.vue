@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 import { messages } from '@/i18n';
 import { storageAvailable } from '@/tools';
 
@@ -48,6 +50,8 @@ export default {
                 localStorage.setItem('preventSuspend', JSON.stringify(this.preventSuspend));
             }
             this.$i18n.locale = this.i18nSelect;
+            // Set moment locale
+            moment.locale(this.i18nSelect);
         },
     },
 };
