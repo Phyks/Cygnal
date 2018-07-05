@@ -1,5 +1,5 @@
 <template>
-    <v-lmarker :lat-lng="marker.latLng" :icon="icons[marker.type]"></v-lmarker>
+    <v-lmarker :lat-lng="marker.latLng" :icon="icon" @click="onClick"></v-lmarker>
 </template>
 
 <script>
@@ -9,14 +9,23 @@ export default {
     props: {
         marker: Object,
     },
+    computed: {
+        icon() {
+            if (this.$store.state.reportDetailsID === this.marker.id) {
+                return REPORT_TYPES[this.marker.type].markerLarge;
+            }
+            return REPORT_TYPES[this.marker.type].marker;
+        },
+    },
     data() {
-        const icons = {};
-        Object.keys(REPORT_TYPES).forEach((type) => {
-            icons[type] = REPORT_TYPES[type].marker;
-        });
         return {
-            icons,
+            showCard: false,
         };
+    },
+    methods: {
+        onClick() {
+            this.$store.dispatch('showReportDetails', this.marker.id);
+        },
     },
 };
 </script>

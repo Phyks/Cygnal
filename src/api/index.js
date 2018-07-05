@@ -30,3 +30,27 @@ export function getReports() {
             throw exc;
         });
 }
+
+export function downvote(id) {
+    return fetch(`${BASE_URL}api/v1/reports/${id}/downvote`, {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(response => response.data)
+        .catch((exc) => {
+            console.error(`Unable to downvote report: ${exc}.`);
+            throw exc;
+        });
+}
+
+export function upvote(id) {
+    return fetch(`${BASE_URL}api/v1/reports/${id}/upvote`, {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(response => response.data)
+        .catch((exc) => {
+            console.error(`Unable to upvote report: ${exc}.`);
+            throw exc;
+        });
+}

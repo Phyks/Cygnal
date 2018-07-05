@@ -18,6 +18,12 @@ export const REPORT_TYPES = {
             iconSize: [40, 40],
             iconAnchor: [20, 40],
         }),
+        markerLarge: L.icon({
+            iconUrl: gcumMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
+        }),
+
     },
     interrupt: {
         label: 'reportLabels.interrupt',
@@ -26,6 +32,11 @@ export const REPORT_TYPES = {
             iconUrl: interruptMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
+        }),
+        markerLarge: L.icon({
+            iconUrl: interruptMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
         }),
     },
     obstacle: {
@@ -36,6 +47,11 @@ export const REPORT_TYPES = {
             iconSize: [40, 40],
             iconAnchor: [20, 40],
         }),
+        markerLarge: L.icon({
+            iconUrl: obstacleMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
+        }),
     },
     pothole: {
         label: 'reportLabels.pothole',
@@ -45,6 +61,11 @@ export const REPORT_TYPES = {
             iconSize: [40, 40],
             iconAnchor: [20, 40],
         }),
+        markerLarge: L.icon({
+            iconUrl: potholeMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
+        }),
     },
 };
 
@@ -52,6 +73,9 @@ export const MOCK_LOCATION = false;
 export const MOCK_LOCATION_UPDATE_INTERVAL = 10 * 1000;
 
 export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
+
+// Minimal ratio between upvotes and downvotes needed for a report to be shown
+export const REPORT_VOTES_THRESHOLD = 0.5;
 
 export const EARTH_RADIUS = 6378137;
 

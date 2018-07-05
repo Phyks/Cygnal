@@ -11,7 +11,7 @@
 
                     <v-btn
                         color="red darken-1"
-                        @click="error = false"
+                        @click="error = null"
                         dark
                         large
                         >
@@ -60,7 +60,7 @@ export default {
     },
     data() {
         return {
-            error: false,
+            error: null,
             REPORT_TYPES,
         };
     },
@@ -71,8 +71,9 @@ export default {
                 type,
                 lat: this.lat,
                 lng: this.lng,
-            }).catch(() => {
-                this.error = true;
+            }).catch((exc) => {
+                console.error(exc);
+                this.error = exc;
             });
         },
     },

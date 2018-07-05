@@ -4,6 +4,7 @@ import createLogger from 'vuex/dist/logger';
 
 import * as actions from './actions';
 import { initialState as state, mutations } from './mutations';
+import * as getters from './getters';
 
 const plugins = [];
 if (process.NODE_ENV !== 'production') {
@@ -14,7 +15,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     actions,
-    state,
+    getters,
     mutations,
     plugins,
+    state,
 });

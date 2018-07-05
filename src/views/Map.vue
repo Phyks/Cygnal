@@ -8,6 +8,7 @@
             </v-flex>
         </v-layout>
         <v-layout v-else row wrap fill-height>
+            <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="latLng">
                 <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
@@ -44,6 +45,7 @@
 import NoSleep from 'nosleep.js';
 
 import Map from '@/components/Map.vue';
+import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 import * as constants from '@/constants';
 import { distance, mockLocation } from '@/tools';
@@ -51,6 +53,7 @@ import { distance, mockLocation } from '@/tools';
 export default {
     components: {
         Map,
+        ReportCard,
         ReportDialog,
     },
     beforeDestroy() {
@@ -59,10 +62,11 @@ export default {
             this.disablePositionWatching();
             window.removeEventListener('keydown', this.hideReportDialogOnEsc);
         }
+        this.$store.dispatch('showReportDetails', null);
     },
     computed: {
         reportsMarkers() {
-            return this.$store.state.reports.map(report => ({
+            return this.$store.getters.notDismissedReports.map(report => ({
                 id: report.id,
                 type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],

@@ -25,6 +25,9 @@ export default {
         retry: 'Réessayer',
         spaceBeforeDoublePunctuations: ' ',
     },
+    reportCard: {
+        Reported: 'Signalé',
+    },
     reportDialog: {
         unableToSendDescription: "Une erreur de réseau empêche l'envoi du dernier signalement.",
         unableToSendTitle: "Impossible d'envoyer le dernier signalement",

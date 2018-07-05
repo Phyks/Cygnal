@@ -104,3 +104,51 @@ def post_report():
     return {
         "data": r.to_json()
     }
+
+
+@bottle.route('/api/v1/reports/:id/upvote', ["POST", "OPTIONS"])
+def upvote_report(id):
+    """
+    API v1 POST upvote route.
+
+    Example::
+
+        POST /api/v1/reports/1/upvote
+    """
+    # Handle CORS
+    if bottle.request.method == 'OPTIONS':
+        return {}
+
+    r = Report.get(Report.id == id)
+    if not r:
+        return jsonapi.JsonApiError(404, "Invalid report id.")
+    r.upvotes += 1
+    r.save()
+
+    return {
+        "data": r.to_json()
+    }
+
+
+@bottle.route('/api/v1/reports/:id/downvote', ["POST", "OPTIONS"])
+def downvote_report(id):
+    """
+    API v1 POST downvote route.
+
+    Example::
+
+        POST /api/v1/reports/1/downvote
+    """
+    # Handle CORS
+    if bottle.request.method == 'OPTIONS':
+        return {}
+
+    r = Report.get(Report.id == id)
+    if not r:
+        return jsonapi.JsonApiError(404, "Invalid report id.")
+    r.downvotes += 1
+    r.save()
+
+    return {
+        "data": r.to_json()
+    }
