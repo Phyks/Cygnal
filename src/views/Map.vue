@@ -140,7 +140,10 @@ export default {
             }
             this.latLng = [position.coords.latitude, position.coords.longitude];
             this.positionHistory.push(this.latLng);
-            this.heading = Object.prototype.hasOwnProperty.call(position.coords, 'heading') ? position.coords.heading : null;
+            this.heading = null;
+            if (position.coords.heading !== null && !isNaN(position.coords.heading)) {
+                this.heading = position.coords.heading;
+            }
             this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },
         setNoSleep() {

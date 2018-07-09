@@ -3,7 +3,7 @@
         <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @movestart="onMoveStart" @zoomstart="onZoomStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
-            <v-lts v-if="heading" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
+            <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
             <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
 
             <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
@@ -56,7 +56,7 @@ export default {
             type: Number,
             default: null,
         },
-        heading: Number,
+        heading: Number,  // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
         polyline: Array,
@@ -84,7 +84,7 @@ export default {
             return {
                 fillColor: '#00ff00',
                 color: '#000000',
-                heading: this.heading,
+                heading: this.heading * (Math.PI / 180),
                 weight: 1,
             };
         },
