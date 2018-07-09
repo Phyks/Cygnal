@@ -10,7 +10,7 @@
         <v-layout v-else row wrap fill-height>
             <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="latLng">
-                <Map :positionLatLng="latLng" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
+                <Map :positionLatLng="latLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
                     absolute
                     dark
@@ -83,6 +83,7 @@ export default {
             isIntro: true,
             latLng: null,
             noSleep: null,
+            positionHistory: [],
             reportLat: null,
             reportLng: null,
             watchID: null,
@@ -138,6 +139,7 @@ export default {
                 }
             }
             this.latLng = [position.coords.latitude, position.coords.longitude];
+            this.positionHistory.push(this.latLng);
             this.heading = Object.prototype.hasOwnProperty.call(position.coords, 'heading') ? position.coords.heading : null;
             this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },

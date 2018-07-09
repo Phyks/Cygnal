@@ -7,6 +7,7 @@
             <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
 
             <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
+            <v-lpolyline :latLngs="polyline" :opacity="0.6" color="#00FF00"></v-lpolyline>
 
             <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
         </v-lmap>
@@ -58,6 +59,7 @@ export default {
         heading: Number,
         markers: Array,
         onPress: Function,
+        polyline: Array,
         positionLatLng: Array,
     },
     computed: {
