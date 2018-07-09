@@ -138,7 +138,7 @@ export default {
                 }
             }
             this.latLng = [position.coords.latitude, position.coords.longitude];
-            this.heading = position.coords.heading ? position.coords.heading : null;
+            this.heading = Object.prototype.hasOwnProperty.call(position.coords, 'heading') ? position.coords.heading : null;
             this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },
         setNoSleep() {
