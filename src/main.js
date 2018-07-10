@@ -4,10 +4,12 @@ import Vue from 'vue';
 import Vuetify from 'vuetify';
 import Vue2Leaflet from 'vue2-leaflet';
 import Vue2LeafletTracksymbol from 'vue2-leaflet-tracksymbol';
-import 'material-icons/iconfont/material-icons.css';
-import 'roboto-fontface/css/roboto/roboto-fontface.css';
-import 'leaflet/dist/leaflet.css';
-import 'vuetify/dist/vuetify.min.css';
+
+import './css/roboto-fontface.css';
+import './css/material-icons.css';
+import 'leaflet/dist/leaflet.css';  // eslint-disable-line  import/first
+import 'vuetify/dist/vuetify.min.css';  // eslint-disable-line  import/first
+
 
 import App from './App.vue';
 import i18n from './i18n';

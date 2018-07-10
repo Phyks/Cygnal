@@ -48,6 +48,9 @@ adapt the behavior to your needs.
 * `TILE_SERVER=` to pass a specific tile server to use rather than the default
     one.
 
+You should also have a look at the build variables under the `config/`
+subdirectory.
+
 
 ### Server part
 

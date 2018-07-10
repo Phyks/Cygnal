@@ -2,7 +2,7 @@
 	Main dev: Phyks (Lucas Verney)
 	Contact: phyks+cyclassist[at]phyks.me
     Mastodon: https://mastodon.tetaneutral.net/@Phyks
-	Twitter: @phyksishere
+	Twitter: @PhyksIsHere
 	From: Paris
 
 /* THANKS */

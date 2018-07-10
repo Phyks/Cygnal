@@ -63,6 +63,8 @@ const webpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: config.build.index,
       template: 'index.html',
+      ogURL: config.build.ogURL,
+      ogImage: config.build.ogImage,
       inject: true,
       minify: {
         removeComments: true,
