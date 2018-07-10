@@ -8,7 +8,7 @@
             </router-link>
             <v-spacer></v-spacer>
             <v-menu offset-y class="menu">
-                <v-btn slot="activator" icon>
+                <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>

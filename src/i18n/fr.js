@@ -8,6 +8,14 @@ export default {
         usage: 'Utilisation',
         usageDescription: "Utilisez le bouton en bas à droite pour ajouter un signalement à votre emplacement actuel. Pour ajouter un signalement ailleurs, faites un appui à l'emplacement souhaité sur la carte. Appuyer sur un marqueur sur la carte pour afficher plus d'informations et signaler que le problème est toujours présent ou non.",
     },
+    buttons: {
+        close: 'Fermer',
+        downvote: 'Infirmer',
+        menu: 'Menu',
+        recenterMap: 'Recentrer la carte',
+        reportProblem: 'Nouveau signalement',
+        upvote: 'Confirmer',
+    },
     geolocation: {
         fetching: 'En attente de votre position…',
         unavailable: "Désolé, la géolocalisation n'est pas disponible dans votre navigateur.",

@@ -8,6 +8,14 @@ export default {
         usage: 'How to use',
         usageDescription: 'Use the button in the lower right corner to add a new report at your current location. To add a report elsewhere, do a click where you want the report to be shown. Press on a marker on the map to display more informations and report the problem as being still there or solved.',
     },
+    buttons: {
+        close: 'Close',
+        downvote: 'Downvote',
+        menu: 'Menu',
+        recenterMap: 'Recenter map',
+        reportProblem: 'Report problem',
+        upvote: 'Upvote',
+    },
     geolocation: {
         fetching: 'Fetching current position…',
         unavailable: 'Sorry, geolocation is not available in your browser.',

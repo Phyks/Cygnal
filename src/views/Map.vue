@@ -4,7 +4,7 @@
             <v-flex xs8 offset-xs2>
                 <p><img src="static/icon.svg" alt="Logo"/></p></p>
                 <p>{{ $t('about.summary') }}</p>
-                <v-btn round color="green" dark @click="introButtonClick">{{ $t('intro.start') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="introButtonClick">{{ $t('intro.start') }}</v-btn>
             </v-flex>
         </v-layout>
         <v-layout v-else row wrap fill-height>
@@ -21,6 +21,8 @@
                     color="orange"
                     class="overlayButton"
                     @click.native.stop="() => showReportDialog()"
+                    role="button"
+                    :aria-label="$t('buttons.reportProblem')"
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
@@ -30,7 +32,7 @@
                 <template v-if="error">
                     <p class="text-xs-center">{{ error }}</p>
                     <p class="text-xs-center">
-                        <v-btn color="blue" dark @click="initializePositionWatching">Retry</v-btn>
+                        <v-btn role="button" color="blue" dark @click="initializePositionWatching">Retry</v-btn>
                     </p>
                 </template>
                 <template v-else>

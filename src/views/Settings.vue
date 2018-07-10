@@ -16,7 +16,7 @@
                         v-model="preventSuspend"
                         ></v-checkbox>
 
-                        <v-btn @click="submit">{{ $t('settings.save') }}</v-btn>
+                    <v-btn role="button" @click="submit">{{ $t('settings.save') }}</v-btn>
                 </form>
             </v-flex>
         </v-layout>

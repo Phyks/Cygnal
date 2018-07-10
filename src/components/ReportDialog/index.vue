@@ -14,6 +14,7 @@
                         @click="error = null"
                         dark
                         large
+                        role="button"
                         >
                         {{ $t('misc.discard') }}
                     </v-btn>

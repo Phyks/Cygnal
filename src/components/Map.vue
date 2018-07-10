@@ -22,6 +22,8 @@
             class="overlayButton"
             v-if="recenterButton"
             @click.native.stop="recenterMap"
+            role="button"
+            :aria-label="$t('buttons.recenterMap')"
             >
             <v-icon>my_location</v-icon>
         </v-btn>
