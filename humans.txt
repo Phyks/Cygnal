@@ -1,0 +1,13 @@
+/* TEAM */
+	Main dev: Phyks (Lucas Verney)
+	Contact: phyks+cyclassist[at]phyks.me
+    Mastodon: https://mastodon.tetaneutral.net/@Phyks
+	Twitter: @phyksishere
+	From: Paris
+
+/* THANKS */
+
+/* SITE */
+	Language: English / French
+	Doctype: HTML5
+    Framework: Vue + Vuetify for the client app, Python + Bottle for the server part

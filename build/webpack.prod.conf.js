@@ -119,6 +119,16 @@ const webpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../manifest.webmanifest'),
         to: config.build.assetsRoot,
         ignore: ['.*']
+      },
+      {
+        from: path.resolve(__dirname, '../humans.txt'),
+        to: config.build.assetsRoot,
+        ignore: ['.*']
+      },
+      {
+        from: path.resolve(__dirname, '../robots.txt'),
+        to: config.build.assetsRoot,
+        ignore: ['.*']
       }
     ])
   ]
