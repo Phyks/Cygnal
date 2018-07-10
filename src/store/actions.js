@@ -14,7 +14,7 @@ import {
 
 export function fetchReports({ commit }) {
     commit(IS_LOADING);
-    return api.getReports()
+    return api.getActiveReports()
         .then(reports => commit(STORE_REPORTS, { reports }))
         .finally(() => commit(IS_DONE_LOADING));
 }

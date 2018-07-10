@@ -80,13 +80,6 @@ adapt its behavior:
 You can use the `wsgi.py` script at the root of the git repository to serve
 the server side part.
 
-#### Useful scripts
-
-The `scripts` folder contain some useful scripts:
-
-* `purge_old_gcum_and_accidents.py` deletes `gcum` and `accident` type report
-    older than one hour. You should set a crontask to call it regularly.
-
 
 ## Contributing
 

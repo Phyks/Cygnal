@@ -3,6 +3,7 @@
 """
 Routes definitions
 """
+import arrow
 import json
 
 import bottle
@@ -11,14 +12,9 @@ from server.models import Report
 from server import jsonapi
 
 
-@bottle.route('/api/v1/reports', ["GET", "OPTIONS"])
-def get_reports():
+def get_reports(only_active=False):
     """
-    API v1 GET reports route.
-
-    Example::
-
-        GET /api/v1/reports
+    Get reports for the reports getting routes.
 
     .. note::
 
@@ -57,6 +53,11 @@ def get_reports():
     query = Report.select()
     if filters:
         query = query.where(*filters)
+    if only_active:
+        query = query.where(
+            (Report.expiration_datetime == None) |
+            (Report.expiration_datetime > arrow.utcnow().replace(microsecond=0).datetime)
+        )
     query = query.order_by(*sorting)
     if page_number and page_size:
         query = query.paginate(page_number, page_size)
@@ -67,6 +68,69 @@ def get_reports():
             for r in query
         ]
     }
+
+
+@bottle.route('/api/v1/reports', ["GET", "OPTIONS"])
+def get_all_reports():
+    """
+    API v1 GET reports route. Get all reports.
+
+    Example::
+
+        GET /api/v1/reports
+
+    .. note::
+
+        Filtering can be done through the ``filter`` GET param, according
+        to JSON API spec (http://jsonapi.org/recommendations/#filtering).
+
+    .. note::
+
+        By default no pagination is done. Pagination can be forced using
+        ``page[size]`` to specify a number of items per page and
+        ``page[number]`` to specify which page to return. Pages are numbered
+        starting from 0.
+
+    .. note::
+
+        Sorting can be handled through the ``sort`` GET param, according to
+        JSON API spec (http://jsonapi.org/format/#fetching-sorting).
+
+    :return: The available reports objects in a JSON ``data`` dict.
+    """
+    return get_reports(only_active=False)
+
+
+@bottle.route('/api/v1/reports/active', ["GET", "OPTIONS"])
+def get_active_reports():
+    """
+    API v1 GET reports route. Only get active reports (those with
+    ``expiration_datetime`` in the future).
+
+    Example::
+
+        GET /api/v1/reports/active
+
+    .. note::
+
+        Filtering can be done through the ``filter`` GET param, according
+        to JSON API spec (http://jsonapi.org/recommendations/#filtering).
+
+    .. note::
+
+        By default no pagination is done. Pagination can be forced using
+        ``page[size]`` to specify a number of items per page and
+        ``page[number]`` to specify which page to return. Pages are numbered
+        starting from 0.
+
+    .. note::
+
+        Sorting can be handled through the ``sort`` GET param, according to
+        JSON API spec (http://jsonapi.org/format/#fetching-sorting).
+
+    :return: The available reports objects in a JSON ``data`` dict.
+    """
+    return get_reports(only_active=True)
 
 
 @bottle.route('/api/v1/reports', ["POST", "OPTIONS"])
@@ -93,11 +157,17 @@ def post_report():
         return jsonapi.JsonApiError(400, "Invalid JSON payload: " + str(exc))
 
     try:
-        r = Report.create(
+        r = Report(
             type=payload['type'],
             lat=payload['lat'],
             lng=payload['lng']
         )
+        # Handle expiration
+        if r.type in ['accident', 'gcum']:
+            r.expiration_datetime = (
+                arrow.utcnow().replace(microsecond=0).shift(hours=+1).datetime
+            )
+        r.save()
     except KeyError as exc:
         return jsonapi.JsonApiError(400, "Invalid report payload: " + str(exc))
 

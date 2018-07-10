@@ -21,8 +21,8 @@ export function saveReport(type, lat, lng) {
         });
 }
 
-export function getReports() {
-    return fetch(`${BASE_URL}api/v1/reports`)
+export function getActiveReports() {
+    return fetch(`${BASE_URL}api/v1/reports/active`)
         .then(response => response.json())
         .then(response => response.data)
         .catch((exc) => {

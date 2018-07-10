@@ -34,9 +34,9 @@ export default {
     },
     reportLabels: {
         accident: 'Accident',
-        accidentDescription: 'Un accident sur la route.',
+        accidentDescription: 'Un accident sur la route (actif pour une heure).',
         gcum: 'GCUM',
-        gcumDescription: "Une voiture (mal) garée sur la piste cyclable. Ces signalements sont automatiquement supprimés au bout d'une heure car ils sont par essence temporaires.",
+        gcumDescription: "Une voiture (mal) garée sur la piste cyclable. Ces signalements sont automatiquement supprimés au bout d'une heure car ils sont par essence temporaires (actif pour une heure).",
         interrupt: 'Interruption',
         interruptDescription: "Une interruption d'itinéraire cyclable (travaux, arrêt inattendu d'une piste cyclable, etc)",
         misc: 'Autre',

@@ -34,9 +34,9 @@ export default {
     },
     reportLabels: {
         accident: 'Accident',
-        accidentDescription: 'Any accident on the road',
+        accidentDescription: 'Any accident on the road (active for one hour).',
         gcum: 'GCUM',
-        gcumDescription: 'A car poorly parked on a bike lane. Such reports are automatically deleted after one hour, as they are by nature temporary.',
+        gcumDescription: 'A car poorly parked on a bike lane. Such reports are automatically deleted after one hour, as they are by nature temporary (active for one hour).',
         interrupt: 'Interruption',
         interruptDescription: 'An interruption of the bike lane (works, unexpected end of the bike lane, etc.).',
         misc: 'Other',

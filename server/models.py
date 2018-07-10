@@ -43,6 +43,7 @@ class Report(BaseModel):
     datetime = peewee.DateTimeField(
         default=lambda: arrow.utcnow().replace(microsecond=0).datetime
     )
+    expiration_datetime = peewee.DateTimeField(null=True)
     is_open = peewee.BooleanField(default=True)
     upvotes = peewee.IntegerField(default=0)
     downvotes = peewee.IntegerField(default=0)
