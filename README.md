@@ -84,8 +84,8 @@ the server side part.
 
 The `scripts` folder contain some useful scripts:
 
-* `purge_old_gcum.py` deletes `gcum`-type report older than one hour. You
-    should set a crontask to call it regularly.
+* `purge_old_gcum_and_accidents.py` deletes `gcum` and `accident` type report
+    older than one hour. You should set a crontask to call it regularly.
 
 
 ## Contributing
@@ -121,3 +121,5 @@ Icons are made from the original works:
     were designed by Vecteezy.
 * [Trash icon](https://pixabay.com/en/trash-waste-trashcan-garbage-99257/) is
     coming from Pixabay under CC0 license.
+* [Accident icon](https://www.flaticon.com/free-icon/car-running-over-a-bicycle_91680) is
+    coming from Flaticon.

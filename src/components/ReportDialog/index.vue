@@ -26,7 +26,7 @@
             <v-card>
                 <v-container fluid>
                     <v-layout row wrap>
-                        <ReportTile v-for="(item, type) in REPORT_TYPES" :type="type" :imageSrc="item.image" :label="$t(item.label)" :save="saveReport" :key="type"></ReportTile>
+                        <ReportTile v-for="type in REPORT_TYPES_ORDER" :type="type" :imageSrc="REPORT_TYPES[type].image" :label="$t(REPORT_TYPES[type].label)" :save="saveReport" :key="type"></ReportTile>
                     </v-layout>
                 </v-container>
             </v-card>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { REPORT_TYPES } from '@/constants';
+import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
 
 import ReportTile from './ReportTile.vue';
 
@@ -62,6 +62,7 @@ export default {
         return {
             error: null,
             REPORT_TYPES,
+            REPORT_TYPES_ORDER,
         };
     },
     methods: {

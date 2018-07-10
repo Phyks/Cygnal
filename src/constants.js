@@ -1,18 +1,37 @@
 import L from 'leaflet';
 
+import accidentMarker from '@/assets/accidentMarker.svg';
 import gcumMarker from '@/assets/gcumMarker.svg';
 import interruptMarker from '@/assets/interruptMarker.svg';
+import miscMarker from '@/assets/miscMarker.svg';
 import obstacleMarker from '@/assets/obstacleMarker.svg';
 import potholeMarker from '@/assets/potholeMarker.svg';
-import GCUMIcon from '@/assets/gcum.svg';
+import accidentIcon from '@/assets/accident.svg';
+import gcumIcon from '@/assets/gcum.svg';
 import interruptIcon from '@/assets/interrupt.svg';
+import miscIcon from '@/assets/misc.svg';
 import obstacleIcon from '@/assets/obstacle.svg';
 import potholeIcon from '@/assets/pothole.svg';
 
 export const REPORT_TYPES = {
+    accident: {
+        label: 'reportLabels.accident',
+        image: accidentIcon,
+        marker: L.icon({
+            iconUrl: accidentMarker,
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        }),
+        markerLarge: L.icon({
+            iconUrl: accidentMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
+        }),
+
+    },
     gcum: {
         label: 'reportLabels.gcum',
-        image: GCUMIcon,
+        image: gcumIcon,
         marker: L.icon({
             iconUrl: gcumMarker,
             iconSize: [40, 40],
@@ -35,6 +54,20 @@ export const REPORT_TYPES = {
         }),
         markerLarge: L.icon({
             iconUrl: interruptMarker,
+            iconSize: [60, 60],
+            iconAnchor: [30, 60],
+        }),
+    },
+    misc: {
+        label: 'reportLabels.misc',
+        image: miscIcon,
+        marker: L.icon({
+            iconUrl: miscMarker,
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+        }),
+        markerLarge: L.icon({
+            iconUrl: miscMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
         }),
@@ -68,6 +101,8 @@ export const REPORT_TYPES = {
         }),
     },
 };
+// Display order of the report types
+export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', 'accident', 'misc'];
 
 export const MOCK_LOCATION = false;
 export const MOCK_LOCATION_UPDATE_INTERVAL = 10 * 1000;

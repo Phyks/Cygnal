@@ -13,9 +13,9 @@ if __name__ == "__main__":
     db.connect()
     one_hour_ago = arrow.utcnow().shift(hours=-1).datetime
     nb = Report.delete().where(
-        (Report.type == 'gcum') &
+        ((Report.type == 'accident') | (Report.type == 'gcum')) &
         (Report.datetime < one_hour_ago)
     ).execute()
-    print("%d GCUM reports purged." % nb)
+    print("%d accident/GCUM reports purged." % nb)
     if not db.is_closed():
         db.close()
