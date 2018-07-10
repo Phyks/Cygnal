@@ -1,13 +1,8 @@
-import moment from 'moment';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
-import { storageAvailable } from '@/tools';
-
 import en from './en';
 import fr from './fr';
-
-Vue.use(VueI18n);
 
 export function getBrowserLocales() {
     let langs = [];
@@ -34,37 +29,13 @@ export function getBrowserLocales() {
     return locales;
 }
 
+Vue.use(VueI18n);
+
 export const messages = {
     en,
     fr,
 };
 
-let locale = null;
-if (storageAvailable('localStorage')) {
-    locale = localStorage.getItem('i18nSetting');
-    if (!messages[locale]) {
-        locale = null;
-    }
-} else {
-    // Get best matching locale from browser
-    const locales = getBrowserLocales();
-    for (let i = 0; i < locales.length; i += 1) {
-        if (messages[locales[i]]) {
-            locale = locales[i];
-            break; // Break at first matching locale
-        }
-    }
-}
-if (!locale) {
-    locale = 'en'; // Safe default
-}
-
-if (locale) {
-    // Set moment locale
-    moment.locale(locale);
-}
-
 export default new VueI18n({
-    locale,
     messages,
 });

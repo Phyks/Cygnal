@@ -14,6 +14,9 @@ import i18n from './i18n';
 import router from './router';
 import store from './store';
 
+// Ensure locale is correctly set from the store value
+store.dispatch('setLocale', store.state.settings.locale);
+
 Vue.use(Vuetify);
 
 Vue.component('v-lmap', Vue2Leaflet.LMap);

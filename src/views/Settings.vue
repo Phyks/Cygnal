@@ -6,7 +6,7 @@
                 <form>
                     <v-select
                         :items="i18nItems"
-                        v-model="i18nSelect"
+                        v-model="locale"
                         :label="$t('settings.locale')"
                         required
                         ></v-select>
@@ -24,34 +24,20 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 import { messages } from '@/i18n';
-import { storageAvailable } from '@/tools';
 
 export default {
     data() {
-        let preventSuspend = localStorage.getItem('preventSuspend');
-        if (preventSuspend) {
-            preventSuspend = JSON.parse(preventSuspend);
-        } else {
-            preventSuspend = true;
-        }
         return {
             i18nItems: Object.keys(messages),
-            i18nSelect: this.$i18n.locale,
-            preventSuspend,
+            locale: this.$store.state.settings.locale,
+            preventSuspend: this.$store.state.settings.preventSuspend,
         };
     },
     methods: {
         submit() {
-            if (storageAvailable('localStorage')) {
-                localStorage.setItem('i18nSetting', this.i18nSelect);
-                localStorage.setItem('preventSuspend', JSON.stringify(this.preventSuspend));
-            }
-            this.$i18n.locale = this.i18nSelect;
-            // Set moment locale
-            moment.locale(this.i18nSelect);
+            this.$store.dispatch('setLocale', this.locale);
+            this.$store.dispatch('setSetting', { setting: 'preventSuspend', value: this.preventSuspend });
         },
     },
 };

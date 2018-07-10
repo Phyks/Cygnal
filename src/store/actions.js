@@ -1,5 +1,16 @@
+import moment from 'moment';
+
 import * as api from '@/api';
-import { IS_LOADING, IS_DONE_LOADING, PUSH_REPORT, SHOW_REPORT_DETAILS, STORE_REPORTS } from './mutations-types';
+import i18n from '@/i18n';
+
+import {
+    IS_LOADING,
+    IS_DONE_LOADING,
+    PUSH_REPORT,
+    SET_SETTING,
+    SHOW_REPORT_DETAILS,
+    STORE_REPORTS,
+} from './mutations-types';
 
 export function fetchReports({ commit }) {
     commit(IS_LOADING);
@@ -27,4 +38,17 @@ export function saveReport({ commit }, { type, lat, lng }) {
 
 export function showReportDetails({ commit }, id) {
     return commit(SHOW_REPORT_DETAILS, { id });
+}
+
+export function setLocale({ commit }, locale) {
+    // Set global Vue-i18n locale
+    i18n.locale = locale;
+    // Set moment locale
+    moment.locale(locale);
+    // Commit setting into the store
+    return commit(SET_SETTING, { setting: 'locale', value: locale });
+}
+
+export function setSetting({ commit }, { setting, value }) {
+    return commit(SET_SETTING, { setting, value });
 }
