@@ -95,7 +95,7 @@ exports.createNotifierCallback = () => {
       title: packageConfig.name,
       message: severity + ': ' + error.name,
       subtitle: filename || '',
-      icon: path.join(__dirname, 'static/icon.svg')
+      icon: path.join(__dirname, '../src/assets/logo.svg')
     })
   }
 }

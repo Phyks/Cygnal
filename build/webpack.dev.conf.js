@@ -1,4 +1,5 @@
 'use strict'
+const svg2png = require('svg2png')
 const utils = require('./utils')
 const webpack = require('webpack')
 const config = require('../config')
@@ -53,7 +54,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
         new webpack.NoEmitOnErrorsPlugin(),
         new AppManifestWebpackPlugin({
-            logo: path.resolve(__dirname, '../static/icon.svg'),
+            logo: path.resolve(__dirname, '../src/assets/logo.svg'),
             prefix: '.',
             output: '/static/icons-[hash:8]/',
             inject: true,
@@ -77,8 +78,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         new CopyWebpackPlugin([
             {
                 from: path.resolve(__dirname, '../static'),
-                to: config.dev.assetsSubDirectory,
+                to: config.build.assetsSubDirectory,
                 ignore: ['.*']
+            },
+            {
+                from: path.resolve(__dirname, '../src/assets/logo.svg'),
+                to: path.join(config.build.assetsSubDirectory, 'ogIcon.png'),
+                transform (content, path) {
+                    return Promise.resolve(svg2png(content, { width: 400, height: 400 }));
+                }
             },
             {
                 from: path.resolve(__dirname, '../humans.txt'),

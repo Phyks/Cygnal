@@ -2,7 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout v-if="isIntro" row wrap class="text-xs-center blue lighten-2">
             <v-flex xs8 offset-xs2>
-                <p><img src="static/icon.svg" alt="Logo"/></p></p>
+                <p><img src="@/assets/logo.svg" alt="Logo"/></p></p>
                 <p>{{ $t('about.summary') }}</p>
                 <v-btn role="button" round color="green" dark @click="introButtonClick">{{ $t('intro.start') }}</v-btn>
             </v-flex>
