@@ -81,7 +81,8 @@ adapt its behavior:
 #### Serving in production
 
 You can use the `wsgi.py` script at the root of the git repository to serve
-the server side part.
+the server side part. You can find some `uwsgi` and `nginx` base config files
+under the `support` folder.
 
 
 ## Contributing
