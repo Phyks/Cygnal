@@ -75,6 +75,6 @@ module.exports = {
 
     // OpenGraph-related variables
     ogURL: 'https://cyclo.phyks.me',
-    ogImage: 'https://cyclo.phyks.me/static/icon192.png',
+    ogImage: 'https://cyclo.phyks.me/static/icon.svg',
   }
 }
