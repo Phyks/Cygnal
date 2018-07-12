@@ -17,7 +17,7 @@ import router from './router';
 import store from './store';
 
 // Ensure locale is correctly set from the store value
-store.dispatch('setLocale', store.state.settings.locale);
+store.dispatch('setLocale', { locale: store.state.settings.locale });
 
 Vue.use(Vuetify);
 

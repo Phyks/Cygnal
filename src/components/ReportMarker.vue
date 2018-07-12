@@ -11,7 +11,7 @@ export default {
     },
     computed: {
         icon() {
-            if (this.$store.state.reportDetailsID === this.marker.id) {
+            if (this.$store.state.reportDetails.id === this.marker.id) {
                 return REPORT_TYPES[this.marker.type].markerLarge;
             }
             return REPORT_TYPES[this.marker.type].marker;
@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         onClick() {
-            this.$store.dispatch('showReportDetails', this.marker.id);
+            this.$store.dispatch('showReportDetails', { id: this.marker.id, userAsked: true });
         },
     },
 };

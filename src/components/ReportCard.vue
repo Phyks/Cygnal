@@ -56,7 +56,7 @@ import { REPORT_TYPES } from '@/constants';
 export default {
     computed: {
         report() {
-            const reportID = this.$store.state.reportDetailsID;
+            const reportID = this.$store.state.reportDetails.id;
             if (reportID != null) {
                 const report = this.$store.state.reports.find(item => item.id === reportID);
                 return {
@@ -81,17 +81,17 @@ export default {
     },
     methods: {
         closeReportCard() {
-            return this.$store.dispatch('showReportDetails', null);
+            return this.$store.dispatch('hideReportDetails');
         },
         downvote() {
             const reportID = this.report.id;
             this.closeReportCard();  // Resets this.report
-            return this.$store.dispatch('downvote', reportID);
+            return this.$store.dispatch('downvote', { id: reportID });
         },
         upvote() {
             const reportID = this.report.id;
             this.closeReportCard();  // Resets this.report
-            return this.$store.dispatch('upvote', reportID);
+            return this.$store.dispatch('upvote', { id: reportID });
         },
     },
 };

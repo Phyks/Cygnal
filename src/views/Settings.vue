@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         submit() {
-            this.$store.dispatch('setLocale', this.locale);
+            this.$store.dispatch('setLocale', { locale: this.locale });
             this.$store.dispatch('setSetting', { setting: 'preventSuspend', value: this.preventSuspend });
         },
     },

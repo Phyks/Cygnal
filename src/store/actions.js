@@ -19,12 +19,12 @@ export function fetchReports({ commit }) {
         .finally(() => commit(IS_DONE_LOADING));
 }
 
-export function downvote({ commit }, id) {
+export function downvote({ commit }, { id }) {
     return api.downvote(id)
         .then(report => commit(PUSH_REPORT, { report }));
 }
 
-export function upvote({ commit }, id) {
+export function upvote({ commit }, { id }) {
     return api.upvote(id)
         .then(report => commit(PUSH_REPORT, { report }));
 }
@@ -36,11 +36,15 @@ export function saveReport({ commit }, { type, lat, lng }) {
         .finally(() => commit(IS_DONE_LOADING));
 }
 
-export function showReportDetails({ commit }, id) {
-    return commit(SHOW_REPORT_DETAILS, { id });
+export function hideReportDetails({ commit }) {
+    return commit(SHOW_REPORT_DETAILS, { id: null, userAsked: null });
 }
 
-export function setLocale({ commit }, locale) {
+export function showReportDetails({ commit }, { id, userAsked }) {
+    return commit(SHOW_REPORT_DETAILS, { id, userAsked });
+}
+
+export function setLocale({ commit }, { locale }) {
     // Set global Vue-i18n locale
     i18n.locale = locale;
     // Set moment locale

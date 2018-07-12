@@ -38,6 +38,7 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import * as constants from '@/constants';
+import { distance } from '@/tools';
 import ReportMarker from './ReportMarker.vue';
 
 // Fix for a bug in Leaflet default icon
@@ -125,6 +126,32 @@ export default {
                 ) {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+
+                    // Eventually display closest report
+                    const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
+                    const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
+                    console.log(isReportDetailsAlreadyShown, isReportDetailsOpenedByUser);
+                    if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
+                        // Compute all markers distance, filter by max distance
+                        const distances = this.markers.map(
+                            marker => ({
+                                id: marker.id,
+                                distance: distance(newPositionLatLng, marker.latLng),
+                            }),
+                        ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
+                        const closestReport = distances.reduce(  // Get the closest one
+                            (acc, item) => (
+                                item.distance < acc.distance ? item : acc
+                            ),
+                            { distance: Number.MAX_VALUE, id: -1 },
+                        );
+                        // TODO: Take into account the history of positions for the direction
+                        if (closestReport.id !== -1) {
+                            this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                        } else {
+                            this.$store.dispatch('hideReportDetails');
+                        }
+                    }
                 }
                 this.map.setView(newPositionLatLng, this.zoom);
             }

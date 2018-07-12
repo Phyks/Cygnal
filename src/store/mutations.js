@@ -34,7 +34,10 @@ if (storageAvailable('localStorage')) {
 
 export const initialState = {
     isLoading: false,
-    reportDetailsID: null,
+    reportDetails: {
+        id: null,
+        userAsked: null,
+    },
     reports: [],
     settings: {
         locale: locale || 'en',
@@ -55,8 +58,9 @@ export const mutations = {
         }
         state.settings[setting] = value;
     },
-    [types.SHOW_REPORT_DETAILS](state, { id }) {
-        state.reportDetailsID = id;
+    [types.SHOW_REPORT_DETAILS](state, { id, userAsked }) {
+        Vue.set(state.reportDetails, 'id', id);
+        Vue.set(state.reportDetails, 'userAsked', userAsked);
     },
     [types.STORE_REPORTS](state, { reports }) {
         state.reports = reports;

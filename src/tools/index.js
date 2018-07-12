@@ -17,10 +17,20 @@ export function distance(latLng1, latLng2) {
 }
 
 export function mockLocation() {
+    // Over Paris
+    /*
     const LAT_MIN = 48.854031;
     const LNG_MIN = 2.281279;
     const LAT_MAX = 48.886123;
     const LNG_MAX = 2.392742;
+    */
+
+    // Over small area
+    const LAT_MIN = 48.81788;
+    const LNG_MIN = 2.31723;
+    const LAT_MAX = 48.81952;
+    const LNG_MAX = 2.32077;
+
     const newLocation = {
         coords: {
             accuracy: 10, // In meters

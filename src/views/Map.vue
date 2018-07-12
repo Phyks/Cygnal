@@ -64,7 +64,7 @@ export default {
             this.disablePositionWatching();
             window.removeEventListener('keydown', this.hideReportDialogOnEsc);
         }
-        this.$store.dispatch('showReportDetails', null);
+        this.$store.dispatch('hideReportDetails');
     },
     computed: {
         reportsMarkers() {
