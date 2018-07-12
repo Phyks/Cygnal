@@ -1,4 +1,5 @@
 'use strict'
+const fs = require('fs')
 const path = require('path')
 const svg2png = require('svg2png')
 const utils = require('./utils')
@@ -14,6 +15,18 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const env = require('../config/prod.env')
+
+// List available locales, to fetch only the required locales from Moment.JS:
+// Build a regexp that selects the locale's name without the JS extension (due
+// to the way moment includes those) and ensure that's the last character to
+// not include locale variants. See discussion in
+// https://framagit.org/bnjbvr/kresus/merge_requests/448#note_130514
+const locales = fs.readdirSync('src/i18n').filter(x => x != 'index.js').map(
+    x => x.replace('.js', '')
+);
+const localesRegex = new RegExp(
+    '(' + locales.join('|') + ')$'
+);
 
 const webpackConfig = merge(baseWebpackConfig, {
     module: {
@@ -125,6 +138,9 @@ const webpackConfig = merge(baseWebpackConfig, {
             children: true,
             minChunks: 3
         }),
+
+        // Only keep the useful locales from Moment.
+        new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, localesRegex),
 
         // copy custom static assets
         new CopyWebpackPlugin([

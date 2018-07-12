@@ -69,9 +69,9 @@ module.exports = {
 
     // Run the build command with an extra argument to
     // View the bundle analyzer report after build finishes:
-    // `npm run build --report`
+    // `ANALYZE=true yarn build`
     // Set to `true` or `false` to always turn it on or off
-    bundleAnalyzerReport: process.env.npm_config_report,
+    bundleAnalyzerReport: process.env.ANALYZE,
 
     // OpenGraph-related variables
     ogURL: 'https://cyclo.phyks.me',
