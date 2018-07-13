@@ -130,7 +130,6 @@ export default {
                     // Eventually display closest report
                     const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
                     const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
-                    console.log(isReportDetailsAlreadyShown, isReportDetailsOpenedByUser);
                     if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
                         // Compute all markers distance, filter by max distance
                         const distances = this.markers.map(
