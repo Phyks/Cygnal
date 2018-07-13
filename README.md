@@ -8,8 +8,10 @@ This app is made of two parts: a client webapp and a server part to store and
 serve the issues. This code is the code running behind https://cyclo.phyks.me/.
 
 As of current version, only the client side part (code running on your local
-device) handles your geolocation. **Your geolocation is never sent** to the
-server or any external resource.
+device) handles your geolocation. **Your precise geolocation is never sent**
+to the server or any external resource. However, the map background is
+downloaded on demand from [Thunderforest](http://thunderforest.com/) so they
+could know the location of the displayed map.
 
 ## OpenData
 
