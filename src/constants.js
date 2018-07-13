@@ -106,8 +106,8 @@ export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', '
 
 export const MIN_DISTANCE_REPORT_DETAILS = 40;  // in meters
 
-export const MOCK_LOCATION = true;
-export const MOCK_LOCATION_UPDATE_INTERVAL = 3 * 1000;
+export const MOCK_LOCATION = false;
+export const MOCK_LOCATION_UPDATE_INTERVAL = 5 * 1000;
 
 export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
 
