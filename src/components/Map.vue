@@ -9,6 +9,7 @@
             <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
             <v-lpolyline :latLngs="polyline" :opacity="0.6" color="#00FF00"></v-lpolyline>
 
+            <v-lmarker v-if="reportLatLng" :lat-lng="reportLatLng" :icon="unknownMarkerIcon"></v-lmarker>
             <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
         </v-lmap>
         <v-btn
@@ -37,6 +38,7 @@ import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
+import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import { distance } from '@/tools';
 import ReportMarker from './ReportMarker.vue';
@@ -64,6 +66,7 @@ export default {
         onPress: Function,
         polyline: Array,
         positionLatLng: Array,
+        reportLatLng: Array,
     },
     computed: {
         radiusFromAccuracy() {
@@ -169,6 +172,11 @@ export default {
             isProgrammaticMove: false,
             recenterButton: false,
             map: null,
+            unknownMarkerIcon: L.icon({
+                iconUrl: unknownMarkerIcon,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+            }),
         };
     },
     methods: {

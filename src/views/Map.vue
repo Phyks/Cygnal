@@ -10,7 +10,7 @@
         <v-layout v-else row wrap fill-height>
             <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="latLng">
-                <Map :positionLatLng="latLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
+                <Map :positionLatLng="latLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
                     absolute
                     dark
@@ -73,6 +73,12 @@ export default {
                 type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],
             }));
+        },
+        reportLatLng() {
+            if (this.dialog && this.reportLat && this.reportLng) {
+                return [this.reportLat, this.reportLng];
+            }
+            return null;
         },
     },
     data() {
