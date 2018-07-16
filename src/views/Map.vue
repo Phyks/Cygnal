@@ -1,13 +1,6 @@
 <template>
     <v-container fluid fill-height class="no-padding">
-        <v-layout v-if="isIntro" row wrap class="text-xs-center blue lighten-2">
-            <v-flex xs8 offset-xs2>
-                <p><img src="@/assets/logo.svg" alt="Logo"/></p></p>
-                <p>{{ $t('about.summary') }}</p>
-                <v-btn role="button" round color="green" dark @click="introButtonClick">{{ $t('intro.start') }}</v-btn>
-            </v-flex>
-        </v-layout>
-        <v-layout v-else row wrap fill-height>
+        <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="latLng">
                 <Map :positionLatLng="latLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
@@ -58,12 +51,15 @@ export default {
         ReportCard,
         ReportDialog,
     },
-    beforeDestroy() {
-        if (!this.isIntro) {
-            this.disableNoSleep();
-            this.disablePositionWatching();
-            window.removeEventListener('keydown', this.hideReportDialogOnEsc);
+    created() {
+        if (!this.$store.state.settings.skipOnboarding) {
+            this.$router.replace({ name: 'Onboarding' });
         }
+    },
+    beforeDestroy() {
+        this.disableNoSleep();
+        this.disablePositionWatching();
+        window.removeEventListener('keydown', this.hideReportDialogOnEsc);
         this.$store.dispatch('hideReportDetails');
     },
     computed: {
@@ -88,7 +84,6 @@ export default {
             dialog: false,
             error: null,
             heading: null,
-            isIntro: true,
             latLng: null,
             noSleep: null,
             positionHistory: [],
@@ -154,6 +149,11 @@ export default {
             }
             this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
         },
+        disableNoSleep() {
+            if (this.noSleep) {
+                this.noSleep.disable();
+            }
+        },
         setNoSleep() {
             let preventSuspend = localStorage.getItem('preventSuspend');
             if (preventSuspend) {
@@ -165,11 +165,6 @@ export default {
             if (preventSuspend) {
                 this.noSleep = new NoSleep();
                 this.noSleep.enable();
-            }
-        },
-        disableNoSleep() {
-            if (this.noSleep) {
-                this.noSleep.disable();
             }
         },
         showReportDialog(latlng) {
@@ -193,13 +188,12 @@ export default {
                 this.dialog = false;
             }
         },
-        introButtonClick() {
-            this.setNoSleep();
-            this.isIntro = false;
-            this.initializePositionWatching();
-            this.$store.dispatch('fetchReports');
-            window.addEventListener('keydown', this.hideReportDialogOnEsc);
-        },
+    },
+    mounted() {
+        this.setNoSleep();
+        this.initializePositionWatching();
+        this.$store.dispatch('fetchReports');
+        window.addEventListener('keydown', this.hideReportDialogOnEsc);
     },
 };
 </script>

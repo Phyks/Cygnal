@@ -16,6 +16,11 @@
                         v-model="preventSuspend"
                         ></v-checkbox>
 
+                    <v-checkbox
+                        :label="$t('settings.skipOnboarding')"
+                        v-model="skipOnboarding"
+                        ></v-checkbox>
+
                     <v-btn role="button" @click="submit">{{ $t('settings.save') }}</v-btn>
                 </form>
             </v-flex>
@@ -32,12 +37,14 @@ export default {
             i18nItems: Object.keys(messages),
             locale: this.$store.state.settings.locale,
             preventSuspend: this.$store.state.settings.preventSuspend,
+            skipOnboarding: this.$store.state.settings.skipOnboarding,
         };
     },
     methods: {
         submit() {
             this.$store.dispatch('setLocale', { locale: this.locale });
             this.$store.dispatch('setSetting', { setting: 'preventSuspend', value: this.preventSuspend });
+            this.$store.dispatch('setSetting', { setting: 'skipOnboarding', value: this.skipOnboarding });
         },
     },
 };

@@ -15,6 +15,7 @@ import potholeIcon from '@/assets/pothole.svg';
 
 export const REPORT_TYPES = {
     accident: {
+        description: 'reportLabels.accidentDescription',
         label: 'reportLabels.accident',
         image: accidentIcon,
         marker: L.icon({
@@ -30,6 +31,7 @@ export const REPORT_TYPES = {
 
     },
     gcum: {
+        description: 'reportLabels.gcumDescription',
         label: 'reportLabels.gcum',
         image: gcumIcon,
         marker: L.icon({
@@ -45,6 +47,7 @@ export const REPORT_TYPES = {
 
     },
     interrupt: {
+        description: 'reportLabels.interruptDescription',
         label: 'reportLabels.interrupt',
         image: interruptIcon,
         marker: L.icon({
@@ -59,6 +62,7 @@ export const REPORT_TYPES = {
         }),
     },
     misc: {
+        description: 'reportLabels.miscDescription',
         label: 'reportLabels.misc',
         image: miscIcon,
         marker: L.icon({
@@ -73,6 +77,7 @@ export const REPORT_TYPES = {
         }),
     },
     obstacle: {
+        description: 'reportLabels.obstacleDescription',
         label: 'reportLabels.obstacle',
         image: obstacleIcon,
         marker: L.icon({
@@ -87,6 +92,7 @@ export const REPORT_TYPES = {
         }),
     },
     pothole: {
+        description: 'reportLabels.potholeDescription',
         label: 'reportLabels.pothole',
         image: potholeIcon,
         marker: L.icon({
@@ -119,4 +125,4 @@ export const EARTH_RADIUS = 6378137;
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;
-export const TILE_SERVER = process.env.TILE_SERVER || 'https://a.tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
+export const TILE_SERVER = process.env.TILE_SERVER || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';

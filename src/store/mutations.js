@@ -8,10 +8,15 @@ import * as types from './mutations-types';
 // Load settings from storage
 let locale = null;
 let preventSuspend = null;
+let skipOnboarding = null;
 if (storageAvailable('localStorage')) {
     preventSuspend = localStorage.getItem('preventSuspend');
     if (preventSuspend) {
         preventSuspend = JSON.parse(preventSuspend);
+    }
+    skipOnboarding = localStorage.getItem('skipOnboarding');
+    if (skipOnboarding) {
+        skipOnboarding = JSON.parse(skipOnboarding);
     }
 
     locale = localStorage.getItem('locale');
@@ -42,6 +47,7 @@ export const initialState = {
     settings: {
         locale: locale || 'en',
         preventSuspend: preventSuspend || true,
+        skipOnboarding: skipOnboarding || false,
     },
 };
 
