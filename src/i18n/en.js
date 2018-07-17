@@ -17,8 +17,12 @@ export default {
         upvote: 'Upvote',
     },
     geolocation: {
+        errorFetchingPosition: 'Error fetching your position:',
         fetching: 'Fetching current position…',
         geolocation: 'Geolocation',
+        permissionDenied: 'access to your position is denied.',
+        positionUnavailable: 'unable to retrieve your position.',
+        timeout: 'position was too long to acquire.',
         unavailable: 'Sorry, geolocation is not available in your browser.',
     },
     intro: {

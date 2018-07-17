@@ -17,8 +17,12 @@ export default {
         upvote: 'Confirmer',
     },
     geolocation: {
+        errorFetchingPosition: 'Impossible de récupérer votre position :',
         fetching: 'En attente de votre position…',
         geolocation: 'Géolocalisation',
+        permissionDenied: "l'accès a votre position a été refusé.",
+        positionUnavailable: 'impossible de déterminer votre position.',
+        timeout: 'votre position est trop longue à récupérer.',
         unavailable: "Désolé, la géolocalisation n'est pas disponible dans votre navigateur.",
     },
     intro: {

@@ -139,7 +139,14 @@ export default {
             }
         },
         handlePositionError(error) {
-            this.error = `Error ${error.code}: ${error.message}`;
+            this.error = `${this.$t('geolocation.errorFetchingPosition')} `;
+            if (error.code === 1) {
+                this.error += this.$t('geolocation.permissionDenied');
+            } else if (error.code === 2) {
+                this.error += this.$t('geolocation.positionUnavailable');
+            } else {
+                this.error += this.$t('geolocation.timeout');
+            }
         },
         setPosition(position) {
             if (this.latLng) {
