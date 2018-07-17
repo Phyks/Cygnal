@@ -25,7 +25,7 @@
 
                 <v-layout row class="white mb-3">
                     <v-flex xs6 offset-xs3>
-                        <v-switch class="switch" color="success" :label="$t('geolocation.geolocation')" v-model="hasGeolocationPermission" readonly @click="handleGeolocationPermission"></v-switch>
+                        <v-switch class="switch" :messages="[`<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${$t('about.geolocationDescription')}`]" color="success" :label="$t('geolocation.geolocation')" v-model="hasGeolocationPermission" readonly @click="handleGeolocationPermission"></v-switch>
                     </v-flex>
                 </v-layout>
 
