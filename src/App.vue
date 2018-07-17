@@ -3,7 +3,7 @@
         <v-toolbar
             app
             >
-            <router-link :to="{ name: 'Onboarding' }" class="noLinkDecoration">
+            <router-link :to="{ name: 'Map' }" class="noLinkDecoration">
                 <v-toolbar-title v-text="title" class="ma-0"></v-toolbar-title>
             </router-link>
             <v-spacer></v-spacer>

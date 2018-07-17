@@ -52,7 +52,7 @@ export default {
         ReportDialog,
     },
     created() {
-        if (!this.$store.state.settings.skipOnboarding) {
+        if (!this.$store.state.hasGoneThroughIntro) {
             this.$router.replace({ name: 'Onboarding' });
         }
     },

@@ -52,6 +52,7 @@ if (storageAvailable('localStorage')) {
 }
 
 export const initialState = {
+    hasGoneThroughIntro: false,
     isLoading: false,
     reportDetails: {
         id: null,
@@ -67,6 +68,9 @@ export const initialState = {
 };
 
 export const mutations = {
+    [types.INTRO_WAS_SEEN](state) {
+        state.hasGoneThroughIntro = true;
+    },
     [types.IS_LOADING](state) {
         state.isLoading = true;
     },

@@ -55,6 +55,7 @@ export default {
                 this.hasGeolocationPermission = (result.state === 'granted');
             });
         }
+        this.$store.dispatch('markIntroAsSeen');
     },
     data() {
         let step = 0;

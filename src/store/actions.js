@@ -4,6 +4,7 @@ import * as api from '@/api';
 import i18n from '@/i18n';
 
 import {
+    INTRO_WAS_SEEN,
     IS_LOADING,
     IS_DONE_LOADING,
     PUSH_REPORT,
@@ -55,4 +56,8 @@ export function setLocale({ commit }, { locale }) {
 
 export function setSetting({ commit }, { setting, value }) {
     return commit(SET_SETTING, { setting, value });
+}
+
+export function markIntroAsSeen({ commit }) {
+    return commit(INTRO_WAS_SEEN);
 }
