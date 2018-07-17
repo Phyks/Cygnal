@@ -155,14 +155,7 @@ export default {
             }
         },
         setNoSleep() {
-            let preventSuspend = localStorage.getItem('preventSuspend');
-            if (preventSuspend) {
-                preventSuspend = JSON.parse(preventSuspend);
-            } else {
-                preventSuspend = true;
-            }
-
-            if (preventSuspend) {
+            if (this.$store.state.settings.preventSuspend) {
                 this.noSleep = new NoSleep();
                 this.noSleep.enable();
             }
