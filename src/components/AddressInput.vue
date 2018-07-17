@@ -17,9 +17,10 @@
 </template>
 
 <script>
-import fetch from 'isomorphic-fetch';
+import { GEOCODING_API_ENDPOINT } from '@/constants';
 
-const API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search/';
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
 
 export default {
     props: {
@@ -50,12 +51,12 @@ export default {
     },
     methods: {
         checkValue() {
-            return (this.selectedItem != null) || 'Invalid selection';
+            return (this.selectedItem != null) || this.$t('locationPicker.invalidSelection');
         },
         queryAPI(value) {
             this.loading = true;
 
-            fetch(`${API_ENDPOINT}?q=${value}`)
+            fetch(`${GEOCODING_API_ENDPOINT}?q=${value}`)
                 .then(response => response.json())
                 .then(data => data.features)
                 .then((data) => {

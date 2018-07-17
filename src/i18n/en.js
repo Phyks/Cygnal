@@ -29,6 +29,10 @@ export default {
         startReporting: 'Start reporting!',
         welcome: 'Welcome',
     },
+    locationPicker: {
+        invalidSelection: 'Invalid selection',
+        pickALocationManually: 'pick a location manually',
+    },
     menu: {
         About: 'Help',
         Map: 'Map',
@@ -36,6 +40,7 @@ export default {
     },
     misc: {
         discard: 'Discard',
+        or: 'or',
         retry: 'Retry',
         spaceBeforeDoublePunctuations: '',
     },

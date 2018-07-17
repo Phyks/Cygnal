@@ -29,6 +29,10 @@ export default {
         startReporting: 'Commencer à signaler !',
         welcome: 'Bienvenue !',
     },
+    locationPicker: {
+        invalidSelection: 'Sélection invalide',
+        pickALocationManually: 'choisir une position manuellement',
+    },
     menu: {
         About: 'Aide',
         Map: 'Carte',
@@ -36,6 +40,7 @@ export default {
     },
     misc: {
         discard: 'Annuler',
+        or: 'ou',
         retry: 'Réessayer',
         spaceBeforeDoublePunctuations: ' ',
     },

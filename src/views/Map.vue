@@ -27,9 +27,9 @@
                     <p class="text-xs-center">
                         <v-btn role="button" color="blue" dark @click="initializePositionWatching">Retry</v-btn>
                     </p>
-                    <p>or</p>
+                    <p>{{ $t('misc.or') }}</p>
                     <p>
-                        <AddressInput label="pick a location manually" :onInput="onManualLocationPicker" v-model="manualLocation"></AddressInput>
+                        <AddressInput :label="$t('locationPicker.pickALocationManually')" :onInput="onManualLocationPicker" v-model="manualLocation"></AddressInput>
                     </p>
                 </template>
                 <template v-else>
@@ -47,8 +47,10 @@ import AddressInput from '@/components/AddressInput.vue';
 import Map from '@/components/Map.vue';
 import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
+
 import * as constants from '@/constants';
 import { distance, mockLocation } from '@/tools';
+import store from '@/store';
 
 export default {
     components: {
@@ -57,10 +59,11 @@ export default {
         ReportCard,
         ReportDialog,
     },
-    created() {
-        if (!this.$store.state.hasGoneThroughIntro) {
-            this.$router.replace({ name: 'Onboarding' });
+    beforeRouteEnter(to, from, next) {
+        if (!store.state.hasGoneThroughIntro) {
+            return next({ name: 'Onboarding', replace: true });
         }
+        return next();
     },
     beforeDestroy() {
         this.disableNoSleep();
