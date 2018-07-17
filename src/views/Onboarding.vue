@@ -29,7 +29,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-btn :disabled="!hasGeolocationPermission" role="button" round color="green" dark @click="step += 1">{{ $t('intro.next') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="step += 1">{{ $t('intro.next') }}</v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap class="text-xs-center blue lighten-2" v-if="step == 3">

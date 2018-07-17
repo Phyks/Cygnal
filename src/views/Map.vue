@@ -21,11 +21,15 @@
                 </v-btn>
                 <ReportDialog v-model="dialog" :lat="reportLat" :lng="reportLng"></ReportDialog>
             </v-flex>
-            <v-flex xs12 fill-height v-else class="pa-3">
+            <v-flex xs12 sm6 offset-sm3 md4 offset-md4 fill-height v-else class="pa-3">
                 <template v-if="error">
                     <p class="text-xs-center">{{ error }}</p>
                     <p class="text-xs-center">
                         <v-btn role="button" color="blue" dark @click="initializePositionWatching">Retry</v-btn>
+                    </p>
+                    <p>or</p>
+                    <p>
+                        <AddressInput label="pick a location manually" :onInput="onManualLocationPicker" v-model="manualLocation"></AddressInput>
                     </p>
                 </template>
                 <template v-else>
@@ -39,6 +43,7 @@
 <script>
 import NoSleep from 'nosleep.js';
 
+import AddressInput from '@/components/AddressInput.vue';
 import Map from '@/components/Map.vue';
 import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
@@ -47,6 +52,7 @@ import { distance, mockLocation } from '@/tools';
 
 export default {
     components: {
+        AddressInput,
         Map,
         ReportCard,
         ReportDialog,
@@ -85,6 +91,7 @@ export default {
             error: null,
             heading: null,
             latLng: null,
+            manualLocation: null,
             noSleep: null,
             positionHistory: [],
             reportLat: null,
@@ -180,6 +187,9 @@ export default {
             if (isEscape) {
                 this.dialog = false;
             }
+        },
+        onManualLocationPicker(value) {
+            this.latLng = [value.latlng.lat, value.latlng.lng];
         },
     },
     mounted() {

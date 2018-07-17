@@ -2,7 +2,7 @@
 export default {
     about: {
         availableReportsTitle: 'The available reports so far are:',
-        geolocationDescription: 'As of current version, your precise geolocation is handled within your device and never sent from it to any external service. The map background is downloaded on demand from <a href="https://carto.com/location-data-services/basemaps/">Carto.com</a> and they have then access to an estimate of the displayed position.',
+        geolocationDescription: 'As of current version, your precise geolocation is handled within your device and never sent from it to any external service. The map background is downloaded on demand from <a href="https://carto.com/location-data-services/basemaps/">Carto.com</a> and they have then access to an estimate of the displayed position. If you refuse to share your geolocation, you can still pick a location manually but you will miss some geolocation dependent features.',
         license: 'It is released under an <a href="https://opensource.org/licenses/MIT">MIT license</a> (<a href="https://framagit.org/phyks/cyclassist">source code</a>). Icons are based on creations from Wikimedia and Vecteezy. The map background is using tiles from <a href="https://carto.com/location-data-services/basemaps/">Carto.com</a>, thanks to <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> and <a href="http://leafletjs.com/">Leaflet</a>. Collected reports are available under <a href="https://opendatacommons.org/licenses/odbl/">ODbL license</a>.',
         summary: 'This app lets you track and share issues with bike lanes.',
         usage: 'How to use',
