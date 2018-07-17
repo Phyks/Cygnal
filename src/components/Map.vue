@@ -166,7 +166,7 @@ export default {
             markerRadius: 10.0,
             minZoom: constants.MIN_ZOOM,
             maxZoom: constants.MAX_ZOOM,
-            tileServer: constants.TILE_SERVER,
+            tileServer: constants.TILE_SERVERS[this.$store.state.settings.tileServer],
             isMouseDown: false,
             isProgrammaticZoom: false,
             isProgrammaticMove: false,

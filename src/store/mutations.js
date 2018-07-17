@@ -3,20 +3,34 @@ import Vue from 'vue';
 
 import { messages, getBrowserLocales } from '@/i18n';
 import { storageAvailable } from '@/tools';
+import { TILE_SERVERS, DEFAULT_TILE_SERVER } from '@/constants';
 import * as types from './mutations-types';
+
+function loadSettingFromStorage(name) {
+    try {
+        const value = localStorage.getItem(name);
+        if (value) {
+            return JSON.parse(value);
+        }
+        return null;
+    } catch (e) {
+        console.error(`Unable to load setting ${name}: ${e}.`);
+        return null;
+    }
+}
 
 // Load settings from storage
 let locale = null;
 let preventSuspend = null;
 let skipOnboarding = null;
+let tileServer = null;
 if (storageAvailable('localStorage')) {
-    preventSuspend = localStorage.getItem('preventSuspend');
-    if (preventSuspend) {
-        preventSuspend = JSON.parse(preventSuspend);
-    }
-    skipOnboarding = localStorage.getItem('skipOnboarding');
-    if (skipOnboarding) {
-        skipOnboarding = JSON.parse(skipOnboarding);
+    preventSuspend = loadSettingFromStorage('preventSuspend');
+    skipOnboarding = loadSettingFromStorage('skipOnboarding');
+
+    tileServer = loadSettingFromStorage('tileServer');
+    if (!TILE_SERVERS[tileServer]) {
+        tileServer = null;
     }
 
     locale = localStorage.getItem('locale');
@@ -48,6 +62,7 @@ export const initialState = {
         locale: locale || 'en',
         preventSuspend: preventSuspend || true,
         skipOnboarding: skipOnboarding || false,
+        tileServer: tileServer || DEFAULT_TILE_SERVER,
     },
 };
 
@@ -60,7 +75,7 @@ export const mutations = {
     },
     [types.SET_SETTING](state, { setting, value }) {
         if (storageAvailable('localStorage')) {
-            localStorage.setItem(setting, value);
+            localStorage.setItem(setting, JSON.stringify(value));
         }
         state.settings[setting] = value;
     },

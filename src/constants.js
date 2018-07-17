@@ -125,4 +125,13 @@ export const EARTH_RADIUS = 6378137;
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;
-export const TILE_SERVER = process.env.TILE_SERVER || 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
+
+let opencyclemapURL = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
+if (process.env.THUNDERFOREST_API_KEY) {
+    opencyclemapURL += `?apikey=${process.env.THUNDERFOREST_API_KEY}`;
+}
+export const TILE_SERVERS = {
+    'cartodb-voyager': 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    opencyclemap: opencyclemapURL,
+};
+export const DEFAULT_TILE_SERVER = 'cartodb-voyager';

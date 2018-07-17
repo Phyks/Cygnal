@@ -11,6 +11,13 @@
                         required
                         ></v-select>
 
+                    <v-select
+                        :items="tileServers"
+                        v-model="tileServer"
+                        :label="$t('settings.tileServer')"
+                        required
+                        ></v-select>
+
                     <v-checkbox
                         :label="$t('settings.preventSuspend')"
                         v-model="preventSuspend"
@@ -29,6 +36,7 @@
 </template>
 
 <script>
+import { TILE_SERVERS } from '@/constants';
 import { messages } from '@/i18n';
 
 export default {
@@ -38,6 +46,8 @@ export default {
             locale: this.$store.state.settings.locale,
             preventSuspend: this.$store.state.settings.preventSuspend,
             skipOnboarding: this.$store.state.settings.skipOnboarding,
+            tileServer: this.$store.state.settings.tileServer,
+            tileServers: Object.keys(TILE_SERVERS),
         };
     },
     methods: {
@@ -45,6 +55,7 @@ export default {
             this.$store.dispatch('setLocale', { locale: this.locale });
             this.$store.dispatch('setSetting', { setting: 'preventSuspend', value: this.preventSuspend });
             this.$store.dispatch('setSetting', { setting: 'skipOnboarding', value: this.skipOnboarding });
+            this.$store.dispatch('setSetting', { setting: 'tileServer', value: this.tileServer });
         },
     },
 };

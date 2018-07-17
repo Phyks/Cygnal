@@ -47,8 +47,8 @@ adapt the behavior to your needs.
 * `PUBLIC_PATH=https://.../foobar` to serve the app from a subdirectory.
 * `API_BASE_URL=https://...` to specify the location of the server (defaults
     to `/`). The value should end with a trailing slash.
-* `TILE_SERVER=` to pass a specific tile server to use rather than the default
-    one.
+* `THUNDERFOREST_API_KEY=` to pass an API key server to use for
+    [Thunderforest](http://thunderforest.com/) tiles (OpenCycleMap, etc).
 
 You should also have a look at the build variables under the `config/`
 subdirectory.

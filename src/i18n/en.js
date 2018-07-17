@@ -65,5 +65,6 @@ export default {
         preventSuspend: 'Prevent device from going to sleep',
         save: 'Save',
         skipOnboarding: 'Skip onboarding',
+        tileServer: 'Map tiles server',
     },
 };

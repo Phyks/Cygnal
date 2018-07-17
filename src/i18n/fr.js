@@ -65,5 +65,6 @@ export default {
         preventSuspend: "Empêcher l'appareil de passer en veille",
         save: 'Sauver',
         skipOnboarding: "Sauter l'introduction",
+        tileServer: 'Serveur de tuiles pour la carte',
     },
 };
