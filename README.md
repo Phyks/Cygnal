@@ -49,6 +49,8 @@ adapt the behavior to your needs.
     to `/`). The value should end with a trailing slash.
 * `THUNDERFOREST_API_KEY=` to pass an API key server to use for
     [Thunderforest](http://thunderforest.com/) tiles (OpenCycleMap, etc).
+* `API_TOKEN=` to pass a token required to access the server side API (check
+    below in the server part environment variables for more details).
 
 You should also have a look at the build variables under the `config/`
 subdirectory.
@@ -79,6 +81,7 @@ adapt its behavior:
 * `DATABASE=` to specify a [database URL](http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#db-url) to connect to (defaults to
     `sqlite:///reports.db` which means a SQLite database named `reports.db` in
     the current working directory).
+* `API_TOKEN=` to specify a token required to `POST` data to the API.
 
 #### Serving in production
 

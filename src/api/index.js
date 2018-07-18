@@ -3,6 +3,10 @@ require('isomorphic-fetch');
 
 // With trailing slash
 export const BASE_URL = process.env.API_BASE_URL || '/';
+const AUTHORIZATION_HEADERS = new Headers({});
+if (process.env.API_TOKEN) {
+    AUTHORIZATION_HEADERS.set('Authorization', `Bearer ${process.env.API_TOKEN}`);
+}
 
 export function saveReport(type, lat, lng) {
     return fetch(`${BASE_URL}api/v1/reports`, {
@@ -12,6 +16,7 @@ export function saveReport(type, lat, lng) {
             lat,
             lng,
         }),
+        headers: AUTHORIZATION_HEADERS,
     })
         .then(response => response.json())
         .then(response => response.data)
@@ -34,6 +39,7 @@ export function getActiveReports() {
 export function downvote(id) {
     return fetch(`${BASE_URL}api/v1/reports/${id}/downvote`, {
         method: 'POST',
+        headers: AUTHORIZATION_HEADERS,
     })
         .then(response => response.json())
         .then(response => response.data)
@@ -46,6 +52,7 @@ export function downvote(id) {
 export function upvote(id) {
     return fetch(`${BASE_URL}api/v1/reports/${id}/upvote`, {
         method: 'POST',
+        headers: AUTHORIZATION_HEADERS,
     })
         .then(response => response.json())
         .then(response => response.data)

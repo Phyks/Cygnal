@@ -5,11 +5,35 @@ Routes definitions
 """
 import arrow
 import json
+import os
 
 import bottle
 
 from server.models import Report
 from server import jsonapi
+
+
+class AuthenticationError(Exception):
+    pass
+
+
+def check_auth():
+    """
+    Check authentication.
+
+    :return: Abort and return a HTTP 403 page if authentication is not ok.
+    """
+    if not os.getenv('API_TOKEN'):
+        return
+
+    auth = bottle.request.headers.get('Authorization', None)
+    if not auth:
+        raise AuthenticationError()
+    parts = auth.split()
+    if parts[0].lower() != 'bearer' or parts[1] != os.getenv('API_TOKEN'):
+        raise AuthenticationError()
+
+    return
 
 
 def get_reports(only_active=False):
@@ -151,6 +175,12 @@ def post_report():
     if bottle.request.method == 'OPTIONS':
         return {}
 
+    # Check authentication
+    try:
+        check_auth()
+    except AuthenticationError:
+        return jsonapi.JsonApiError(403, "Invalid authentication.")
+
     try:
         payload = json.load(bottle.request.body)
     except ValueError as exc:
@@ -189,6 +219,12 @@ def upvote_report(id):
     if bottle.request.method == 'OPTIONS':
         return {}
 
+    # Check authentication
+    try:
+        check_auth()
+    except AuthenticationError:
+        return jsonapi.JsonApiError(403, "Invalid authentication.")
+
     r = Report.get(Report.id == id)
     if not r:
         return jsonapi.JsonApiError(404, "Invalid report id.")
@@ -212,6 +248,12 @@ def downvote_report(id):
     # Handle CORS
     if bottle.request.method == 'OPTIONS':
         return {}
+
+    # Check authentication
+    try:
+        check_auth()
+    except AuthenticationError:
+        return jsonapi.JsonApiError(403, "Invalid authentication.")
 
     r = Report.get(Report.id == id)
     if not r:

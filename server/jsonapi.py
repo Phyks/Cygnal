@@ -34,7 +34,8 @@ def enable_cors():
         'PUT, GET, POST, DELETE, OPTIONS, PATCH'
     )
     bottle.response.headers[str('Access-Control-Allow-Headers')] = str(
-        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, '
+        'Authorization'
     )
 
 
