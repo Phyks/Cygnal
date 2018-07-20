@@ -7,6 +7,8 @@
                     <v-select
                         :items="i18nItems"
                         v-model="locale"
+                        item-text="name"
+                        item-value="iso"
                         :label="$t('settings.locale')"
                         required
                         ></v-select>
@@ -37,12 +39,12 @@
 
 <script>
 import { TILE_SERVERS } from '@/constants';
-import { messages } from '@/i18n';
+import { AVAILABLE_LOCALES } from '@/i18n';
 
 export default {
     data() {
         return {
-            i18nItems: Object.keys(messages),
+            i18nItems: AVAILABLE_LOCALES,
             locale: this.$store.state.settings.locale,
             preventSuspend: this.$store.state.settings.preventSuspend,
             skipOnboarding: this.$store.state.settings.skipOnboarding,

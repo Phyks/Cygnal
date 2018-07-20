@@ -1,0 +1,78 @@
+{
+    "about": {
+        "availableReportsTitle": "Los senhalaments disponibles pel moment son :",
+        "geolocationDescription": "Dins la version actuala, v\u00f2stra posicion es tractada dir\u00e8ctament per v\u00f2stre periferic e pas jamai enviada a un servici ext\u00e8rne. Lo fons de mapa es telecargat a la demanda del provesidor de teulas estant e a doncas acc\u00e8s a una estimacion de la posicion mostrada. Se refusatz lo partiment de v\u00f2stra geolocalizacion, poiretz picar una adre\u00e7a a la man all\u00f2c mas perdretz las foncionalitats avan\u00e7adas qu'utilizan la geolocalizacion.",
+        "license": "Lo c\u00f2di font es jos <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Las ic\u00f2nas son basadas sus d'\u00f2bras de Wikimedia, Vecteezy, Pixabay o Flaticon. Las teulas de fons venon <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contributors OpenStreetMap</a> e a <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>.",
+        "summary": "Aquesta aplicacion vos permet de senhalar e partejar de probl\u00e8mas amb los itineraris ciclables.",
+        "usage": "Utilizacion",
+        "usageDescription": "Utilizatz lo boton en bas a man drecha per ajustar un senhalament a v\u00f2stra empla\u00e7ament actual. Per ajustar un senhalament endac\u00f2m mai, tocatz l'empla\u00e7ament volgut sus la mapa. Tocatz un marcador sus la mapa per mostrar mai d'informacions e senhalar es encara present o non."
+    },
+    "buttons": {
+        "close": "Tampar",
+        "downvote": "Infirmar",
+        "menu": "Men\u00fa",
+        "recenterMap": "Recentrar la mapa",
+        "reportProblem": "N\u00f2u senhalament",
+        "upvote": "Confirmar"
+    },
+    "geolocation": {
+        "errorFetchingPosition": "Impossible de recuperar v\u00f2stra posicion :",
+        "fetching": "En esp\u00e8ra de v\u00f2stra posicion\u2026",
+        "geolocation": "Geolocalizacion",
+        "permissionDenied": "l'acc\u00e8s a v\u00f2stra posicion es estat refusat.",
+        "positionUnavailable": "impossible de determinar v\u00f2stra posicion.",
+        "timeout": "v\u00f2stra posicion tarda tr\u00f2p a \u00e8sser recuperada.",
+        "unavailable": "O planh\u00e8m, la geolocalizacion es pas disponibla dins v\u00f2stre navigador."
+    },
+    "intro": {
+        "checkingPermissions": "Verificacion de las autorizacions",
+        "next": "Seguent",
+        "ready": "Tot es pr\u00e8st !",
+        "reportTypes": "Tipes de senhalaments",
+        "startReporting": "Comen\u00e7ar de senhalar !",
+        "welcome": "La benvenguda !"
+    },
+    "locationPicker": {
+        "invalidSelection": "Seleccion invalida",
+        "pickALocationManually": "causir una posicion manualament"
+    },
+    "menu": {
+        "About": "Ajuda",
+        "Map": "Mapa",
+        "Settings": "Prefer\u00e9ncias"
+    },
+    "misc": {
+        "discard": "Anullar",
+        "or": "o",
+        "retry": "Ensajar tornamai",
+        "spaceBeforeDoublePunctuations": " "
+    },
+    "reportCard": {
+        "Reported": "Senhalat"
+    },
+    "reportDialog": {
+        "unableToSendDescription": "Una error ret empacha lo mandad\u00eds del darri\u00e8r senhalament.",
+        "unableToSendTitle": "Impossible d'enviar lo darri\u00e8r senhalament"
+    },
+    "reportLabels": {
+        "accident": "Accident",
+        "accidentDescription": "Un accident sus la rota (automaticament suprimit apr\u00e8p una ora).",
+        "gcum": "GCUM",
+        "gcumDescription": "Una auto (mal) estacionada sus la pista ciclabla (automaticament suprimit apr\u00e8p una ora).",
+        "interrupt": "Interruption",
+        "interruptDescription": "Una interrupcion d'itinerari ciclable (\u00f2bras, arr\u00e8st inesperat d'una pista ciclabla, etc)",
+        "misc": "Autre",
+        "miscDescription": "Un probl\u00e8ma qu'a pas cap de categoria.",
+        "obstacle": "Obstacle",
+        "obstacleDescription": "Un obstacle sus la pista ciclabla (granit de bordadura, encombrants, etc)",
+        "pothole": "Trauc",
+        "potholeDescription": "Un trauc per la rota."
+    },
+    "settings": {
+        "locale": "Lenga",
+        "preventSuspend": "Empachar lo periferic de passar en velha",
+        "save": "Salvar",
+        "skipOnboarding": "Passar l'introduccion",
+        "tileServer": "Servidor de teulas per la mapa"
+    }
+}

@@ -3,6 +3,25 @@ import VueI18n from 'vue-i18n';
 
 import en from './en.json';
 import fr from './fr.json';
+import oc from './oc.json';
+
+export const AVAILABLE_LOCALES = [
+    {
+        iso: 'en',
+        name: 'English',
+        messages: en,
+    },
+    {
+        iso: 'fr',
+        name: 'French',
+        messages: fr,
+    },
+    {
+        iso: 'oc',
+        name: 'Occitan',
+        messages: oc,
+    },
+];
 
 export function getBrowserLocales() {
     let langs = [];
@@ -31,10 +50,10 @@ export function getBrowserLocales() {
 
 Vue.use(VueI18n);
 
-export const messages = {
-    en,
-    fr,
-};
+export const messages = {};
+AVAILABLE_LOCALES.forEach((item) => {
+    messages[item.iso] = item.messages;
+});
 
 export default new VueI18n({
     messages,
