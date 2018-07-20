@@ -107,6 +107,17 @@ python -m server
 to spawn the server-side part, listening on `localhost:8081`.
 
 
+## Translating
+
+Translation is done directly on [Zanata](https://translate.zanata.org/iteration/view/cyclassist/master?dswid=7345).
+
+To add new strings to localize, edit the `src/i18n/en.json` file with your new
+strings (and only this file). Then, you can run `yarn push-locales` to send
+the updated locales to translate and `yarn pull-locales` to fetch the
+translated files. To use these scripts you will need the
+Translate-toolkit(`pip install translate-toolkit`) and the Zanata CLI client.
+
+
 ## License
 
 This software is licensed under an MIT license, unless explicitly mentionned
@@ -125,3 +136,12 @@ Icons are made from the original works:
     coming from Pixabay under CC0 license.
 * [Accident icon](https://www.flaticon.com/free-icon/car-running-over-a-bicycle_91680) is
     coming from Flaticon.
+
+The map background is using tiles from <a
+href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> or
+<a href=\"http://thunderforest.com/\">Thunderforest</a>, thanks to <a
+href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap
+contributors</a> and <a href=\"http://leafletjs.com/\">Leaflet</a>.
+
+Manual location picking uses the awesome API from <a
+href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.

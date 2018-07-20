@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 *.db
 *.pyc
+.zanata-cache
+po/*.po
+po/*.pot
 
 # Editor directories and files
 .idea

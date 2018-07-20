@@ -1,0 +1,78 @@
+{
+    "about": {
+        "availableReportsTitle": "Les signalements disponibles pour l'instant sont :",
+        "geolocationDescription": "Dans la version actuelle, votre position est trait\u00e9e directement par votre appareil et n'est jamais envoy\u00e9e \u00e0 un service externe. Le fond de carte est t\u00e9l\u00e9charg\u00e9 \u00e0 la demande depuis le fournisseur de tuiles et il a donc acc\u00e8s \u00e0 une estimation de la position affich\u00e9e. Si vous refusez le partage de votre g\u00e9olocalisation, vous pourrez saisir une adresse manuellement \u00e0 la place mais vous perdrez les fonctionnalit\u00e9s avanc\u00e9es qui reposent sur la g\u00e9olocalisation.",
+        "license": "Le code source est sous <a href=\"https://opensource.org/licenses/MIT\">licence MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">code source</a>). Les ic\u00f4nes sont bas\u00e9es sur des travaux de Wikimedia, Vecteezy, Pixabay ou Flaticon. Les tuiles de fond de carte proviennent de chez <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> ou <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e2ce aux <a href=\"https://www.openstreetmap.org/copyright\">contributeurs OpenStreetMap</a> et \u00e0 <a href=\"http://leafletjs.com/\">Leaflet</a>. Les signalements sont disponibles sous <a href=\"https://opendatacommons.org/licenses/odbl/\">licence ODbL</a>. La saisie manuelle de la position utilise l'excellente API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "summary": "Cette application vous permet de signaler et de partager des probl\u00e8mes avec les itin\u00e9raires cyclables.",
+        "usage": "Utilisation",
+        "usageDescription": "Utilisez le bouton en bas \u00e0 droite pour ajouter un signalement \u00e0 votre emplacement actuel. Pour ajouter un signalement ailleurs, faites un appui \u00e0 l'emplacement souhait\u00e9 sur la carte. Appuyer sur un marqueur sur la carte pour afficher plus d'informations et signaler que le probl\u00e8me est toujours pr\u00e9sent ou non."
+    },
+    "buttons": {
+        "close": "Fermer",
+        "downvote": "Infirmer",
+        "menu": "Menu",
+        "recenterMap": "Recentrer la carte",
+        "reportProblem": "Nouveau signalement",
+        "upvote": "Confirmer"
+    },
+    "geolocation": {
+        "errorFetchingPosition": "Impossible de r\u00e9cup\u00e9rer votre position :",
+        "fetching": "En attente de votre position\u2026",
+        "geolocation": "G\u00e9olocalisation",
+        "permissionDenied": "l'acc\u00e8s a votre position a \u00e9t\u00e9 refus\u00e9.",
+        "positionUnavailable": "impossible de d\u00e9terminer votre position.",
+        "timeout": "votre position est trop longue \u00e0 r\u00e9cup\u00e9rer.",
+        "unavailable": "D\u00e9sol\u00e9, la g\u00e9olocalisation n'est pas disponible dans votre navigateur."
+    },
+    "intro": {
+        "checkingPermissions": "V\u00e9rification des permissions",
+        "next": "Suivant",
+        "ready": "Tout est pr\u00eat !",
+        "reportTypes": "Types de signalements",
+        "startReporting": "Commencer \u00e0 signaler !",
+        "welcome": "Bienvenue !"
+    },
+    "locationPicker": {
+        "invalidSelection": "S\u00e9lection invalide",
+        "pickALocationManually": "choisir une position manuellement"
+    },
+    "menu": {
+        "About": "Aide",
+        "Map": "Carte",
+        "Settings": "Pr\u00e9f\u00e9rences"
+    },
+    "misc": {
+        "discard": "Annuler",
+        "or": "ou",
+        "retry": "R\u00e9essayer",
+        "spaceBeforeDoublePunctuations": " "
+    },
+    "reportCard": {
+        "Reported": "Signal\u00e9"
+    },
+    "reportDialog": {
+        "unableToSendDescription": "Une erreur de r\u00e9seau emp\u00eache l'envoi du dernier signalement.",
+        "unableToSendTitle": "Impossible d'envoyer le dernier signalement"
+    },
+    "reportLabels": {
+        "accident": "Accident",
+        "accidentDescription": "Un accident sur la route (automatiquement supprim\u00e9 apr\u00e8s une heure).",
+        "gcum": "GCUM",
+        "gcumDescription": "Une voiture (mal) gar\u00e9e sur la piste cyclable (automatiquement supprim\u00e9 apr\u00e8s une heure).",
+        "interrupt": "Interruption",
+        "interruptDescription": "Une interruption d'itin\u00e9raire cyclable (travaux, arr\u00eat inattendu d'une piste cyclable, etc)",
+        "misc": "Autre",
+        "miscDescription": "Un probl\u00e8me qui ne rentre dans aucune autre cat\u00e9gorie.",
+        "obstacle": "Obstacle",
+        "obstacleDescription": "Un obstacle sur la piste cyclable (granit de bordure, encombrants, etc)",
+        "pothole": "Nid de poule",
+        "potholeDescription": "Un nid de poule dans la route."
+    },
+    "settings": {
+        "locale": "Langue",
+        "preventSuspend": "Emp\u00eacher l'appareil de passer en veille",
+        "save": "Sauver",
+        "skipOnboarding": "Sauter l'introduction",
+        "tileServer": "Serveur de tuiles pour la carte"
+    }
+}
