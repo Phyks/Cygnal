@@ -5,6 +5,8 @@ import en from './en.json';
 import fr from './fr.json';
 import oc from './oc.json';
 
+import './moment/oc';
+
 export const AVAILABLE_LOCALES = [
     {
         iso: 'en',
