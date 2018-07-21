@@ -54,6 +54,18 @@ if (storageAvailable('localStorage')) {
 export const initialState = {
     hasGoneThroughIntro: false,
     isLoading: false,
+    location: {
+        accuracy: null,
+        currentLatLng: [null, null],
+        error: null,
+        heading: null, // in degrees, clockwise wrt north
+        positionHistory: [],
+        watcherID: null,
+    },
+    map: {
+        center: [null, null],
+        zoom: null,
+    },
     reportDetails: {
         id: null,
         userAsked: null,
@@ -71,11 +83,37 @@ export const mutations = {
     [types.INTRO_WAS_SEEN](state) {
         state.hasGoneThroughIntro = true;
     },
+    [types.IS_DONE_LOADING](state) {
+        state.isLoading = false;
+    },
     [types.IS_LOADING](state) {
         state.isLoading = true;
     },
-    [types.IS_DONE_LOADING](state) {
-        state.isLoading = false;
+    [types.PUSH_REPORT](state, { report }) {
+        const reportIndex = state.reports.findIndex(item => item.id === report.id);
+        if (reportIndex === -1) {
+            state.reports.push(report);
+        } else {
+            Vue.set(state.reports, reportIndex, report);
+        }
+    },
+    [types.SET_CURRENT_MAP_CENTER](state, { center }) {
+        Vue.set(state.map, 'center', center);
+    },
+    [types.SET_CURRENT_MAP_ZOOM](state, { zoom }) {
+        Vue.set(state.map, 'zoom', zoom);
+    },
+    [types.SET_CURRENT_POSITION](state, { accuracy, heading, latLng }) {
+        Vue.set(state.location, 'accuracy', accuracy);
+        Vue.set(state.location, 'currentLatLng', latLng);
+        Vue.set(state.location, 'heading', heading);
+        state.location.positionHistory.push(latLng);
+    },
+    [types.SET_LOCATION_ERROR](state, { error }) {
+        Vue.set(state.location, 'error', error);
+    },
+    [types.SET_LOCATION_WATCHER_ID](state, { id }) {
+        Vue.set(state.location, 'watcherID', id);
     },
     [types.SET_SETTING](state, { setting, value }) {
         if (storageAvailable('localStorage')) {
@@ -89,13 +127,5 @@ export const mutations = {
     },
     [types.STORE_REPORTS](state, { reports }) {
         state.reports = reports;
-    },
-    [types.PUSH_REPORT](state, { report }) {
-        const reportIndex = state.reports.findIndex(item => item.id === report.id);
-        if (reportIndex === -1) {
-            state.reports.push(report);
-        } else {
-            Vue.set(state.reports, reportIndex, report);
-        }
     },
 };

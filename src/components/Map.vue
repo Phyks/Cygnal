@@ -1,12 +1,33 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @movestart="onMoveStart" @zoomstart="onZoomStart">
+        <v-lmap
+            ref="map"
+            :minZoom="this.minZoom"
+            :maxZoom="this.maxZoom"
+            :options="{ zoomControl: false }"
+            @click="handleClick"
+            @movestart="onMoveStart"
+            @moveend="onMoveEnd"
+            @zoomstart="onZoomStart"
+            >
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
-            <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
-            <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
+            <template v-if="positionLatLng">
+                <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
+                <v-lcirclemarker
+                    v-else
+                    :lat-lng="positionLatLng"
+                    :color="markerOptions.color"
+                    :fillColor="markerOptions.fillColor"
+                    :fillOpacity="1.0"
+                    :weight="markerOptions.weight"
+                    :radius="markerRadius"
+                    >
+                </v-lcirclemarker>
 
-            <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
+                <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
+            </template>
+
             <v-lpolyline :latLngs="polyline" :opacity="0.6" color="#00FF00"></v-lpolyline>
 
             <v-lmarker v-if="reportLatLng" :lat-lng="reportLatLng" :icon="unknownMarkerIcon"></v-lmarker>
@@ -21,7 +42,7 @@
             left
             color="blue"
             class="overlayButton"
-            v-if="recenterButton"
+            v-if="isRecenterButtonShown"
             @click.native.stop="recenterMap"
             role="button"
             :aria-label="$t('buttons.recenterMap')"
@@ -56,21 +77,20 @@ export default {
     components: {
         ReportMarker,
     },
-    props: {
-        accuracy: {
-            type: Number,
-            default: null,
-        },
-        heading: Number,  // in degrees, clockwise wrt north
-        markers: Array,
-        onPress: Function,
-        polyline: Array,
-        positionLatLng: Array,
-        reportLatLng: Array,
-    },
     computed: {
+        markerOptions() {
+            return {
+                fillColor: '#00ff00',
+                color: '#000000',
+                heading: this.heading * (Math.PI / 180), // in radians from North
+                weight: 1,
+            };
+        },
         radiusFromAccuracy() {
             if (this.accuracy) {
+                // Compute the radius (in pixels) based on GPS accuracy, taking
+                // into account the current zoom level
+                // Formula coming from https://wiki.openstreetmap.org/wiki/Zoom_levels.
                 return this.accuracy / (
                     (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0] *
                         (Math.PI / 180))) /
@@ -80,19 +100,92 @@ export default {
             return null;
         },
         shouldDisplayAccuracy() {
+            // Only display accuracy if circle is large enough
             return (
                 this.accuracy &&
-                this.accuracy < 100 &&
+                this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD &&
                 this.radiusFromAccuracy > this.markerRadius
             );
         },
-        markerOptions() {
-            return {
-                fillColor: '#00ff00',
-                color: '#000000',
-                heading: this.heading * (Math.PI / 180),
-                weight: 1,
+    },
+    data() {
+        return {
+            attribution: this.$t('map.attribution'),
+            isProgrammaticMove: false,
+            isProgrammaticZoom: false,
+            map: null,
+            markerRadius: 10.0,
+            maxZoom: constants.MAX_ZOOM,
+            minZoom: constants.MIN_ZOOM,
+            isRecenterButtonShown: false,
+            tileServer: constants.TILE_SERVERS[this.$store.state.settings.tileServer],
+            unknownMarkerIcon: L.icon({
+                iconAnchor: [20, 40],
+                iconSize: [40, 40],
+                iconUrl: unknownMarkerIcon,
+            }),
+        };
+    },
+    methods: {
+        handleClick(event) {
+            if (this.onPress) {
+                this.onPress(event.latlng);
+            }
+        },
+        hideRecenterButton() {
+            if (this.isRecenterButtonShown) {
+                this.isRecenterButtonShown = false;
+            }
+        },
+        onMoveStart() {
+            if (!this.isProgrammaticMove && !this.isProgrammaticZoom) {
+                this.showRecenterButton();
+            }
+        },
+        onMoveEnd() {
+            if (this.onMapCenterUpdate) {
+                const mapCenter = this.map.getCenter();
+                this.onMapCenterUpdate([mapCenter.lat, mapCenter.lng]);
+            }
+            if (this.onMapZoomUpdate) {
+                this.onMapZoomUpdate(this.map.getZoom());
+            }
+        },
+        onZoomStart() {
+            if (!this.isProgrammaticZoom) {
+                this.showRecenterButton();
+            }
+        },
+        recenterMap() {
+            this.hideRecenterButton();
+            if (this.map.getZoom() !== this.zoom) {
+                this.isProgrammaticZoom = true;
+                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+            }
+            const mapCenter = this.map.getCenter();
+            if (
+                mapCenter.lat !== this.center[0] &&
+                mapCenter.lng !== this.center[1]
+            ) {
+                this.isProgrammaticMove = true;
+                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+            }
+            this.map.setView(this.center, this.zoom);
+        },
+        showCompass() {
+            const north = L.control({ position: 'topright' });
+            north.onAdd = () => {
+                const div = L.DomUtil.create('div', 'compassIcon legend');
+                div.innerHTML = `<img src="${compassNorthIcon}">`;
+                L.DomEvent.disableClickPropagation(div);
+                return div;
             };
+            this.map.addControl(north);
+        },
+        showRecenterButton() {
+            if (!this.isRecenterButtonShown) {
+                this.isRecenterButtonShown = true;
+            }
         },
     },
     mounted() {
@@ -101,31 +194,66 @@ export default {
             this.isProgrammaticZoom = true;
             this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
         }
+        const mapCenter = this.map.getCenter();
         if (
-            this.map.getCenter().lat !== this.positionLatLng[0] &&
-            this.map.getCenter().lng !== this.positionLatLng[1]
+            mapCenter.lat !== this.center[0] &&
+            mapCenter.lng !== this.center[1]
         ) {
             this.isProgrammaticMove = true;
             this.map.once('moveend', () => { this.isProgrammaticMove = false; });
         }
-        this.map.setView(this.positionLatLng, this.zoom);
+        this.map.setView(this.center, this.zoom);
         this.showCompass();
     },
+    props: {
+        accuracy: Number,
+        center: {
+            type: Array,
+            required: true,
+        },
+        heading: Number, // in degrees, clockwise wrt north
+        markers: Array,
+        onPress: Function,
+        onMapCenterUpdate: Function,
+        onMapZoomUpdate: Function,
+        polyline: Array,
+        positionLatLng: Array,
+        reportLatLng: Array,
+        zoom: {
+            type: Number,
+            required: true,
+        },
+    },
     watch: {
-        positionLatLng(newPositionLatLng) {
+        zoom(newZoom) {
             if (!this.map) {
                 // Map should have been created
                 return;
             }
-            if (!this.recenterButton) {
+            if (!this.isRecenterButtonShown) {
+                // Handle programmatic navigation
+                if (this.map.getZoom() !== newZoom) {
+                    this.isProgrammaticZoom = true;
+                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                }
+                this.map.setZoom(newZoom);
+            }
+        },
+        center(newCenterLatLng) {
+            if (!this.map) {
+                // Map should have been created
+                return;
+            }
+
+            if (!this.isRecenterButtonShown) {
                 // Handle programmatic navigation
                 if (this.map.getZoom() !== this.zoom) {
                     this.isProgrammaticZoom = true;
                     this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
                 }
                 if (
-                    this.map.getCenter().lat !== newPositionLatLng[0] &&
-                    this.map.getCenter().lng !== newPositionLatLng[1]
+                    this.map.getCenter().lat !== newCenterLatLng[0] &&
+                    this.map.getCenter().lng !== newCenterLatLng[1]
                 ) {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
@@ -138,7 +266,7 @@ export default {
                         const distances = this.markers.map(
                             marker => ({
                                 id: marker.id,
-                                distance: distance(newPositionLatLng, marker.latLng),
+                                distance: distance(newCenterLatLng, marker.latLng),
                             }),
                         ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
                         const closestReport = distances.reduce(  // Get the closest one
@@ -155,80 +283,8 @@ export default {
                         }
                     }
                 }
-                this.map.setView(newPositionLatLng, this.zoom);
+                this.map.setView(newCenterLatLng, this.zoom);
             }
-        },
-    },
-    data() {
-        return {
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-            zoom: constants.DEFAULT_ZOOM,
-            markerRadius: 10.0,
-            minZoom: constants.MIN_ZOOM,
-            maxZoom: constants.MAX_ZOOM,
-            tileServer: constants.TILE_SERVERS[this.$store.state.settings.tileServer],
-            isMouseDown: false,
-            isProgrammaticZoom: false,
-            isProgrammaticMove: false,
-            recenterButton: false,
-            map: null,
-            unknownMarkerIcon: L.icon({
-                iconUrl: unknownMarkerIcon,
-                iconSize: [40, 40],
-                iconAnchor: [20, 40],
-            }),
-        };
-    },
-    methods: {
-        handleClick(event) {
-            if (this.onPress) {
-                this.onPress(event.latlng);
-            }
-        },
-        onMoveStart() {
-            if (!this.isProgrammaticMove) {
-                this.showRecenterButton();
-            }
-        },
-        onZoomStart() {
-            if (!this.isProgrammaticZoom) {
-                this.showRecenterButton();
-            }
-        },
-        showCompass() {
-            const north = L.control({ position: 'topright' });
-            north.onAdd = () => {
-                const div = L.DomUtil.create('div', 'compassIcon legend');
-                div.innerHTML = `<img src="${compassNorthIcon}">`;
-                L.DomEvent.disableClickPropagation(div);
-                return div;
-            };
-            this.map.addControl(north);
-        },
-        showRecenterButton() {
-            if (!this.recenterButton) {
-                this.recenterButton = true;
-            }
-        },
-        hideRecenterButton() {
-            if (this.recenterButton) {
-                this.recenterButton = false;
-            }
-        },
-        recenterMap() {
-            this.hideRecenterButton();
-            if (this.map.getZoom() !== this.zoom) {
-                this.isProgrammaticZoom = true;
-                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-            }
-            if (
-                this.map.getCenter().lat !== this.positionLatLng[0] &&
-                this.map.getCenter().lng !== this.positionLatLng[1]
-            ) {
-                this.isProgrammaticMove = true;
-                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-            }
-            this.map.setView(this.positionLatLng, this.zoom);
         },
     },
 };

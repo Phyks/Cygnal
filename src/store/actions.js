@@ -1,13 +1,19 @@
 import moment from 'moment';
 
 import * as api from '@/api';
+import * as constants from '@/constants';
 import i18n from '@/i18n';
 
 import {
     INTRO_WAS_SEEN,
-    IS_LOADING,
     IS_DONE_LOADING,
+    IS_LOADING,
     PUSH_REPORT,
+    SET_CURRENT_MAP_CENTER,
+    SET_CURRENT_MAP_ZOOM,
+    SET_CURRENT_POSITION,
+    SET_LOCATION_ERROR,
+    SET_LOCATION_WATCHER_ID,
     SET_SETTING,
     SHOW_REPORT_DETAILS,
     STORE_REPORTS,
@@ -60,4 +66,50 @@ export function setSetting({ commit }, { setting, value }) {
 
 export function markIntroAsSeen({ commit }) {
     return commit(INTRO_WAS_SEEN);
+}
+
+export function setCurrentMapCenter({ commit, state }, { center }) {
+    if (state.map.center.some((item, index) => item !== center[index])) {
+        commit(SET_CURRENT_MAP_CENTER, { center });
+    }
+}
+
+export function setCurrentMapZoom({ commit, state }, { zoom }) {
+    if (state.map.zoom !== zoom) {
+        commit(SET_CURRENT_MAP_ZOOM, { zoom });
+    }
+}
+
+export function setCurrentPosition(
+    { commit, state },
+    { accuracy = null, heading = null, latLng = null },
+) {
+    const locationState = state.location;
+    if (
+        accuracy !== locationState.accuracy ||
+        heading !== locationState.heading ||
+        locationState.currentLatLng.some((item, index) => item !== latLng[index])
+    ) {
+        // Throttle mutations if nothing has changed
+        commit(SET_CURRENT_POSITION, { accuracy, heading, latLng });
+    }
+}
+
+export function setLocationWatcherId({ commit }, { id }) {
+    return commit(SET_LOCATION_WATCHER_ID, { id });
+}
+
+export function setLocationError({ commit, state }, { error }) {
+    // Unregister location watcher
+    const watcherID = state.location.watcherID;
+    if (watcherID !== null) {
+        if (constants.MOCK_LOCATION) {
+            clearInterval(watcherID);
+        } else {
+            navigator.geolocation.clearWatch(watcherID);
+        }
+    }
+
+    commit(SET_LOCATION_WATCHER_ID, { id: null });
+    commit(SET_LOCATION_ERROR, { error });
 }

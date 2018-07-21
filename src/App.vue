@@ -7,13 +7,13 @@
                 <v-toolbar-title v-text="title" class="ma-0"></v-toolbar-title>
             </router-link>
             <v-spacer></v-spacer>
-            <v-menu offset-y class="menu">
+            <v-menu offset-y class="menu" v-if="$route.name === 'Onboarding' || $route.name === 'Map' || $route.name === 'SharedMap'">
                 <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
-                    <v-list-tile @click="goToMap">
-                        <v-list-tile-title>{{ $t("menu.Map") }}</v-list-tile-title>
+                    <v-list-tile @click="isShareMapViewModalShown = true" v-if="isShareMapViewMenuEntryVisible">
+                        <v-list-tile-title>{{ $t("menu.shareMapView") }}</v-list-tile-title>
                     </v-list-tile>
                     <v-list-tile @click="goToAbout">
                         <v-list-tile-title>{{ $t("menu.About") }}</v-list-tile-title>
@@ -23,35 +23,47 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
+            <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goBack">
+                <v-icon>arrow_back</v-icon>
+            </v-btn>
             <div>
                 <v-progress-linear v-if="isLoading" :indeterminate="true" class="progressBar"></v-progress-linear>
             </div>
         </v-toolbar>
         <v-content>
-            <router-view/>
+            <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
+            <router-view></router-view>
         </v-content>
     </v-app>
 </template>
 
 <script>
+import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
+
 export default {
+    components: {
+        ShareMapViewModal,
+    },
     computed: {
         isLoading() {
             return this.$store.state.isLoading;
         },
+        isShareMapViewMenuEntryVisible() {
+            return this.$store.state.map.center.every(item => item !== null);
+        },
     },
     data() {
         return {
-            title: 'Cycl\'Assist',
+            isShareMapViewModalShown: false,
+            title: "Cycl'Assist",
         };
     },
-    name: 'App',
     methods: {
         goToAbout() {
             this.$router.push({ name: 'About' });
         },
-        goToMap() {
-            this.$router.push({ name: 'Map' });
+        goBack() {
+            this.$router.go(-1);
         },
         goToSettings() {
             this.$router.push({ name: 'Settings' });
