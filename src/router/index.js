@@ -15,6 +15,11 @@ export default new Router({
             component: About,
         },
         {
+            path: '/map=:zoom/:lat/:lng',
+            name: 'SharedMap',
+            component: Map,
+        },
+        {
             path: '/map',
             name: 'Map',
             component: Map,

@@ -3,8 +3,10 @@
         <v-lmap ref="map" :minZoom="this.minZoom" :maxZoom="this.maxZoom" :options="{ zoomControl: false }" @click="handleClick" @movestart="onMoveStart" @zoomstart="onZoomStart">
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
-            <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
-            <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
+            <template v-if="positionIsGPS">
+                <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
+                <v-lcirclemarker v-else :lat-lng="positionLatLng" :color="markerOptions.color" :fillColor="markerOptions.fillColor" :fillOpacity="1.0" :weight="markerOptions.weight" :radius="markerRadius"></v-lcirclemarker>
+            </template>
 
             <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
             <v-lpolyline :latLngs="polyline" :opacity="0.6" color="#00FF00"></v-lpolyline>
@@ -62,10 +64,12 @@ export default {
             default: null,
         },
         heading: Number,  // in degrees, clockwise wrt north
+        mapZoom: Number,
         markers: Array,
         onPress: Function,
         polyline: Array,
         positionLatLng: Array,
+        positionIsGPS: Boolean,
         reportLatLng: Array,
     },
     computed: {
@@ -158,11 +162,25 @@ export default {
                 this.map.setView(newPositionLatLng, this.zoom);
             }
         },
+        mapZoom(newZoom) {
+            if (!this.map) {
+                // Map should have been created
+                return;
+            }
+            if (!this.recenterButton) {
+                // Handle programmatic navigation
+                if (this.map.getZoom() !== newZoom) {
+                    this.isProgrammaticZoom = true;
+                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                }
+                this.map.setZoom(newZoom);
+            }
+        },
     },
     data() {
         return {
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-            zoom: constants.DEFAULT_ZOOM,
+            zoom: this.mapZoom || constants.DEFAULT_ZOOM,
             markerRadius: 10.0,
             minZoom: constants.MIN_ZOOM,
             maxZoom: constants.MAX_ZOOM,
@@ -186,7 +204,7 @@ export default {
             }
         },
         onMoveStart() {
-            if (!this.isProgrammaticMove) {
+            if (!this.isProgrammaticMove && !this.isProgrammaticZoom) {
                 this.showRecenterButton();
             }
         },

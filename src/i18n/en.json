@@ -8,6 +8,7 @@
         "usageDescription": "Use the button in the lower right corner to add a new report at your current location. To add a report elsewhere, do a click where you want the report to be shown. Press on a marker on the map to display more informations and report the problem as being still there or solved."
     },
     "buttons": {
+        "back": "Back",
         "close": "Close",
         "downvote": "Downvote",
         "menu": "Menu",
@@ -38,10 +39,11 @@
     },
     "menu": {
         "About": "Help",
-        "Map": "Map",
+        "shareMapView": "Share map view",
         "Settings": "Settings"
     },
     "misc": {
+        "copiedToClipboard": "Copied to clipboard!",
         "discard": "Discard",
         "or": "or",
         "retry": "Retry",

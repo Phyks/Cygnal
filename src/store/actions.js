@@ -8,6 +8,7 @@ import {
     IS_LOADING,
     IS_DONE_LOADING,
     PUSH_REPORT,
+    SET_CURRENT_POSITION,
     SET_SETTING,
     SHOW_REPORT_DETAILS,
     STORE_REPORTS,
@@ -60,4 +61,8 @@ export function setSetting({ commit }, { setting, value }) {
 
 export function markIntroAsSeen({ commit }) {
     return commit(INTRO_WAS_SEEN);
+}
+
+export function setCurrentPosition({ commit }, { positionLatLng }) {
+    return commit(SET_CURRENT_POSITION, { positionLatLng });
 }

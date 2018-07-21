@@ -7,13 +7,13 @@
                 <v-toolbar-title v-text="title" class="ma-0"></v-toolbar-title>
             </router-link>
             <v-spacer></v-spacer>
-            <v-menu offset-y class="menu">
+            <v-menu offset-y class="menu" v-if="$route.name === 'Onboarding' || $route.name === 'Map' || $route.name === 'SharedMap'">
                 <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
-                    <v-list-tile @click="goToMap">
-                        <v-list-tile-title>{{ $t("menu.Map") }}</v-list-tile-title>
+                    <v-list-tile @click="sharePositionDialog = true" v-if="shareMapPositionURL">
+                        <v-list-tile-title>{{ $t("menu.shareMapView") }}</v-list-tile-title>
                     </v-list-tile>
                     <v-list-tile @click="goToAbout">
                         <v-list-tile-title>{{ $t("menu.About") }}</v-list-tile-title>
@@ -23,11 +23,44 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
+            <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goToMap">
+                <v-icon>arrow_back</v-icon>
+            </v-btn>
             <div>
                 <v-progress-linear v-if="isLoading" :indeterminate="true" class="progressBar"></v-progress-linear>
             </div>
         </v-toolbar>
         <v-content>
+            <v-dialog
+                v-model="sharePositionDialog"
+                max-width="290"
+                >
+                <v-card>
+                    <v-card-title class="headline">Share map position</v-card-title>
+
+                    <v-card-text>
+                        Copy the URL below to share the current map view.
+
+                        <v-text-field ref="sharePositionURLField" readonly :hint="sharePositionURLFieldHint" @click="copyShareMapPositionURL" v-model="shareMapPositionURL" prepend-icon="share"></v-text-field>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+
+                        <v-btn
+                            color="green darken-1"
+                            @click="sharePositionDialog = false"
+                            dark
+                            large
+                            role="button"
+                            >
+                            OK
+                        </v-btn>
+
+                        <v-spacer></v-spacer>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <router-view/>
         </v-content>
     </v-app>
@@ -39,14 +72,33 @@ export default {
         isLoading() {
             return this.$store.state.isLoading;
         },
+        shareMapPositionURL() {
+            // TODO: Should be position of the map, not position of the marker
+            const currentPosition = this.$store.state.currentPosition;
+            if (!currentPosition) {
+                return null;
+            }
+            const currentZoom = this.$store.state.currentZoom || 18;
+            const path = this.$router.resolve({ name: 'SharedMap', params: { lat: currentPosition[0], lng: currentPosition[1], zoom: currentZoom } }).href;
+            return `${window.location.origin}/${path}`;
+        },
     },
     data() {
         return {
-            title: 'Cycl\'Assist',
+            sharePositionDialog: false,
+            sharePositionURLFieldHint: null,
+            title: "Cycl'Assist",
         };
     },
     name: 'App',
     methods: {
+        copyShareMapPositionURL() {
+            this.$refs.sharePositionURLField.$el.querySelector('input').select();
+            if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                document.execCommand('copy');
+                this.sharePositionURLFieldHint = this.$t('misc.copiedToClipboard');
+            }
+        },
         goToAbout() {
             this.$router.push({ name: 'About' });
         },

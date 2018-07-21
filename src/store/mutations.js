@@ -52,6 +52,7 @@ if (storageAvailable('localStorage')) {
 }
 
 export const initialState = {
+    currentPosition: null,
     hasGoneThroughIntro: false,
     isLoading: false,
     reportDetails: {
@@ -76,6 +77,9 @@ export const mutations = {
     },
     [types.IS_DONE_LOADING](state) {
         state.isLoading = false;
+    },
+    [types.SET_CURRENT_POSITION](state, { positionLatLng }) {
+        state.currentPosition = positionLatLng;
     },
     [types.SET_SETTING](state, { setting, value }) {
         if (storageAvailable('localStorage')) {

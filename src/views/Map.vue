@@ -2,8 +2,8 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
-            <v-flex xs12 fill-height v-if="latLng">
-                <Map :positionLatLng="latLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
+            <v-flex xs12 fill-height v-if="positionLatLng">
+                <Map :mapZoom="mapZoom" :positionIsGPS="!hasRouteCenter" :positionLatLng="positionLatLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
                     absolute
                     dark
@@ -16,6 +16,7 @@
                     @click.native.stop="() => showReportDialog()"
                     role="button"
                     :aria-label="$t('buttons.reportProblem')"
+                    v-if="!hasRouteCenter"
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
@@ -60,10 +61,19 @@ export default {
         ReportDialog,
     },
     beforeRouteEnter(to, from, next) {
-        if (!store.state.hasGoneThroughIntro) {
-            return next({ name: 'Onboarding', replace: true });
+        if (to.name !== 'SharedMap') {
+            if (!store.state.hasGoneThroughIntro) {
+                return next({ name: 'Onboarding', replace: true });
+            }
         }
         return next();
+    },
+    watch: {
+        $route(to) {
+            if (to.name === 'SharedMap') {
+                this.setPositionFromRoute();
+            }
+        },
     },
     beforeDestroy() {
         this.disableNoSleep();
@@ -72,6 +82,12 @@ export default {
         this.$store.dispatch('hideReportDetails');
     },
     computed: {
+        hasRouteCenter() {
+            return this.$route.params.lat && this.$route.params.lng;
+        },
+        mapZoom() {
+            return this.$route.params.zoom ? parseInt(this.$route.params.zoom, 10) : null;
+        },
         reportsMarkers() {
             return this.$store.getters.notDismissedReports.map(report => ({
                 id: report.id,
@@ -93,7 +109,7 @@ export default {
             dialog: false,
             error: null,
             heading: null,
-            latLng: null,
+            positionLatLng: null,
             manualLocation: null,
             noSleep: null,
             positionHistory: [],
@@ -138,6 +154,9 @@ export default {
                 }
             }
         },
+        setPositionFromRoute() {
+            this.positionLatLng = [this.$route.params.lat, this.$route.params.lng];
+        },
         handlePositionError(error) {
             this.error = `${this.$t('geolocation.errorFetchingPosition')} `;
             if (error.code === 1) {
@@ -149,17 +168,24 @@ export default {
             }
         },
         setPosition(position) {
-            if (this.latLng) {
+            if (this.positionLatLng) {
                 const distanceFromPreviousPoint = distance(
-                    [this.latLng[0], this.latLng[1]],
+                    [this.positionLatLng[0], this.positionLatLng[1]],
                     [position.coords.latitude, position.coords.longitude],
                 );
                 if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
                     this.$store.dispatch('fetchReports');
                 }
             }
-            this.latLng = [position.coords.latitude, position.coords.longitude];
-            this.positionHistory.push(this.latLng);
+            this.positionLatLng = [position.coords.latitude, position.coords.longitude];
+            if (
+                !this.$store.state.currentPosition ||
+                this.positionLatLng[0] !== this.$store.state.currentPosition[0] ||
+                this.positionLatLng[1] !== this.$store.state.currentPosition[1]
+            ) {
+                this.$store.dispatch('setCurrentPosition', { positionLatLng: this.positionLatLng });
+            }
+            this.positionHistory.push(this.positionLatLng);
             this.heading = null;
             if (position.coords.heading !== null && !isNaN(position.coords.heading)) {
                 this.heading = position.coords.heading;
@@ -182,8 +208,8 @@ export default {
                 this.reportLat = latlng.lat;
                 this.reportLng = latlng.lng;
             } else {
-                this.reportLat = this.latLng[0];
-                this.reportLng = this.latLng[1];
+                this.reportLat = this.positionLatLng[0];
+                this.reportLng = this.positionLatLng[1];
             }
             this.dialog = !this.dialog;
         },
@@ -199,12 +225,16 @@ export default {
             }
         },
         onManualLocationPicker(value) {
-            this.latLng = [value.latlng.lat, value.latlng.lng];
+            this.positionLatLng = [value.latlng.lat, value.latlng.lng];
         },
     },
     mounted() {
-        this.setNoSleep();
-        this.initializePositionWatching();
+        if (this.hasRouteCenter) {
+            this.setPositionFromRoute();
+        } else {
+            this.setNoSleep();
+            this.initializePositionWatching();
+        }
         this.$store.dispatch('fetchReports');
         window.addEventListener('keydown', this.hideReportDialogOnEsc);
     },
