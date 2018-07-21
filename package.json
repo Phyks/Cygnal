@@ -9,8 +9,8 @@
         "start": "npm run dev",
         "lint": "eslint --ext .js,.vue src",
         "build": "node build/build.js",
-        "push-locales": "json2po -P -i src/i18n/en.json -t src/i18n/en.json -o po/cyclassist.pot && zanata-cli -q -B push",
-        "pull-locales": "zanata-cli -q -B pull && ./.po2json.sh"
+        "push-locales": "json2po -P -i src/i18n/en.json -t src/i18n/en.json -o po/cyclassist.pot && zanata push",
+        "pull-locales": "zanata pull && ./.po2json.sh"
     },
     "dependencies": {
         "es6-promise": "^4.2.4",

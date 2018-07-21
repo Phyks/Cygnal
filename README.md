@@ -115,7 +115,8 @@ To add new strings to localize, edit the `src/i18n/en.json` file with your new
 strings (and only this file). Then, you can run `yarn push-locales` to send
 the updated locales to translate and `yarn pull-locales` to fetch the
 translated files. To use these scripts you will need the
-Translate-toolkit(`pip install translate-toolkit`) and the Zanata CLI client.
+Translate-toolkit(`pip install translate-toolkit`) and the [Zanata Python CLI
+client](https://github.com/zanata/zanata-python-client).
 
 
 ## License
