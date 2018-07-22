@@ -59,4 +59,5 @@ AVAILABLE_LOCALES.forEach((item) => {
 
 export default new VueI18n({
     messages,
+    fallbackLocale: 'en',
 });
