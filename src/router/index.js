@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import About from '@/components/About.vue';
+import About from '@/views/About.vue';
 import Map from '@/views/Map.vue';
 import Onboarding from '@/views/Onboarding.vue';
 import Settings from '@/views/Settings.vue';

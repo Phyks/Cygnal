@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-dialog v-model="error" max-width="290">
+        <Modal v-model="error">
             <v-card>
                 <v-card-title class="subheading">{{ $t('reportDialog.unableToSendTitle') }}</v-card-title>
 
@@ -22,7 +22,7 @@
                     <v-spacer></v-spacer>
                 </v-card-actions>
             </v-card>
-        </v-dialog>
+        </Modal>
         <v-bottom-sheet v-model="isActive">
             <v-card>
                 <v-container fluid>
@@ -38,16 +38,16 @@
 <script>
 import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
 
+import Modal from '@/components/Modal.vue';
 import ReportTile from './ReportTile.vue';
 
 export default {
-    components: {
-        ReportTile,
+    beforeDestroy() {
+        window.removeEventListener('keydown', this.hideReportDialogOnEsc);
     },
-    props: {
-        value: Boolean,
-        lat: Number,
-        lng: Number,
+    components: {
+        Modal,
+        ReportTile,
     },
     computed: {
         isActive: {
@@ -55,6 +55,9 @@ export default {
                 return this.value;
             },
             set(val) {
+                if (val === false) {
+                    this.onHide();
+                }
                 this.$emit('input', val);
             },
         },
@@ -67,17 +70,36 @@ export default {
         };
     },
     methods: {
+        hideReportDialogOnEsc(event) {
+            let isEscape = false;
+            if ('key' in event) {
+                isEscape = (event.key === 'Escape' || event.key === 'Esc');
+            } else {
+                isEscape = (event.keyCode === 27);
+            }
+            if (isEscape) {
+                this.isActive = false;
+            }
+        },
         saveReport(type) {
-            this.isActive = !this.isActive;
+            this.isActive = false;
             return this.$store.dispatch('saveReport', {
                 type,
-                lat: this.lat,
-                lng: this.lng,
+                lat: this.latLng[0],
+                lng: this.latLng[1],
             }).catch((exc) => {
                 console.error(exc);
                 this.error = exc;
             });
         },
+    },
+    mounted() {
+        window.addEventListener('keydown', this.hideReportDialogOnEsc);
+    },
+    props: {
+        value: Boolean,
+        latLng: Array,
+        onHide: Function,
     },
 };
 </script>

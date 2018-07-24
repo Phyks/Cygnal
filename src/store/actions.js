@@ -1,14 +1,17 @@
 import moment from 'moment';
 
 import * as api from '@/api';
+import * as constants from '@/constants';
 import i18n from '@/i18n';
 
 import {
     INTRO_WAS_SEEN,
-    IS_LOADING,
     IS_DONE_LOADING,
+    IS_LOADING,
     PUSH_REPORT,
     SET_CURRENT_POSITION,
+    SET_LOCATION_ERROR,
+    SET_LOCATION_WATCHER_ID,
     SET_SETTING,
     SHOW_REPORT_DETAILS,
     STORE_REPORTS,
@@ -63,6 +66,37 @@ export function markIntroAsSeen({ commit }) {
     return commit(INTRO_WAS_SEEN);
 }
 
-export function setCurrentPosition({ commit }, { positionLatLng }) {
-    return commit(SET_CURRENT_POSITION, { positionLatLng });
+export function setCurrentPosition(
+    { commit, state },
+    { accuracy = null, heading = null, latLng = null },
+) {
+    const locationState = state.location;
+    if (
+        accuracy !== locationState.accuracy ||
+        heading !== locationState.heading ||
+        latLng.every((item, index) => item !== locationState.currentLatLng[index])
+    ) {
+        // Throttle mutations if nothing has changed
+        return commit(SET_CURRENT_POSITION, { accuracy, heading, latLng });
+    }
+    return null;
+}
+
+export function setLocationWatcherId({ commit }, { id }) {
+    return commit(SET_LOCATION_WATCHER_ID, { id });
+}
+
+export function setLocationError({ commit, state }, { error }) {
+    // Unregister location watcher
+    const watcherID = state.location.watcherID;
+    if (watcherID !== null) {
+        if (constants.MOCK_LOCATION) {
+            clearInterval(watcherID);
+        } else {
+            navigator.geolocation.clearWatch(watcherID);
+        }
+    }
+
+    commit(SET_LOCATION_WATCHER_ID, { id: null });
+    commit(SET_LOCATION_ERROR, { error });
 }

@@ -37,14 +37,17 @@
         "invalidSelection": "Invalid selection",
         "pickALocationManually": "pick a location manually"
     },
+    "map": {
+        "attribution": "Map data © <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+    },
     "menu": {
         "About": "Help",
         "shareMapView": "Share map view",
         "Settings": "Settings"
     },
     "misc": {
-        "copiedToClipboard": "Copied to clipboard!",
         "discard": "Discard",
+        "ok": "OK",
         "or": "or",
         "retry": "Retry",
         "spaceBeforeDoublePunctuations": ""
@@ -76,5 +79,10 @@
         "save": "Save",
         "skipOnboarding": "Skip onboarding",
         "tileServer": "Map tiles server"
+    },
+    "shareMapViewModal": {
+        "copiedToClipboard": "Copied to clipboard!",
+        "copyURLToShareCurrentMapView": "Copy the URL below to share the current map view.",
+        "shareCurrentMapView": "Share current map view"
     }
 }

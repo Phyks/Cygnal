@@ -2,8 +2,8 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
-            <v-flex xs12 fill-height v-if="positionLatLng">
-                <Map :mapZoom="mapZoom" :positionIsGPS="!hasRouteCenter" :positionLatLng="positionLatLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
+            <v-flex xs12 fill-height v-if="currentLatLng">
+                <Map :mapZoom="mapZoom" :positionIsGPS="!hasRouteCenter" :positionLatLng="currentLatLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
                 <v-btn
                     absolute
                     dark
@@ -20,22 +20,11 @@
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
-                <ReportDialog v-model="dialog" :lat="reportLat" :lng="reportLng"></ReportDialog>
+                <ReportDialog v-model="isReportDialogVisible" :latLng="reportLatLng" :onHide="resetReportLatLng"></ReportDialog>
             </v-flex>
             <v-flex xs12 sm6 offset-sm3 md4 offset-md4 fill-height v-else class="pa-3">
-                <template v-if="error">
-                    <p class="text-xs-center">{{ error }}</p>
-                    <p class="text-xs-center">
-                        <v-btn role="button" color="blue" dark @click="initializePositionWatching">Retry</v-btn>
-                    </p>
-                    <p>{{ $t('misc.or') }}</p>
-                    <p>
-                        <AddressInput :label="$t('locationPicker.pickALocationManually')" :onInput="onManualLocationPicker" v-model="manualLocation"></AddressInput>
-                    </p>
-                </template>
-                <template v-else>
-                    <p class="text-xs-center">{{ $t('geolocation.fetching') }}</p>
-                </template>
+                <LocationError :error="error" :retryFunction="initializePositionWatching" v-if="error"></LocationError>
+                <p class="text-xs-center" v-else>{{ $t('geolocation.fetching') }}</p>
             </v-flex>
         </v-layout>
     </v-container>
@@ -44,21 +33,59 @@
 <script>
 import NoSleep from 'nosleep.js';
 
-import AddressInput from '@/components/AddressInput.vue';
+import LocationError from '@/components/LocationError.vue';
 import Map from '@/components/Map.vue';
 import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 
 import * as constants from '@/constants';
 import { distance, mockLocation } from '@/tools';
+
+import i18n from '@/i18n';
 import store from '@/store';
 
+function handlePositionError(error) {
+    // TODO: Not translated when changing locale
+    let errorString = `${i18n.t('geolocation.errorFetchingPosition')} `;
+    if (error.code === 1) {
+        errorString += i18n.t('geolocation.permissionDenied');
+    } else if (error.code === 2) {
+        errorString += i18n.t('geolocation.positionUnavailable');
+    } else {
+        errorString += i18n.t('geolocation.timeout');
+    }
+    store.dispatch('setLocationError', { error: errorString });
+}
+
+function setPosition(position) {
+    const currentLatLng = store.state.location.currentLatLng;
+    if (currentLatLng) {
+        const distanceFromPreviousPoint = distance(
+            [currentLatLng[0], currentLatLng[1]],
+            [position.coords.latitude, position.coords.longitude],
+        );
+        if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
+            store.dispatch('fetchReports');
+        }
+    }
+    store.dispatch(
+        'setCurrentPosition',
+        {
+            accuracy: position.coords.accuracy ? position.coords.accuracy : null,
+            heading: (
+                (position.coords.heading !== null && !isNaN(position.coords.heading))
+                ? position.coords.heading
+                : null
+            ),
+            latLng: [position.coords.latitude, position.coords.longitude],
+        },
+    );
+}
+
 export default {
-    components: {
-        AddressInput,
-        Map,
-        ReportCard,
-        ReportDialog,
+    beforeDestroy() {
+        this.disableNoSleep();
+        this.$store.dispatch('hideReportDetails');
     },
     beforeRouteEnter(to, from, next) {
         if (to.name !== 'SharedMap') {
@@ -68,25 +95,38 @@ export default {
         }
         return next();
     },
-    watch: {
-        $route(to) {
-            if (to.name === 'SharedMap') {
-                this.setPositionFromRoute();
-            }
-        },
-    },
-    beforeDestroy() {
-        this.disableNoSleep();
-        this.disablePositionWatching();
-        window.removeEventListener('keydown', this.hideReportDialogOnEsc);
-        this.$store.dispatch('hideReportDetails');
+    components: {
+        LocationError,
+        Map,
+        ReportCard,
+        ReportDialog,
     },
     computed: {
+        accuracy() {
+            return this.$store.state.location.accuracy;
+        },
+        currentLatLng() {
+            const currentLatLng = this.$store.state.location.currentLatLng;
+            // Check that this is a correct position
+            if (currentLatLng.some(item => item === null)) {
+                return null;
+            }
+            return currentLatLng;
+        },
+        error() {
+            return this.$store.state.location.error;
+        },
         hasRouteCenter() {
             return this.$route.params.lat && this.$route.params.lng;
         },
+        heading() {
+            return this.$store.state.location.heading;
+        },
         mapZoom() {
             return this.$route.params.zoom ? parseInt(this.$route.params.zoom, 10) : null;
+        },
+        positionHistory() {
+            return this.$store.state.location.positionHistory;
         },
         reportsMarkers() {
             return this.$store.getters.notDismissedReports.map(report => ({
@@ -95,107 +135,56 @@ export default {
                 latLng: [report.attributes.lat, report.attributes.lng],
             }));
         },
-        reportLatLng() {
-            if (this.dialog && this.reportLat && this.reportLng) {
-                return [this.reportLat, this.reportLng];
-            }
-            return null;
-        },
     },
     data() {
         return {
-            accuracy: null,
             centering: false,
-            dialog: false,
-            error: null,
-            heading: null,
-            positionLatLng: null,
-            manualLocation: null,
+            isReportDialogVisible: false,
             noSleep: null,
-            positionHistory: [],
-            reportLat: null,
-            reportLng: null,
-            watchID: null,
+            reportLatLng: null,
         };
     },
     methods: {
-        initializePositionWatching() {
-            this.error = null; // Reset any error
-            this.disablePositionWatching(); // Ensure at most one at the same time
-
-            if (constants.MOCK_LOCATION) {
-                this.setPosition(mockLocation());
-                this.watchID = setInterval(
-                    () => this.setPosition(mockLocation()),
-                    constants.MOCK_LOCATION_UPDATE_INTERVAL,
-                );
-            } else {
-                if (!('geolocation' in navigator)) {
-                    this.error = this.$t('geolocation.unavailable');
-                }
-
-                this.watchID = navigator.geolocation.watchPosition(
-                    this.setPosition,
-                    this.handlePositionError,
-                    {
-                        enableHighAccuracy: true,
-                        maximumAge: 30000,
-                        timeout: 27000,
-                    },
-                );
-            }
-        },
-        disablePositionWatching() {
-            if (this.watchID !== null) {
-                if (constants.MOCK_LOCATION) {
-                    clearInterval(this.watchID);
-                } else {
-                    navigator.geolocation.clearWatch(this.watchID);
-                }
-            }
-        },
-        setPositionFromRoute() {
-            this.positionLatLng = [this.$route.params.lat, this.$route.params.lng];
-        },
-        handlePositionError(error) {
-            this.error = `${this.$t('geolocation.errorFetchingPosition')} `;
-            if (error.code === 1) {
-                this.error += this.$t('geolocation.permissionDenied');
-            } else if (error.code === 2) {
-                this.error += this.$t('geolocation.positionUnavailable');
-            } else {
-                this.error += this.$t('geolocation.timeout');
-            }
-        },
-        setPosition(position) {
-            if (this.positionLatLng) {
-                const distanceFromPreviousPoint = distance(
-                    [this.positionLatLng[0], this.positionLatLng[1]],
-                    [position.coords.latitude, position.coords.longitude],
-                );
-                if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
-                    this.$store.dispatch('fetchReports');
-                }
-            }
-            this.positionLatLng = [position.coords.latitude, position.coords.longitude];
-            if (
-                !this.$store.state.currentPosition ||
-                this.positionLatLng[0] !== this.$store.state.currentPosition[0] ||
-                this.positionLatLng[1] !== this.$store.state.currentPosition[1]
-            ) {
-                this.$store.dispatch('setCurrentPosition', { positionLatLng: this.positionLatLng });
-            }
-            this.positionHistory.push(this.positionLatLng);
-            this.heading = null;
-            if (position.coords.heading !== null && !isNaN(position.coords.heading)) {
-                this.heading = position.coords.heading;
-            }
-            this.accuracy = position.coords.accuracy ? position.coords.accuracy : null;
-        },
         disableNoSleep() {
             if (this.noSleep) {
                 this.noSleep.disable();
             }
+        },
+        initializePositionWatching() {
+            if (this.$store.state.location.watcherID !== null) {
+                // Already watching location, no need to add another watcher
+                return;
+            }
+
+            this.$store.dispatch('setLocationError', { error: null }); // Reset any error
+
+            // Set up a watcher
+            let watchID = null;
+            if (constants.MOCK_LOCATION) {
+                setPosition(mockLocation());
+                watchID = setInterval(
+                    () => setPosition(mockLocation()),
+                    constants.MOCK_LOCATION_UPDATE_INTERVAL,
+                );
+            } else {
+                if (!('geolocation' in navigator)) {
+                    this.$store.dispatch('setLocationError', { error: this.$t('geolocation.unavailable') });
+                    return;
+                }
+
+                watchID = navigator.geolocation.watchPosition(
+                    setPosition,
+                    handlePositionError,
+                    {
+                        enableHighAccuracy: true,
+                        maximumAge: 30000,
+                    },
+                );
+            }
+            this.$store.dispatch('setLocationWatcherId', { id: watchID });
+        },
+        resetReportLatLng() {
+            this.reportLatLng = null;
         },
         setNoSleep() {
             if (this.$store.state.settings.preventSuspend) {
@@ -203,32 +192,21 @@ export default {
                 this.noSleep.enable();
             }
         },
+        setPositionFromRoute() {
+            // TODO
+            this.positionLatLng = [this.$route.params.lat, this.$route.params.lng];
+        },
         showReportDialog(latlng) {
             if (latlng) {
-                this.reportLat = latlng.lat;
-                this.reportLng = latlng.lng;
+                this.reportLatLng = [latlng.lat, latlng.lng];
             } else {
-                this.reportLat = this.positionLatLng[0];
-                this.reportLng = this.positionLatLng[1];
+                this.reportLatLng = this.currentLatLng;
             }
-            this.dialog = !this.dialog;
-        },
-        hideReportDialogOnEsc(event) {
-            let isEscape = false;
-            if ('key' in event) {
-                isEscape = (event.key === 'Escape' || event.key === 'Esc');
-            } else {
-                isEscape = (event.keyCode === 27);
-            }
-            if (isEscape) {
-                this.dialog = false;
-            }
-        },
-        onManualLocationPicker(value) {
-            this.positionLatLng = [value.latlng.lat, value.latlng.lng];
+            this.isReportDialogVisible = true;
         },
     },
     mounted() {
+        // TODO
         if (this.hasRouteCenter) {
             this.setPositionFromRoute();
         } else {
@@ -236,7 +214,13 @@ export default {
             this.initializePositionWatching();
         }
         this.$store.dispatch('fetchReports');
-        window.addEventListener('keydown', this.hideReportDialogOnEsc);
+    },
+    watch: {
+        $route(to) {
+            if (to.name === 'SharedMap') {
+                this.setPositionFromRoute();
+            }
+        },
     },
 };
 </script>

@@ -59,11 +59,8 @@ export default {
         ReportMarker,
     },
     props: {
-        accuracy: {
-            type: Number,
-            default: null,
-        },
-        heading: Number,  // in degrees, clockwise wrt north
+        accuracy: Number,
+        heading: Number, // in degrees, clockwise wrt north
         mapZoom: Number,
         markers: Array,
         onPress: Function,
@@ -179,7 +176,7 @@ export default {
     },
     data() {
         return {
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            attribution: this.$t('map.attribution'),
             zoom: this.mapZoom || constants.DEFAULT_ZOOM,
             markerRadius: 10.0,
             minZoom: constants.MIN_ZOOM,
