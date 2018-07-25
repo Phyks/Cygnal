@@ -1,10 +1,16 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
+// Moment locales
+import 'moment/locale/en-gb';
+import 'moment/locale/fr';
+
+// App locales
 import en from './en.json';
 import fr from './fr.json';
 import oc from './oc.json';
 
+// Local moment locales
 import './moment/oc';
 
 export const AVAILABLE_LOCALES = [
