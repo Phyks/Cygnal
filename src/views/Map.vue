@@ -2,8 +2,20 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
-            <v-flex xs12 fill-height v-if="currentLatLng">
-                <Map :mapZoom="mapZoom" :positionIsGPS="!hasRouteCenter" :positionLatLng="currentLatLng" :reportLatLng="reportLatLng" :polyline="positionHistory" :heading="heading" :accuracy="accuracy" :markers="reportsMarkers" :onPress="showReportDialog"></Map>
+            <v-flex xs12 fill-height v-if="mapCenter">
+                <Map
+                    :accuracy="accuracy"
+                    :center="mapCenter"
+                    :heading="heading"
+                    :markers="reportsMarkers"
+                    :onMapCenterUpdate="onMapCenterUpdate"
+                    :onMapZoomUpdate="onMapZoomUpdate"
+                    :onPress="showReportDialog"
+                    :polyline="positionHistory"
+                    :positionLatLng="currentLatLng"
+                    :reportLatLng="reportLatLng"
+                    :zoom="mapZoom"
+                    ></Map>
                 <v-btn
                     absolute
                     dark
@@ -16,7 +28,7 @@
                     @click.native.stop="() => showReportDialog()"
                     role="button"
                     :aria-label="$t('buttons.reportProblem')"
-                    v-if="!hasRouteCenter"
+                    v-if="!hasCenterProvidedByRoute"
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
@@ -46,15 +58,7 @@ import store from '@/store';
 
 function handlePositionError(error) {
     // TODO: Not translated when changing locale
-    let errorString = `${i18n.t('geolocation.errorFetchingPosition')} `;
-    if (error.code === 1) {
-        errorString += i18n.t('geolocation.permissionDenied');
-    } else if (error.code === 2) {
-        errorString += i18n.t('geolocation.positionUnavailable');
-    } else {
-        errorString += i18n.t('geolocation.timeout');
-    }
-    store.dispatch('setLocationError', { error: errorString });
+    store.dispatch('setLocationError', { error: error.code });
 }
 
 function setPosition(position) {
@@ -89,6 +93,8 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         if (to.name !== 'SharedMap') {
+            // Check that intro was seen except if we are in SharedMap view.
+            // This is required in order to ensure NoSleep works well.
             if (!store.state.hasGoneThroughIntro) {
                 return next({ name: 'Onboarding', replace: true });
             }
@@ -114,16 +120,38 @@ export default {
             return currentLatLng;
         },
         error() {
-            return this.$store.state.location.error;
+            const errorCode = this.$store.state.location.error;
+            if (errorCode) {
+                let errorString = `${i18n.t('geolocation.errorFetchingPosition')} `;
+                if (errorCode === 1) {
+                    errorString += i18n.t('geolocation.permissionDenied');
+                } else if (errorCode === 2) {
+                    errorString += i18n.t('geolocation.positionUnavailable');
+                } else {
+                    errorString += i18n.t('geolocation.timeout');
+                }
+                return errorString;
+            }
+            return null;
         },
-        hasRouteCenter() {
+        hasCenterProvidedByRoute() {
             return this.$route.params.lat && this.$route.params.lng;
         },
         heading() {
             return this.$store.state.location.heading;
         },
+        mapCenter() {
+            if (this.hasCenterProvidedByRoute) {
+                return [this.$route.params.lat, this.$route.params.lng];
+            }
+            return this.currentLatLng;
+        },
         mapZoom() {
-            return this.$route.params.zoom ? parseInt(this.$route.params.zoom, 10) : null;
+            return (
+                this.$route.params.zoom
+                ? parseInt(this.$route.params.zoom, 10)
+                : constants.DEFAULT_ZOOM
+            );
         },
         positionHistory() {
             return this.$store.state.location.positionHistory;
@@ -138,7 +166,6 @@ export default {
     },
     data() {
         return {
-            centering: false,
             isReportDialogVisible: false,
             noSleep: null,
             reportLatLng: null,
@@ -183,6 +210,12 @@ export default {
             }
             this.$store.dispatch('setLocationWatcherId', { id: watchID });
         },
+        onMapCenterUpdate(center) {
+            this.$store.dispatch('setCurrentMapCenter', { center });
+        },
+        onMapZoomUpdate(zoom) {
+            this.$store.dispatch('setCurrentMapZoom', { zoom });
+        },
         resetReportLatLng() {
             this.reportLatLng = null;
         },
@@ -191,10 +224,6 @@ export default {
                 this.noSleep = new NoSleep();
                 this.noSleep.enable();
             }
-        },
-        setPositionFromRoute() {
-            // TODO
-            this.positionLatLng = [this.$route.params.lat, this.$route.params.lng];
         },
         showReportDialog(latlng) {
             if (latlng) {
@@ -206,21 +235,12 @@ export default {
         },
     },
     mounted() {
-        // TODO
-        if (this.hasRouteCenter) {
-            this.setPositionFromRoute();
-        } else {
+        if (this.$route.name !== 'SharedMap') {
+            // Only enable NoSleep in normal map view (with position tracking).
             this.setNoSleep();
             this.initializePositionWatching();
         }
         this.$store.dispatch('fetchReports');
-    },
-    watch: {
-        $route(to) {
-            if (to.name === 'SharedMap') {
-                this.setPositionFromRoute();
-            }
-        },
     },
 };
 </script>

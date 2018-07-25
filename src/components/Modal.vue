@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// TODO: Not closing when clicking outside
 export default {
     beforeDestroy() {
         window.removeEventListener('keydown', this.hideModalOnEsc);

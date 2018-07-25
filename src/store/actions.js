@@ -9,6 +9,8 @@ import {
     IS_DONE_LOADING,
     IS_LOADING,
     PUSH_REPORT,
+    SET_CURRENT_MAP_CENTER,
+    SET_CURRENT_MAP_ZOOM,
     SET_CURRENT_POSITION,
     SET_LOCATION_ERROR,
     SET_LOCATION_WATCHER_ID,
@@ -66,6 +68,18 @@ export function markIntroAsSeen({ commit }) {
     return commit(INTRO_WAS_SEEN);
 }
 
+export function setCurrentMapCenter({ commit, state }, { center }) {
+    if (state.map.center.some((item, index) => item !== center[index])) {
+        commit(SET_CURRENT_MAP_CENTER, { center });
+    }
+}
+
+export function setCurrentMapZoom({ commit, state }, { zoom }) {
+    if (state.map.zoom !== zoom) {
+        commit(SET_CURRENT_MAP_ZOOM, { zoom });
+    }
+}
+
 export function setCurrentPosition(
     { commit, state },
     { accuracy = null, heading = null, latLng = null },
@@ -74,12 +88,11 @@ export function setCurrentPosition(
     if (
         accuracy !== locationState.accuracy ||
         heading !== locationState.heading ||
-        latLng.every((item, index) => item !== locationState.currentLatLng[index])
+        locationState.currentLatLng.some((item, index) => item !== latLng[index])
     ) {
         // Throttle mutations if nothing has changed
-        return commit(SET_CURRENT_POSITION, { accuracy, heading, latLng });
+        commit(SET_CURRENT_POSITION, { accuracy, heading, latLng });
     }
-    return null;
 }
 
 export function setLocationWatcherId({ commit }, { id }) {

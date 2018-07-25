@@ -62,6 +62,10 @@ export const initialState = {
         positionHistory: [],
         watcherID: null,
     },
+    map: {
+        center: [null, null],
+        zoom: null,
+    },
     reportDetails: {
         id: null,
         userAsked: null,
@@ -93,11 +97,17 @@ export const mutations = {
             Vue.set(state.reports, reportIndex, report);
         }
     },
+    [types.SET_CURRENT_MAP_CENTER](state, { center }) {
+        Vue.set(state.map, 'center', center);
+    },
+    [types.SET_CURRENT_MAP_ZOOM](state, { zoom }) {
+        Vue.set(state.map, 'zoom', zoom);
+    },
     [types.SET_CURRENT_POSITION](state, { accuracy, heading, latLng }) {
         Vue.set(state.location, 'accuracy', accuracy);
         Vue.set(state.location, 'currentLatLng', latLng);
         Vue.set(state.location, 'heading', heading);
-        // TODO: Push position history
+        state.location.positionHistory.push(latLng);
     },
     [types.SET_LOCATION_ERROR](state, { error }) {
         Vue.set(state.location, 'error', error);

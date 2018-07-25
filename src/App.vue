@@ -12,7 +12,9 @@
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
-                    <ShareMapView></ShareMapView>
+                    <v-list-tile @click="isShareMapViewModalShown = true" v-if="isShareMapViewMenuEntryVisible">
+                        <v-list-tile-title>{{ $t("menu.shareMapView") }}</v-list-tile-title>
+                    </v-list-tile>
                     <v-list-tile @click="goToAbout">
                         <v-list-tile-title>{{ $t("menu.About") }}</v-list-tile-title>
                     </v-list-tile>
@@ -21,8 +23,7 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
-            <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goToMap">
-                <!-- TODO: Should send back to the expected map view -->
+            <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goBack">
                 <v-icon>arrow_back</v-icon>
             </v-btn>
             <div>
@@ -30,25 +31,30 @@
             </div>
         </v-toolbar>
         <v-content>
+            <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <router-view></router-view>
         </v-content>
     </v-app>
 </template>
 
 <script>
-import ShareMapView from '@/components/ShareMapView.vue';
+import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
 
 export default {
     components: {
-        ShareMapView,
+        ShareMapViewModal,
     },
     computed: {
         isLoading() {
             return this.$store.state.isLoading;
         },
+        isShareMapViewMenuEntryVisible() {
+            return this.$store.state.map.center.every(item => item !== null);
+        },
     },
     data() {
         return {
+            isShareMapViewModalShown: false,
             title: "Cycl'Assist",
         };
     },
@@ -56,8 +62,8 @@ export default {
         goToAbout() {
             this.$router.push({ name: 'About' });
         },
-        goToMap() {
-            this.$router.push({ name: 'Map' });
+        goBack() {
+            this.$router.go(-1);
         },
         goToSettings() {
             this.$router.push({ name: 'Settings' });

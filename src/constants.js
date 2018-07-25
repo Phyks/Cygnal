@@ -113,18 +113,20 @@ export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', '
 export const MIN_DISTANCE_REPORT_DETAILS = 40;  // in meters
 
 export const MOCK_LOCATION = false;
-export const MOCK_LOCATION_UPDATE_INTERVAL = 5 * 1000;
+export const MOCK_LOCATION_UPDATE_INTERVAL = 5 * 1000; // in milliseconds
 
-export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500;
+export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500; // in meters
 
 // Minimal ratio between upvotes and downvotes needed for a report to be shown
 export const REPORT_VOTES_THRESHOLD = 0.5;
 
-export const EARTH_RADIUS = 6378137;
+export const EARTH_RADIUS = 6378137; // in meters
 
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;
+
+export const ACCURACY_DISPLAY_THRESHOLD = 100; // in meters
 
 let opencyclemapURL = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
 if (process.env.THUNDERFOREST_API_KEY) {
