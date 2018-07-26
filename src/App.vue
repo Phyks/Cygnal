@@ -7,6 +7,23 @@
                 <v-toolbar-title v-text="title" class="ma-0"></v-toolbar-title>
             </router-link>
             <v-spacer></v-spacer>
+            <v-btn
+                v-if="unsentReportsLength > 0"
+                icon
+                role="button"
+                :aria-label="$t('buttons.uploadUnsents')"
+                :loading="isSendingReports"
+                :disabled="isSendingReports"
+                class="mr-3"
+                color="orange"
+                dark
+                @click="sendUnsentReports"
+                >
+                <v-badge color="orange" left>
+                    <span slot="badge">{{ unsentReportsLength }}</span>
+                    <v-icon>cloud_upload</v-icon>
+                </v-badge>
+            </v-btn>
             <v-menu offset-y class="menu" v-if="$route.name === 'Onboarding' || $route.name === 'Map' || $route.name === 'SharedMap'">
                 <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
                     <v-icon>more_vert</v-icon>
@@ -31,6 +48,7 @@
             </div>
         </v-toolbar>
         <v-content>
+            <ReportErrorModal v-model="hasReportError"></ReportErrorModal>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <router-view></router-view>
         </v-content>
@@ -38,10 +56,14 @@
 </template>
 
 <script>
+import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
+
+import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
 
 export default {
     components: {
+        ReportErrorModal,
         ShareMapViewModal,
     },
     computed: {
@@ -51,9 +73,14 @@ export default {
         isShareMapViewMenuEntryVisible() {
             return this.$store.state.map.center.every(item => item !== null);
         },
+        unsentReportsLength() {
+            return this.$store.state.unsentReports.length;
+        },
     },
     data() {
         return {
+            hasReportError: false,
+            isSendingReports: false,
             isShareMapViewModalShown: false,
             title: "Cycl'Assist",
         };
@@ -67,6 +94,27 @@ export default {
         },
         goToSettings() {
             this.$router.push({ name: 'Settings' });
+        },
+        sendUnsentReports() {
+            if (!this.unsentReportsLength) {
+                this.isSendingReports = false;
+                return;
+            }
+            this.isSendingReports = true;
+
+            const index = this.unsentReportsLength - 1;
+            const report = this.$store.state.unsentReports[index];
+            this.$store.dispatch('saveReport', report)
+                .then(() => {
+                    this.$store.dispatch('removeUnsentReport', { index });
+                    this.hasReportError = false;
+                    setTimeout(this.sendUnsentReports, DELAY_BETWEEN_API_BATCH_REQUESTS);
+                })
+                .catch((exc) => {
+                    console.error(exc);
+                    this.hasReportError = true;
+                    this.isSendingReports = false;
+                });
         },
     },
 };

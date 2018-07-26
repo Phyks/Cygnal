@@ -110,6 +110,12 @@ export const mutations = {
             localStorage.setItem('unsentReports', JSON.stringify(state.unsentReports));
         }
     },
+    [types.REMOVE_UNSENT_REPORT](state, { index }) {
+        state.unsentReports.splice(index, 1);
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('unsentReports', JSON.stringify(state.unsentReports));
+        }
+    },
     [types.SET_CURRENT_MAP_CENTER](state, { center }) {
         Vue.set(state.map, 'center', center);
     },

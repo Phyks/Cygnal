@@ -10,6 +10,7 @@ import {
     IS_LOADING,
     PUSH_REPORT,
     PUSH_UNSENT_REPORT,
+    REMOVE_UNSENT_REPORT,
     SET_CURRENT_MAP_CENTER,
     SET_CURRENT_MAP_ZOOM,
     SET_CURRENT_POSITION,
@@ -46,6 +47,10 @@ export function saveReport({ commit }, { type, lat, lng }) {
 
 export function saveUnsentReport({ commit }, { report }) {
     commit(PUSH_UNSENT_REPORT, { report });
+}
+
+export function removeUnsentReport({ commit }, { index }) {
+    commit(REMOVE_UNSENT_REPORT, { index });
 }
 
 export function hideReportDetails({ commit }) {

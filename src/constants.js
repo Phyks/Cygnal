@@ -139,3 +139,7 @@ export const TILE_SERVERS = {
 export const DEFAULT_TILE_SERVER = 'cartodb-voyager';
 
 export const GEOCODING_API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search/';
+
+// Delay in milliseconds between two consecutive calls to the backend API when
+// doing batch requests
+export const DELAY_BETWEEN_API_BATCH_REQUESTS = 1000;

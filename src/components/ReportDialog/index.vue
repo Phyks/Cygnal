@@ -1,33 +1,19 @@
 <template>
     <div>
-        <Modal v-model="hasError">
-            <v-card>
-                <v-card-title class="subheading">{{ $t('reportDialog.unableToSendTitle') }}</v-card-title>
-
-                <v-card-text>{{ $t('reportDialog.unableToSendDescription') }} </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn
-                        color="red darken-1"
-                        @click="hasError = false"
-                        dark
-                        large
-                        role="button"
-                        >
-                        {{ $t('misc.discard') }}
-                    </v-btn>
-
-                    <v-spacer></v-spacer>
-                </v-card-actions>
-            </v-card>
-        </Modal>
+        <ReportErrorModal v-model="hasError"></ReportErrorModal>
         <v-bottom-sheet v-model="isActive">
             <v-card>
                 <v-container fluid>
                     <v-layout row wrap>
-                        <ReportTile v-for="type in REPORT_TYPES_ORDER" :type="type" :imageSrc="REPORT_TYPES[type].image" :label="$t(REPORT_TYPES[type].label)" :save="saveReport" :key="type"></ReportTile>
+                        <ReportTile
+                            v-for="type in REPORT_TYPES_ORDER"
+                            :type="type"
+                            :imageSrc="REPORT_TYPES[type].image"
+                            :label="$t(REPORT_TYPES[type].label)"
+                            :save="saveReport"
+                            :key="type"
+                            >
+                        </ReportTile>
                     </v-layout>
                 </v-container>
             </v-card>
@@ -38,7 +24,7 @@
 <script>
 import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
 
-import Modal from '@/components/Modal.vue';
+import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ReportTile from './ReportTile.vue';
 
 export default {
@@ -46,7 +32,7 @@ export default {
         window.removeEventListener('keydown', this.hideReportDialogOnEsc);
     },
     components: {
-        Modal,
+        ReportErrorModal,
         ReportTile,
     },
     computed: {
