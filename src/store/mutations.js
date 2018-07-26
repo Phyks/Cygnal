@@ -6,7 +6,7 @@ import { storageAvailable } from '@/tools';
 import { TILE_SERVERS, DEFAULT_TILE_SERVER } from '@/constants';
 import * as types from './mutations-types';
 
-function loadSettingFromStorage(name) {
+function loadDataFromStorage(name) {
     try {
         const value = localStorage.getItem(name);
         if (value) {
@@ -14,9 +14,15 @@ function loadSettingFromStorage(name) {
         }
         return null;
     } catch (e) {
-        console.error(`Unable to load setting ${name}: ${e}.`);
+        console.error(`Unable to load data from storage using key ${name}: ${e}.`);
         return null;
     }
+}
+
+// Load unsent reports from storage
+let unsentReports = null;
+if (storageAvailable('localStorage')) {
+    unsentReports = loadDataFromStorage('unsentReports');
 }
 
 // Load settings from storage
@@ -25,10 +31,10 @@ let preventSuspend = null;
 let skipOnboarding = null;
 let tileServer = null;
 if (storageAvailable('localStorage')) {
-    preventSuspend = loadSettingFromStorage('preventSuspend');
-    skipOnboarding = loadSettingFromStorage('skipOnboarding');
+    preventSuspend = loadDataFromStorage('preventSuspend');
+    skipOnboarding = loadDataFromStorage('skipOnboarding');
 
-    tileServer = loadSettingFromStorage('tileServer');
+    tileServer = loadDataFromStorage('tileServer');
     if (!TILE_SERVERS[tileServer]) {
         tileServer = null;
     }
@@ -71,6 +77,7 @@ export const initialState = {
         userAsked: null,
     },
     reports: [],
+    unsentReports: unsentReports || [],
     settings: {
         locale: locale || 'en',
         preventSuspend: preventSuspend || true,
@@ -95,6 +102,12 @@ export const mutations = {
             state.reports.push(report);
         } else {
             Vue.set(state.reports, reportIndex, report);
+        }
+    },
+    [types.PUSH_UNSENT_REPORT](state, { report }) {
+        state.unsentReports.push(report);
+        if (storageAvailable('localStorage')) {
+            localStorage.setItem('unsentReports', JSON.stringify(state.unsentReports));
         }
     },
     [types.SET_CURRENT_MAP_CENTER](state, { center }) {
