@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Modal v-model="error">
+        <Modal v-model="hasError">
             <v-card>
                 <v-card-title class="subheading">{{ $t('reportDialog.unableToSendTitle') }}</v-card-title>
 
@@ -50,6 +50,9 @@ export default {
         ReportTile,
     },
     computed: {
+        hasError() {
+            return Boolean(this.error);
+        },
         isActive: {
             get() {
                 return this.value;
