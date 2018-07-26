@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Modal v-model="error">
+        <Modal v-model="hasError">
             <v-card>
                 <v-card-title class="subheading">{{ $t('reportDialog.unableToSendTitle') }}</v-card-title>
 
@@ -11,7 +11,7 @@
 
                     <v-btn
                         color="red darken-1"
-                        @click="error = null"
+                        @click="hasError = false"
                         dark
                         large
                         role="button"
@@ -64,7 +64,7 @@ export default {
     },
     data() {
         return {
-            error: null,
+            hasError: false,
             REPORT_TYPES,
             REPORT_TYPES_ORDER,
         };
@@ -91,7 +91,7 @@ export default {
             return this.$store.dispatch('saveReport', report)
                 .catch((exc) => {
                     console.error(exc);
-                    this.error = exc;
+                    this.hasError = true;
                     this.$store.dispatch('saveUnsentReport', { report });
                 });
         },
