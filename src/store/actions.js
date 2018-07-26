@@ -9,6 +9,7 @@ import {
     IS_DONE_LOADING,
     IS_LOADING,
     PUSH_REPORT,
+    PUSH_UNSENT_REPORT,
     SET_CURRENT_MAP_CENTER,
     SET_CURRENT_MAP_ZOOM,
     SET_CURRENT_POSITION,
@@ -41,6 +42,10 @@ export function saveReport({ commit }, { type, lat, lng }) {
     return api.saveReport(type, lat, lng)
         .then(report => commit(PUSH_REPORT, { report }))
         .finally(() => commit(IS_DONE_LOADING));
+}
+
+export function saveUnsentReport({ commit }, { report }) {
+    commit(PUSH_UNSENT_REPORT, { report });
 }
 
 export function hideReportDetails({ commit }) {

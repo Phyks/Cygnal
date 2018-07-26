@@ -83,14 +83,17 @@ export default {
         },
         saveReport(type) {
             this.isActive = false;
-            return this.$store.dispatch('saveReport', {
+            const report = {
                 type,
                 lat: this.latLng[0],
                 lng: this.latLng[1],
-            }).catch((exc) => {
-                console.error(exc);
-                this.error = exc;
-            });
+            };
+            return this.$store.dispatch('saveReport', report)
+                .catch((exc) => {
+                    console.error(exc);
+                    this.error = exc;
+                    this.$store.dispatch('saveUnsentReport', { report });
+                });
         },
     },
     mounted() {
