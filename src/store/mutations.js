@@ -3,7 +3,7 @@ import Vue from 'vue';
 
 import { messages, getBrowserLocales } from '@/i18n';
 import { storageAvailable } from '@/tools';
-import { TILE_SERVERS, DEFAULT_TILE_SERVER } from '@/constants';
+import { DEFAULT_TILE_SERVER, TILE_SERVERS, VERSION } from '@/constants';
 import * as types from './mutations-types';
 
 function loadDataFromStorage(name) {
@@ -19,6 +19,23 @@ function loadDataFromStorage(name) {
     }
 }
 
+function handleMigrations() {
+    if (!storageAvailable('localStorage')) {
+        return;
+    }
+    const version = loadDataFromStorage('version');
+
+    // Migration from pre-0.1 to 0.1
+    if (version === null) {
+        const preventSuspend = loadDataFromStorage('preventSuspend');
+        if (preventSuspend !== null) {
+            localStorage.setItem('hasPreventSuspendPermission', JSON.stringify(preventSuspend));
+        }
+        localStorage.removeItem('preventSuspend');
+        localStorage.setItem('version', JSON.stringify(VERSION));
+    }
+}
+
 // Load unsent reports from storage
 let unsentReports = null;
 if (storageAvailable('localStorage')) {
@@ -27,15 +44,23 @@ if (storageAvailable('localStorage')) {
 
 // Load settings from storage
 let locale = null;
-let preventSuspend = null;
+let hasGeolocationPermission = null;
+let hasPlaySoundPermission = null;
+let hasPreventSuspendPermission = null;
+let hasVibratePermission = null;
 let skipOnboarding = null;
 let tileServer = null;
 if (storageAvailable('localStorage')) {
-    preventSuspend = loadDataFromStorage('preventSuspend');
+    handleMigrations();
+
+    hasGeolocationPermission = loadDataFromStorage('hasGeolocationPermission');
+    hasPlaySoundPermission = loadDataFromStorage('hasPlaySoundPermission');
+    hasPreventSuspendPermission = loadDataFromStorage('hasPreventSuspendPermission');
+    hasVibratePermission = loadDataFromStorage('hasVibratePermission');
     skipOnboarding = loadDataFromStorage('skipOnboarding');
 
     tileServer = loadDataFromStorage('tileServer');
-    if (!TILE_SERVERS[tileServer]) {
+    if (tileServer && !TILE_SERVERS[tileServer] && !tileServer.startsWith('custom:')) {
         tileServer = null;
     }
 
@@ -80,7 +105,18 @@ export const initialState = {
     unsentReports: unsentReports || [],
     settings: {
         locale: locale || 'en',
-        preventSuspend: preventSuspend || true,
+        hasGeolocationPermission: (
+            hasGeolocationPermission !== null ? hasGeolocationPermission : true
+        ),
+        hasPlaySoundPermission: (
+            hasPlaySoundPermission !== null ? hasPlaySoundPermission : true
+        ),
+        hasPreventSuspendPermission: (
+            hasPreventSuspendPermission !== null ? hasPreventSuspendPermission : true
+        ),
+        hasVibratePermission: (
+            hasVibratePermission !== null ? hasVibratePermission : true
+        ),
         skipOnboarding: skipOnboarding || false,
         tileServer: tileServer || DEFAULT_TILE_SERVER,
     },

@@ -13,6 +13,8 @@ import miscIcon from '@/assets/misc.svg';
 import obstacleIcon from '@/assets/obstacle.svg';
 import potholeIcon from '@/assets/pothole.svg';
 
+export const VERSION = '0.1';
+
 export const REPORT_TYPES = {
     accident: {
         description: 'reportLabels.accidentDescription',

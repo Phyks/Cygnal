@@ -107,6 +107,14 @@ export default {
                 this.radiusFromAccuracy > this.markerRadius
             );
         },
+        tileServer() {
+            const tileServerSetting = this.$store.state.settings.tileServer;
+            if (tileServerSetting in constants.TILE_SERVERS) {
+                return constants.TILE_SERVERS[tileServerSetting];
+            }
+            const firstColon = tileServerSetting.indexOf(':');
+            return tileServerSetting.substring(firstColon + 1);
+        },
     },
     data() {
         return {
@@ -118,7 +126,6 @@ export default {
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
             isRecenterButtonShown: false,
-            tileServer: constants.TILE_SERVERS[this.$store.state.settings.tileServer],
             unknownMarkerIcon: L.icon({
                 iconAnchor: [20, 40],
                 iconSize: [40, 40],

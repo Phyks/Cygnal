@@ -57,7 +57,6 @@ import i18n from '@/i18n';
 import store from '@/store';
 
 function handlePositionError(error) {
-    // TODO: Not translated when changing locale
     store.dispatch('setLocationError', { error: error.code });
 }
 
@@ -220,7 +219,7 @@ export default {
             this.reportLatLng = null;
         },
         setNoSleep() {
-            if (this.$store.state.settings.preventSuspend) {
+            if (this.$store.state.settings.hasPreventSuspendPermission) {
                 this.noSleep = new NoSleep();
                 this.noSleep.enable();
             }
@@ -238,7 +237,11 @@ export default {
         if (this.$route.name !== 'SharedMap') {
             // Only enable NoSleep in normal map view (with position tracking).
             this.setNoSleep();
-            this.initializePositionWatching();
+            if (this.$store.state.settings.hasGeolocationPermission) {
+                this.initializePositionWatching();
+            } else {
+                this.$store.state.location.error = 1;
+            }
         }
         this.$store.dispatch('fetchReports');
     },

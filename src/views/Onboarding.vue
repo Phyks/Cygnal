@@ -23,9 +23,9 @@
             <v-flex xs8 offset-xs2>
                 <h2 class="headline pa-3">{{ $t('intro.checkingPermissions') }}</h2>
 
-                <v-layout row class="white mb-3">
-                    <v-flex xs6 offset-xs3>
-                        <v-switch class="switch" :messages="[`<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${$t('about.geolocationDescription')}`]" color="success" :label="$t('geolocation.geolocation')" v-model="hasGeolocationPermission" readonly @click="handleGeolocationPermission"></v-switch>
+                <v-layout row class="white">
+                    <v-flex class="mb-3 mx-3">
+                        <PermissionsSwitches></PermissionsSwitches>
                     </v-flex>
                 </v-layout>
 
@@ -44,17 +44,14 @@
 
 <script>
 import ReportsDescription from '@/components/ReportsDescription.vue';
+import PermissionsSwitches from '@/components/PermissionsSwitches.vue';
 
 export default {
     components: {
         ReportsDescription,
+        PermissionsSwitches,
     },
     created() {
-        if (navigator.permissions) {
-            navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-                this.hasGeolocationPermission = (result.state === 'granted');
-            });
-        }
         this.$store.dispatch('markIntroAsSeen');
     },
     data() {
@@ -63,34 +60,10 @@ export default {
             step = 3;
         }
         return {
-            hasGeolocationPermission: false,
             step,
         };
     },
     methods: {
-        handleGeolocationPermission() {
-            if (this.hasGeolocationPermission) {
-                // Permission already granted
-                return;
-            }
-
-            // Explicitly request the permission to the user
-            navigator.geolocation.getCurrentPosition(
-                () => {
-                    this.hasGeolocationPermission = true;
-                },
-                (error) => {
-                    if (error.code === 1) {  // Permission denied
-                        this.hasGeolocationPermission = false;
-                    } else {
-                        this.hasGeolocationPermission = true;
-                    }
-                },
-                {
-                    timeout: 0,
-                },
-            );
-        },
         goToMap() {
             if (!this.$store.state.settings.skipOnboarding) {
                 this.$store.dispatch('setSetting', { setting: 'skipOnboarding', value: true });
@@ -104,11 +77,5 @@ export default {
 <style scoped>
 .no-padding {
     padding: 0;
-}
-</style>
-
-<style>
-.switch .v-label {
-    color: rgba(0,0,0,.87);
 }
 </style>
