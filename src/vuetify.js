@@ -14,6 +14,7 @@ import VList from 'vuetify/es5/components/VList';
 import VMenu from 'vuetify/es5/components/VMenu';
 import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
 import VSelect from 'vuetify/es5/components/VSelect';
+import VSwitch from 'vuetify/es5/components/VSwitch';
 import VTextField from 'vuetify/es5/components/VTextField';
 import VToolbar from 'vuetify/es5/components/VToolbar';
 
@@ -33,6 +34,7 @@ Vue.use(Vuetify, {
         VMenu,
         VProgressLinear,
         VSelect,
+        VSwitch,
         VTextField,
         VToolbar,
     },

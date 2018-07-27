@@ -55,6 +55,14 @@ adapt the behavior to your needs.
 You should also have a look at the build variables under the `config/`
 subdirectory.
 
+#### Notes
+
+We are using [A la carte](https://vuetifyjs.com/en/guides/a-la-carte) Vuetify
+components to reduce the size of the build. Check that any extra components
+you might use is indeed included in `src/vuetify.js` file. The `yarn
+list-vuetify-components` command might be useful to help you determine which
+components are used across the code.
+
 
 ### Server part
 
