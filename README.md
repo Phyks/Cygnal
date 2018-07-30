@@ -146,6 +146,9 @@ Icons are made from the original works:
 * [Accident icon](https://www.flaticon.com/free-icon/car-running-over-a-bicycle_91680) is
     coming from Flaticon.
 
+Beep sound is provided under CC0 license and coming from
+[freesound.org](https://freesound.org/people/thisusernameis/sounds/426888/).
+
 The map background is using tiles from <a
 href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> or
 <a href=\"http://thunderforest.com/\">Thunderforest</a>, thanks to <a
