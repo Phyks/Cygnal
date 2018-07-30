@@ -29,11 +29,15 @@ export function fetchReports({ commit }) {
 }
 
 export function downvote({ commit }, { id }) {
+    // Hide details
+    commit(SHOW_REPORT_DETAILS, { id: null, userAsked: null });
     return api.downvote(id)
         .then(report => commit(PUSH_REPORT, { report }));
 }
 
 export function upvote({ commit }, { id }) {
+    // Hide details
+    commit(SHOW_REPORT_DETAILS, { id: null, userAsked: null });
     return api.upvote(id)
         .then(report => commit(PUSH_REPORT, { report }));
 }
