@@ -145,3 +145,6 @@ export const GEOCODING_API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search/'
 // Delay in milliseconds between two consecutive calls to the backend API when
 // doing batch requests
 export const DELAY_BETWEEN_API_BATCH_REQUESTS = 1000;
+
+// A vibration sequence for report alarms
+export const REPORT_ALARM_VIBRATION_SEQUENCE = [500];

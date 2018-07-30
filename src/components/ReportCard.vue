@@ -51,7 +51,8 @@
 <script>
 import moment from 'moment';
 
-import { REPORT_TYPES } from '@/constants';
+import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
+import beepSound from '@/assets/beep.mp3';
 
 export default {
     computed: {
@@ -59,6 +60,10 @@ export default {
             const reportID = this.$store.state.reportDetails.id;
             if (reportID != null) {
                 const report = this.$store.state.reports.find(item => item.id === reportID);
+                // If the report is automatically opened due to proximity
+                if (!this.$store.state.reportDetails.userAsked) {
+                    this.notifyUser();
+                }
                 return {
                     fromNow: moment(report.attributes.datetime).fromNow(),
                     icon: this.icons[report.attributes.type],
@@ -76,6 +81,7 @@ export default {
             icons[type] = REPORT_TYPES[type].image;
         });
         return {
+            beepAudio: new Audio(beepSound),
             icons,
         };
     },
@@ -87,6 +93,22 @@ export default {
             const reportID = this.report.id;
             this.closeReportCard();  // Resets this.report
             return this.$store.dispatch('downvote', { id: reportID });
+        },
+        notifyUser() {
+            // Eventually play sound
+            if (this.$store.state.settings.hasPlaySoundPermission) {
+                this.playBeepSound();
+            }
+            // Eventually vibrate
+            if (this.$store.state.settings.hasVibratePermission && navigator.vibrate) {
+                navigator.vibrate(REPORT_ALARM_VIBRATION_SEQUENCE);
+            }
+        },
+        playBeepSound() {
+            // Reset sound to the beginning
+            this.beepAudio.currentTime = 0;
+            // Force play it
+            this.beepAudio.play();
         },
         upvote() {
             const reportID = this.report.id;
