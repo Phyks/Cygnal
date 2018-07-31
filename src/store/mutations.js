@@ -64,8 +64,8 @@ if (storageAvailable('localStorage')) {
         tileServer = null;
     }
 
-    locale = localStorage.getItem('locale');
-    if (!messages[locale]) {
+    locale = loadDataFromStorage('locale');
+    if (!(locale in messages)) {
         locale = null;
     }
     if (!locale) {
