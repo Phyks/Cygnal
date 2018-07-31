@@ -36,6 +36,16 @@ export function getActiveReports() {
         });
 }
 
+export function getStats() {
+    return fetch(`${BASE_URL}api/v1/stats`)
+        .then(response => response.json())
+        .then(response => response.data)
+        .catch((exc) => {
+            console.error(`Unable to fetch stats: ${exc}.`);
+            throw exc;
+        });
+}
+
 export function downvote(id) {
     return fetch(`${BASE_URL}api/v1/reports/${id}/downvote`, {
         method: 'POST',

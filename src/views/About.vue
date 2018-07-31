@@ -10,18 +10,52 @@
                 <h2 class="body-2">{{ $t('about.availableReportsTitle') }}</h2>
                 <ReportsDescription></ReportsDescription>
 
-                <p class="mt-3" v-html="$t('about.license')"></p>
+                <h2 class="body-2 mt-3">{{ $t('about.stats') }}</h2>
+                <v-progress-circular indeterminate v-if="!stats"></v-progress-circular>
+                <ul v-else>
+                    <li>{{ $tc('about.nbActiveReports', stats.nb_active_reports, { nbActiveReports: stats.nb_active_reports }) }}</li>
+                    <li>{{ $tc('about.nbReports', stats.nb_reports, { nbReports: stats.nb_reports }) }}</li>
+                    <li>{{ $t('about.lastReportAdded', { fromNow: stats.last_added_report_datetime }) }}</li>
+                </ul>
+
+                <h2 class="body-2 mt-3">{{ $t('about.license') }}</h2>
+                <p v-html="$t('about.licenseDescription')"></p>
             </v-flex>
         </v-layout>
     </v-container>
 </template>
 
 <script>
+import moment from 'moment';
+
+import { getStats } from '@/api';
+
 import ReportsDescription from '@/components/ReportsDescription.vue';
 
 export default {
     components: {
         ReportsDescription,
+    },
+    created() {
+        this.fetchData();
+    },
+    data() {
+        return {
+            stats: null,
+        };
+    },
+    methods: {
+        fetchData() {
+            getStats().then((stats) => {
+                this.stats = stats;
+                this.stats.last_added_report_datetime = (
+                    moment(this.stats.last_added_report_datetime).fromNow()
+                );
+            });
+        },
+    },
+    watch: {
+        $route: 'fetchData',
     },
 };
 </script>

@@ -12,7 +12,7 @@
                             {{ report.label }}
                         </v-flex>
                         <v-flex xs12 class="secondLine">
-                            {{ $t('reportCard.Reported') }} {{ report.fromNow }}
+                            {{ $t('reportCard.Reported', { fromNow: report.fromNow }) }}
                         </v-flex>
                     </v-layout>
                 </v-flex>

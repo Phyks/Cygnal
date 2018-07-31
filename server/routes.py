@@ -264,3 +264,34 @@ def downvote_report(id):
     return {
         "data": r.to_json()
     }
+
+
+@bottle.route('/api/v1/stats', ["GET", "OPTIONS"])
+def get_stats():
+    """
+    API v1 GET stats about this instance.
+
+    Example::
+
+        GET /api/v1/states
+    """
+    # Handle CORS
+    if bottle.request.method == 'OPTIONS':
+        return {}
+
+    nb_reports = Report.select().count()
+    nb_active_reports = Report.select().where(
+        (Report.expiration_datetime == None) |
+        (Report.expiration_datetime > arrow.utcnow().replace(microsecond=0).datetime)
+    ).count()
+    last_added_report_datetime = Report.select().order_by(
+        Report.datetime.desc()
+    ).get().datetime
+
+    return {
+        "data": {
+            "nb_reports": nb_reports,
+            "nb_active_reports": nb_active_reports,
+            "last_added_report_datetime": last_added_report_datetime
+        }
+    }

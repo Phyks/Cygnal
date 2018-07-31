@@ -12,6 +12,7 @@ import VGrid from 'vuetify/es5/components/VGrid';
 import VIcon from 'vuetify/es5/components/VIcon';
 import VList from 'vuetify/es5/components/VList';
 import VMenu from 'vuetify/es5/components/VMenu';
+import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
 import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
 import VSelect from 'vuetify/es5/components/VSelect';
 import VSwitch from 'vuetify/es5/components/VSwitch';
@@ -32,6 +33,7 @@ Vue.use(Vuetify, {
         VIcon,
         VList,
         VMenu,
+        VProgressCircular,
         VProgressLinear,
         VSelect,
         VSwitch,

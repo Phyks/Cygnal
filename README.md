@@ -17,7 +17,11 @@ could know the location of the displayed map.
 
 The data collected by https://cyclo.phyks.me/ is available under an
 [ODbL](https://opendatacommons.org/licenses/odbl/) license. You can get the
-most up to date JSON dump of available reports at https://cyclo.phyks.me/api/v1/reports.
+most up to date JSON dump of available reports at
+https://cyclo.phyks.me/api/v1/reports.
+
+Statistics about the instance can be fetched at
+https://cyclo.phyks.me/api/v1/stats.
 
 ## Hosting your own
 
@@ -77,6 +81,9 @@ python -m server
 ```
 
 It is better to use a dedicated `virtualenv` if you can :)
+
+API routes are all listed within `server/routes.py` file, with documentation
+strings.
 
 #### Useful environment variables
 
