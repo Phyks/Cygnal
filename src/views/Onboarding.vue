@@ -65,9 +65,15 @@ export default {
     },
     methods: {
         goToMap() {
+            // Eventually vibrate, to ensure permission is prompted before driving
+            if (this.$store.state.settings.hasVibratePermission && navigator.vibrate) {
+                navigator.vibrate(1);
+            }
+
             if (!this.$store.state.settings.skipOnboarding) {
                 this.$store.dispatch('setSetting', { setting: 'skipOnboarding', value: true });
             }
+
             this.$router.push({ name: 'Map' });
         },
     },

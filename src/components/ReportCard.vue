@@ -50,6 +50,7 @@
 
 <script>
 import moment from 'moment';
+import { Howl } from 'howler';
 
 import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
 import beepSound from '@/assets/beep.mp3';
@@ -60,10 +61,6 @@ export default {
             const reportID = this.$store.state.reportDetails.id;
             if (reportID != null) {
                 const report = this.$store.state.reports.find(item => item.id === reportID);
-                // If the report is automatically opened due to proximity
-                if (!this.$store.state.reportDetails.userAsked) {
-                    this.notifyUser();
-                }
                 return {
                     fromNow: moment(report.attributes.datetime).fromNow(),
                     icon: this.icons[report.attributes.type],
@@ -80,8 +77,12 @@ export default {
         Object.keys(REPORT_TYPES).forEach((type) => {
             icons[type] = REPORT_TYPES[type].image;
         });
+        const onplayerror = () => this.beepAudio.once('unlock', () => this.beepAudio.play());
         return {
-            beepAudio: new Audio(beepSound),
+            beepAudio: new Howl({
+                src: [beepSound],
+                onplayerror,
+            }),
             icons,
         };
     },
@@ -105,8 +106,6 @@ export default {
             }
         },
         playBeepSound() {
-            // Reset sound to the beginning
-            this.beepAudio.currentTime = 0;
             // Force play it
             this.beepAudio.play();
         },
@@ -114,6 +113,17 @@ export default {
             const reportID = this.report.id;
             this.closeReportCard();  // Resets this.report
             return this.$store.dispatch('upvote', { id: reportID });
+        },
+    },
+    watch: {
+        report(newReport, oldReport) {
+            if (newReport) {
+                const isDifferentReport = (oldReport === null) || (newReport.id !== oldReport.id);
+                // If the report is automatically opened due to proximity
+                if (!this.$store.state.reportDetails.userAsked && isDifferentReport) {
+                    this.notifyUser();
+                }
+            }
         },
     },
 };

@@ -25,8 +25,11 @@ import {
 export function fetchReports({ commit }) {
     commit(IS_LOADING);
     return api.getActiveReports()
-        .then(reports => commit(STORE_REPORTS, { reports }))
-        .finally(() => commit(IS_DONE_LOADING));
+        .then((reports) => {
+            commit(STORE_REPORTS, { reports });
+            commit(IS_DONE_LOADING);
+        })
+        .catch(() => commit(IS_DONE_LOADING));
 }
 
 export function downvote({ commit }, { id }) {
@@ -46,8 +49,11 @@ export function upvote({ commit }, { id }) {
 export function saveReport({ commit }, { type, lat, lng }) {
     commit(IS_LOADING);
     return api.saveReport(type, lat, lng)
-        .then(report => commit(PUSH_REPORT, { report }))
-        .finally(() => commit(IS_DONE_LOADING));
+        .then((report) => {
+            commit(PUSH_REPORT, { report });
+            commit(IS_DONE_LOADING);
+        })
+        .catch(() => commit(IS_DONE_LOADING));
 }
 
 export function saveUnsentReport({ commit }, { report }) {
