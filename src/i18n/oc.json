@@ -1,7 +1,12 @@
 {
     "about": {
         "availableReportsTitle": "Los senhalaments disponibles pel moment son :",
-        "license": "Lo c\u00f2di font es jos <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Las ic\u00f2nas son basadas sus d'\u00f2bras de Wikimedia, Vecteezy, Pixabay o Flaticon. Las teulas de fons venon <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contributors OpenStreetMap</a> e a <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>. La sasida manuala de la posicion utiliza l'excellenta API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "lastReportAdded": "",
+        "license": "",
+        "licenseDescription": "Lo c\u00f2di font es jos <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Las ic\u00f2nas son basadas sus d'\u00f2bras de Wikimedia, Vecteezy, Pixabay o Flaticon. Las teulas de fons venon <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contributors OpenStreetMap</a> e a <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>. La sasida manuala de la posicion utiliza l'excellenta API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "nbActiveReports": "",
+        "nbReports": "",
+        "stats": "",
         "summary": "Aquesta aplicacion vos permet de senhalar e partejar de probl\u00e8mas amb los itineraris ciclables.",
         "usage": "Utilizacion",
         "usageDescription": "Utilizatz lo boton en bas a man drecha per ajustar un senhalament a v\u00f2stra empla\u00e7ament actual. Per ajustar un senhalament endac\u00f2m mai, tocatz l'empla\u00e7ament volgut sus la mapa. Tocatz un marcador sus la mapa per mostrar mai d'informacions e senhalar es encara present o non."
@@ -61,7 +66,7 @@
         "vibrate": ""
     },
     "reportCard": {
-        "Reported": "Senhalat"
+        "Reported": ""
     },
     "reportDialog": {
         "unableToSendDescription": "Una error ret empacha lo mandad\u00eds del darri\u00e8r senhalament.",

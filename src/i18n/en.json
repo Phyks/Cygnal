@@ -4,7 +4,7 @@
         "lastReportAdded": "Last report added {fromNow}.",
         "license": "License",
         "licenseDescription": "It is released under an <a href=\"https://opensource.org/licenses/MIT\">MIT license</a> (<a href=\"https://framagit.org/phyks/cyclassist\">source code</a>). Icons are based on creations from Wikimedia, Vecteezy, Pixabay or Flaticon. Sounds are based on CC0 works from <a href=\"https://freesound.org/\">freesound.org</a>. The map background is using tiles from <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> or <a href=\"http://thunderforest.com/\">Thunderforest</a>, thanks to <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a> and <a href=\"http://leafletjs.com/\">Leaflet</a>. Collected reports are available under <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL license</a>. Manual location picking uses the awesome API from <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
-        "nbActiveReports": "No active report. | One active report. | {nbActiveReports} active reports.",
+        "nbActiveReports": "No active report. |\u00a0One active report. | {nbActiveReports} active reports.",
         "nbReports": "No report. | One report. | {nbReports} reports.",
         "stats": "Stats",
         "summary": "This app lets you track and share issues with bike lanes.",
