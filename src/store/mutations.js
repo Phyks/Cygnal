@@ -126,6 +126,9 @@ export const mutations = {
     [types.INTRO_WAS_SEEN](state) {
         state.hasGoneThroughIntro = true;
     },
+    [types.INTRO_WAS_UNSEEN](state) {
+        state.hasGoneThroughIntro = false;
+    },
     [types.IS_DONE_LOADING](state) {
         state.isLoading = false;
     },

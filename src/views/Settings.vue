@@ -83,6 +83,7 @@ export default {
             },
             set(skipOnboarding) {
                 this.$store.dispatch('setSetting', { setting: 'skipOnboarding', value: skipOnboarding });
+                this.$store.dispatch('unmarkIntroAsSeen');
             },
         },
         tileServer: {

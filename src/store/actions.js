@@ -6,6 +6,7 @@ import i18n from '@/i18n';
 
 import {
     INTRO_WAS_SEEN,
+    INTRO_WAS_UNSEEN,
     IS_DONE_LOADING,
     IS_LOADING,
     PUSH_REPORT,
@@ -80,6 +81,10 @@ export function setSetting({ commit }, { setting, value }) {
 
 export function markIntroAsSeen({ commit }) {
     return commit(INTRO_WAS_SEEN);
+}
+
+export function unmarkIntroAsSeen({ commit }) {
+    return commit(INTRO_WAS_UNSEEN);
 }
 
 export function setCurrentMapCenter({ commit, state }, { center }) {
