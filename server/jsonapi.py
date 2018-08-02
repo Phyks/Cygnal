@@ -3,6 +3,7 @@
 """
 Helpers to implement a JSON API with Bottle.
 """
+import arrow
 import datetime
 import json
 import re
@@ -18,7 +19,7 @@ class DateAwareJSONEncoder(json.JSONEncoder):
     """
     def default(self, o):  # pylint: disable=locally-disabled,E0202
         if isinstance(o, (datetime.date, datetime.datetime)):
-            return o.isoformat()
+            return arrow.get(o).isoformat()
         return json.JSONEncoder.default(self, o)
 
 
