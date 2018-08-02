@@ -38,6 +38,7 @@ export function mockLocation() {
             longitude: (Math.random() * (LNG_MAX - LNG_MIN)) + LNG_MIN,
             heading: null, // 20 * (Math.PI / 180),
         },
+        timestamp: new Date().getTime(),
     };
     console.log('New mock location: ', newLocation);
     return newLocation;

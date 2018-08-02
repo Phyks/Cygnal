@@ -112,18 +112,25 @@ export function setCurrentMapZoom({ commit, state }, { zoom }) {
 }
 
 export function setCurrentPosition(
-    { commit, state },
-    { accuracy = null, heading = null, latLng = null },
+    { commit, getters, state },
+    { coords, timestamp },
 ) {
-    const locationState = state.location;
-    if (
-        accuracy !== locationState.accuracy ||
-        heading !== locationState.heading ||
-        locationState.currentLatLng.some((item, index) => item !== latLng[index])
-    ) {
-        // Throttle mutations if nothing has changed
-        commit(SET_CURRENT_POSITION, { accuracy, heading, latLng });
-    }
+    const currentLocation = {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        hdop: coords.accuracy ? coords.accuracy : null,
+        elevation: coords.elevation ? coords.elevation : null,
+        vdop: coords.altitudeAccuracy ? coords.altitudeAccuracy : null,
+        heading: (
+            (coords.heading !== null && !isNaN(coords.heading))
+            ? coords.heading
+            : null
+        ),
+        speed: coords.speed ? coords.speed : null,
+        timestamp,
+    };
+
+    commit(SET_CURRENT_POSITION, { currentLocation });
 }
 
 export function setLocationWatcherId({ commit }, { id }) {

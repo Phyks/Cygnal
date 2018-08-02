@@ -86,11 +86,8 @@ export const initialState = {
     hasGoneThroughIntro: false,
     isLoading: false,
     location: {
-        accuracy: null,
-        currentLatLng: [null, null],
         error: null,
-        heading: null, // in degrees, clockwise wrt north
-        positionHistory: [],
+        gpx: [],
         watcherID: null,
     },
     map: {
@@ -161,11 +158,8 @@ export const mutations = {
     [types.SET_CURRENT_MAP_ZOOM](state, { zoom }) {
         Vue.set(state.map, 'zoom', zoom);
     },
-    [types.SET_CURRENT_POSITION](state, { accuracy, heading, latLng }) {
-        Vue.set(state.location, 'accuracy', accuracy);
-        Vue.set(state.location, 'currentLatLng', latLng);
-        Vue.set(state.location, 'heading', heading);
-        state.location.positionHistory.push(latLng);
+    [types.SET_CURRENT_POSITION](state, { currentLocation }) {
+        state.location.gpx.push(currentLocation);
     },
     [types.SET_LOCATION_ERROR](state, { error }) {
         Vue.set(state.location, 'error', error);

@@ -4,9 +4,9 @@
             <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
-                    :accuracy="accuracy"
+                    :accuracy="currentLocation.accuracy"
                     :center="mapCenter"
-                    :heading="heading"
+                    :heading="currentLocation.heading"
                     :markers="reportsMarkers"
                     :onMapCenterUpdate="onMapCenterUpdate"
                     :onMapZoomUpdate="onMapZoomUpdate"
@@ -61,10 +61,10 @@ function handlePositionError(error) {
 }
 
 function setPosition(position) {
-    const currentLatLng = store.state.location.currentLatLng;
-    if (currentLatLng) {
+    const lastLocation = store.getters.getLastLocation;
+    if (lastLocation !== null) {
         const distanceFromPreviousPoint = distance(
-            [currentLatLng[0], currentLatLng[1]],
+            [lastLocation.latitude, lastLocation.longitude],
             [position.coords.latitude, position.coords.longitude],
         );
         if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
@@ -73,15 +73,7 @@ function setPosition(position) {
     }
     store.dispatch(
         'setCurrentPosition',
-        {
-            accuracy: position.coords.accuracy ? position.coords.accuracy : null,
-            heading: (
-                (position.coords.heading !== null && !isNaN(position.coords.heading))
-                ? position.coords.heading
-                : null
-            ),
-            latLng: [position.coords.latitude, position.coords.longitude],
-        },
+        { coords: position.coords, timestamp: position.timestamp },
     );
 }
 
@@ -107,16 +99,16 @@ export default {
         ReportDialog,
     },
     computed: {
-        accuracy() {
-            return this.$store.state.location.accuracy;
-        },
         currentLatLng() {
-            const currentLatLng = this.$store.state.location.currentLatLng;
+            const currentLocation = this.$store.getters.getLastLocation;
             // Check that this is a correct position
-            if (currentLatLng.some(item => item === null)) {
+            if (currentLocation === null) {
                 return null;
             }
-            return currentLatLng;
+            return [currentLocation.latitude, currentLocation.longitude];
+        },
+        currentLocation() {
+            return this.$store.getters.getLastLocation;
         },
         error() {
             const errorCode = this.$store.state.location.error;
@@ -136,9 +128,6 @@ export default {
         hasCenterProvidedByRoute() {
             return this.$route.params.lat && this.$route.params.lng;
         },
-        heading() {
-            return this.$store.state.location.heading;
-        },
         mapCenter() {
             if (this.hasCenterProvidedByRoute) {
                 return [this.$route.params.lat, this.$route.params.lng];
@@ -153,7 +142,7 @@ export default {
             );
         },
         positionHistory() {
-            return this.$store.state.location.positionHistory;
+            return this.$store.state.location.gpx.map(item => [item.latitude, item.longitude]);
         },
         reportsMarkers() {
             return this.$store.getters.notDismissedReports.map(report => ({
