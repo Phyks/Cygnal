@@ -77,6 +77,11 @@ export default {
             this.$router.push({ name: 'Map' });
         },
     },
+    watch: {
+        step() {
+            window.scrollTo(0, 0);
+        },
+    },
 };
 </script>
 
