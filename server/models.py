@@ -41,7 +41,7 @@ class Report(BaseModel):
     lat = peewee.DoubleField()
     lng = peewee.DoubleField()
     datetime = peewee.DateTimeField(
-        default=lambda: arrow.utcnow().replace(microsecond=0).datetime
+        default=lambda: arrow.utcnow().replace(microsecond=0).naive
     )
     expiration_datetime = peewee.DateTimeField(null=True)
     is_open = peewee.BooleanField(default=True)
