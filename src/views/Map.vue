@@ -243,7 +243,7 @@ export default {
                 this.$store.state.location.error = 1;
             }
         }
-        this.$store.dispatch('fetchReports');
+        this.$store.dispatch('fetchReports').catch(() => {});
     },
 };
 </script>

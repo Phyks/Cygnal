@@ -29,7 +29,10 @@ export function fetchReports({ commit }) {
             commit(STORE_REPORTS, { reports });
             commit(IS_DONE_LOADING);
         })
-        .catch(() => commit(IS_DONE_LOADING));
+        .catch((exc) => {
+            commit(IS_DONE_LOADING);
+            throw exc;
+        });
 }
 
 export function downvote({ commit }, { id }) {
@@ -53,7 +56,10 @@ export function saveReport({ commit }, { type, lat, lng }) {
             commit(PUSH_REPORT, { report });
             commit(IS_DONE_LOADING);
         })
-        .catch(() => commit(IS_DONE_LOADING));
+        .catch((exc) => {
+            commit(IS_DONE_LOADING);
+            throw exc;
+        });
 }
 
 export function saveUnsentReport({ commit }, { report }) {

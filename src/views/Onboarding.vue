@@ -67,7 +67,7 @@ export default {
         goToMap() {
             // Eventually vibrate, to ensure permission is prompted before driving
             if (this.$store.state.settings.hasVibratePermission && navigator.vibrate) {
-                navigator.vibrate(1);
+                navigator.vibrate(100);
             }
 
             if (!this.$store.state.settings.skipOnboarding) {
