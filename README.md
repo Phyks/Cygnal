@@ -7,6 +7,9 @@ Cyclassist
 This app is made of two parts: a client webapp and a server part to store and
 serve the issues. This code is the code running behind https://cyclo.phyks.me/.
 
+**A demo instance if you want to try it out without polluting the main instance
+is available at https://cyclo-dev.phyks.me**.
+
 As of current version, only the client side part (code running on your local
 device) handles your geolocation. **Your precise geolocation is never sent**
 to the server or any external resource. However, the map background is
