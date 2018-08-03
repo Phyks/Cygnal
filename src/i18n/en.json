@@ -47,10 +47,12 @@
     },
     "menu": {
         "About": "Help",
+        "exportGPX": "Export GPX",
         "Settings": "Settings",
         "shareMapView": "Share map view"
     },
     "misc": {
+        "activityName": "Biking",
         "discard": "Discard",
         "ok": "OK",
         "or": "or",
