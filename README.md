@@ -5,10 +5,13 @@ Cyclassist
 > realtime on bike lanes!
 
 This app is made of two parts: a client webapp and a server part to store and
-serve the issues. This code is the code running behind https://cyclo.phyks.me/.
+serve the issues. This code is the code running behind https://cyclo.phyks.me/
+(the stable and official instance).
 
-**A demo instance if you want to try it out without polluting the main instance
-is available at https://cyclo-dev.phyks.me**.
+**A sandbox instance if you want to try it out without polluting the main instance
+is available at https://cyclo-dev.phyks.me**. Please note however this is a
+sandbox instance which might be ahead of the official https://cyclo.phyks.me
+instance from time to time, so that it might break from time to time.
 
 As of current version, only the client side part (code running on your local
 device) handles your geolocation. **Your precise geolocation is never sent**
