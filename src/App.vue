@@ -29,6 +29,9 @@
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
+                    <v-list-tile @click="exportGPX" v-if="isExportGPXMenuEntryVisible">
+                        <v-list-tile-title>{{ $t("menu.exportGPX") }}</v-list-tile-title>
+                    </v-list-tile>
                     <v-list-tile @click="isShareMapViewModalShown = true" v-if="isShareMapViewMenuEntryVisible">
                         <v-list-tile-title>{{ $t("menu.shareMapView") }}</v-list-tile-title>
                     </v-list-tile>
@@ -56,7 +59,11 @@
 </template>
 
 <script>
-import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
+import FileSaver from 'file-saver';
+import createGPX from 'gps-to-gpx';
+import moment from 'moment';
+
+import { DELAY_BETWEEN_API_BATCH_REQUESTS, VERSION } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
@@ -69,6 +76,9 @@ export default {
     computed: {
         isLoading() {
             return this.$store.state.isLoading;
+        },
+        isExportGPXMenuEntryVisible() {
+            return this.$store.state.location.gpx.length > 0;
         },
         isShareMapViewMenuEntryVisible() {
             return this.$store.state.map.center.every(item => item !== null);
@@ -86,6 +96,25 @@ export default {
         };
     },
     methods: {
+        exportGPX() {
+            const activityName = this.$t('misc.activityName');
+            const waypoints = this.$store.state.location.gpx.map(
+                item => Object.assign({}, item, { timestamp: new Date(item.timestamp) }),
+            );
+            const gpx = createGPX(waypoints, {
+                activityName,
+                creator: `Cycl'Assist v${VERSION}`,
+                eleKey: 'elevation',
+                latKey: 'latitude',
+                lonKey: 'longitude',
+                startTime: waypoints[0].timestamp,
+                timeKey: 'timestamp',
+            });
+            FileSaver.saveAs(
+                new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' }),
+                `cyclassist_${moment().locale('en').format('YYYY-MM-DD_HH-mm_ddd')}.gpx`,
+            );
+        },
         goToAbout() {
             this.$router.push({ name: 'About' });
         },
