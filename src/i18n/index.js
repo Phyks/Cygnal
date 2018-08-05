@@ -21,7 +21,7 @@ export const AVAILABLE_LOCALES = [
     },
     {
         iso: 'fr',
-        name: 'French',
+        name: 'Français',
         messages: fr,
     },
     {

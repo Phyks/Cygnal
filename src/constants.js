@@ -1,5 +1,3 @@
-import L from 'leaflet';
-
 import accidentMarker from '@/assets/accidentMarker.svg';
 import gcumMarker from '@/assets/gcumMarker.svg';
 import interruptMarker from '@/assets/interruptMarker.svg';
@@ -20,93 +18,93 @@ export const REPORT_TYPES = {
         description: 'reportLabels.accidentDescription',
         label: 'reportLabels.accident',
         image: accidentIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: accidentMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: accidentMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
 
     },
     gcum: {
         description: 'reportLabels.gcumDescription',
         label: 'reportLabels.gcum',
         image: gcumIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: gcumMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: gcumMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
 
     },
     interrupt: {
         description: 'reportLabels.interruptDescription',
         label: 'reportLabels.interrupt',
         image: interruptIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: interruptMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: interruptMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
     },
     misc: {
         description: 'reportLabels.miscDescription',
         label: 'reportLabels.misc',
         image: miscIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: miscMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: miscMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
     },
     obstacle: {
         description: 'reportLabels.obstacleDescription',
         label: 'reportLabels.obstacle',
         image: obstacleIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: obstacleMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: obstacleMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
     },
     pothole: {
         description: 'reportLabels.potholeDescription',
         label: 'reportLabels.pothole',
         image: potholeIcon,
-        marker: L.icon({
+        marker: {
             iconUrl: potholeMarker,
             iconSize: [40, 40],
             iconAnchor: [20, 40],
-        }),
-        markerLarge: L.icon({
+        },
+        markerLarge: {
             iconUrl: potholeMarker,
             iconSize: [60, 60],
             iconAnchor: [30, 60],
-        }),
+        },
     },
 };
 // Display order of the report types

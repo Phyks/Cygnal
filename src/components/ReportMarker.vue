@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import L from 'leaflet';
+
 import { REPORT_TYPES } from '@/constants';
 
 export default {
@@ -12,9 +14,9 @@ export default {
     computed: {
         icon() {
             if (this.$store.state.reportDetails.id === this.marker.id) {
-                return REPORT_TYPES[this.marker.type].markerLarge;
+                return L.icon(REPORT_TYPES[this.marker.type].markerLarge);
             }
-            return REPORT_TYPES[this.marker.type].marker;
+            return L.icon(REPORT_TYPES[this.marker.type].marker);
         },
     },
     data() {

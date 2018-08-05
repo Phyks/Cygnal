@@ -4,11 +4,12 @@ import Router from 'vue-router';
 import store from '@/store';
 
 import About from '@/views/About.vue';
-import Map from '@/views/Map.vue';
 import Onboarding from '@/views/Onboarding.vue';
 import Settings from '@/views/Settings.vue';
 
 Vue.use(Router);
+
+const Map = () => import('@/views/Map.vue');
 
 export default new Router({
     routes: [

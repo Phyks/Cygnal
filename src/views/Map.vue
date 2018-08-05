@@ -173,7 +173,8 @@ export default {
                 );
             } else {
                 if (!('geolocation' in navigator)) {
-                    this.$store.dispatch('setLocationError', { error: this.$t('geolocation.unavailable') });
+                    const $t = this.$t.bind(this);
+                    this.$store.dispatch('setLocationError', { error: $t('geolocation.unavailable') });
                     return;
                 }
 

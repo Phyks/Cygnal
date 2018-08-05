@@ -57,6 +57,10 @@ import L from 'leaflet';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import {
+    LMap, LTileLayer, LMarker, LCircleMarker, LCircle, LPolyline,
+} from 'vue2-leaflet';
+import Vue2LeafletTracksymbol from 'vue2-leaflet-tracksymbol';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
@@ -75,6 +79,13 @@ L.Icon.Default.mergeOptions({
 
 export default {
     components: {
+        'v-lmap': LMap,
+        'v-ltilelayer': LTileLayer,
+        'v-lmarker': LMarker,
+        'v-lcirclemarker': LCircleMarker,
+        'v-lcircle': LCircle,
+        'v-lpolyline': LPolyline,
+        'v-lts': Vue2LeafletTracksymbol,
         ReportMarker,
     },
     computed: {
@@ -117,8 +128,9 @@ export default {
         },
     },
     data() {
+        const $t = this.$t.bind(this);
         return {
-            attribution: this.$t('map.attribution'),
+            attribution: $t('map.attribution'),
             isProgrammaticMove: false,
             isProgrammaticZoom: false,
             map: null,
