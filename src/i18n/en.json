@@ -47,8 +47,8 @@
     },
     "menu": {
         "About": "Help",
-        "exportGPX": "Export GPX",
         "Settings": "Settings",
+        "exportGPX": "Export GPX",
         "shareMapView": "Share map view"
     },
     "misc": {

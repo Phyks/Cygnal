@@ -48,9 +48,11 @@
     "menu": {
         "About": "Aide",
         "Settings": "Pr\u00e9f\u00e9rences",
+        "exportGPX": "Exporter en GPX",
         "shareMapView": "Partager"
     },
     "misc": {
+        "activityName": "V\u00e9lo",
         "discard": "Annuler",
         "ok": "OK",
         "or": "ou",
