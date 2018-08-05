@@ -82,16 +82,6 @@ export default {
         this.disableNoSleep();
         this.$store.dispatch('hideReportDetails');
     },
-    beforeRouteEnter(to, from, next) {
-        if (to.name !== 'SharedMap') {
-            // Check that intro was seen except if we are in SharedMap view.
-            // This is required in order to ensure NoSleep works well.
-            if (!store.state.hasGoneThroughIntro) {
-                return next({ name: 'Onboarding', replace: true });
-            }
-        }
-        return next();
-    },
     components: {
         LocationError,
         Map,
@@ -137,8 +127,8 @@ export default {
         mapZoom() {
             return (
                 this.$route.params.zoom
-                ? parseInt(this.$route.params.zoom, 10)
-                : constants.DEFAULT_ZOOM
+                    ? parseInt(this.$route.params.zoom, 10)
+                    : constants.DEFAULT_ZOOM
             );
         },
         positionHistory() {

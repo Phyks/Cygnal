@@ -8,8 +8,8 @@ export function distance(latLng1, latLng2) {
     const lng2 = (latLng2[1] * Math.PI) / 180;
 
     const a = (
-        (Math.sin((lat2 - lat1) / 2.0) ** 2) +
-        (Math.cos(lat1) * Math.cos(lat2) * (Math.sin((lng2 - lng1) / 2.0) ** 2))
+        (Math.sin((lat2 - lat1) / 2.0) ** 2)
+        + (Math.cos(lat1) * Math.cos(lat2) * (Math.sin((lng2 - lng1) / 2.0) ** 2))
     );
     const c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -55,15 +55,16 @@ export function storageAvailable(type) {
     } catch (e) {
         return e instanceof DOMException && (
             // everything except Firefox
-            e.code === 22 ||
+            e.code === 22
             // Firefox
-            e.code === 1014 ||
+            || e.code === 1014
             // test name field too, because code might not be present
             // everything except Firefox
-            e.name === 'QuotaExceededError' ||
+            || e.name === 'QuotaExceededError'
             // Firefox
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            // acknowledge QuotaExceededError only if there's something already stored
-            storage.length !== 0;
+            || e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+        )
+        // acknowledge QuotaExceededError only if there's something already stored
+        && storage.length !== 0;
     }
 }

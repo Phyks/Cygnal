@@ -1,6 +1,3 @@
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
-
 // With trailing slash
 export const BASE_URL = process.env.API_BASE_URL || '/';
 const AUTHORIZATION_HEADERS = new Headers({});

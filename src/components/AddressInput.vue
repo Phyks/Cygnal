@@ -19,9 +19,6 @@
 <script>
 import { GEOCODING_API_ENDPOINT } from '@/constants';
 
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
-
 export default {
     props: {
         label: String,

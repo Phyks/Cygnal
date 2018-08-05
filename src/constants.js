@@ -112,7 +112,7 @@ export const REPORT_TYPES = {
 // Display order of the report types
 export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', 'accident', 'misc'];
 
-export const MIN_DISTANCE_REPORT_DETAILS = 40;  // in meters
+export const MIN_DISTANCE_REPORT_DETAILS = 40; // in meters
 
 export const MOCK_LOCATION = false;
 export const MOCK_LOCATION_UPDATE_INTERVAL = 5 * 1000; // in milliseconds

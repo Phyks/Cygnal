@@ -6,13 +6,14 @@ import Vue2LeafletTracksymbol from 'vue2-leaflet-tracksymbol';
 
 import '@/css/roboto-fontface.css';
 import '@/css/material-icons.css';
-import 'leaflet/dist/leaflet.css';  // eslint-disable-line  import/first
+import 'leaflet/dist/leaflet.css'; // eslint-disable-line import/first
 import 'vuetify/src/stylus/app.styl';
 
 import App from '@/App.vue';
 import i18n from '@/i18n';
 import router from '@/router';
 import store from '@/store';
+import '@/polyfills';
 import '@/vuetify';
 
 // Ensure locale is correctly set from the store value
@@ -28,8 +29,7 @@ Vue.component('v-lts', Vue2LeafletTracksymbol);
 
 Vue.config.productionTip = false;
 
-/* eslint-disable no-new */
-new Vue({
+new Vue({ // eslint-disable-line no-new
     el: '#app',
     router,
     i18n,

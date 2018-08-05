@@ -1,7 +1,7 @@
 import { REPORT_VOTES_THRESHOLD } from '@/constants';
 
 export function getLastLocation(state) {
-    const gpx = state.location.gpx;
+    const { gpx } = state.location;
     if (gpx.length > 0) {
         return gpx[gpx.length - 1];
     }

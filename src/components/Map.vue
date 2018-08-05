@@ -92,9 +92,9 @@ export default {
                 // into account the current zoom level
                 // Formula coming from https://wiki.openstreetmap.org/wiki/Zoom_levels.
                 return this.accuracy / (
-                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0] *
-                        (Math.PI / 180))) /
-                    (2 ** (this.zoom + 8))
+                    (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0]
+                        * (Math.PI / 180)))
+                    / (2 ** (this.zoom + 8))
                 );
             }
             return null;
@@ -102,9 +102,9 @@ export default {
         shouldDisplayAccuracy() {
             // Only display accuracy if circle is large enough
             return (
-                this.accuracy &&
-                this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD &&
-                this.radiusFromAccuracy > this.markerRadius
+                this.accuracy
+                && this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD
+                && this.radiusFromAccuracy > this.markerRadius
             );
         },
         tileServer() {
@@ -171,8 +171,8 @@ export default {
             }
             const mapCenter = this.map.getCenter();
             if (
-                mapCenter.lat !== this.center[0] &&
-                mapCenter.lng !== this.center[1]
+                mapCenter.lat !== this.center[0]
+                && mapCenter.lng !== this.center[1]
             ) {
                 this.isProgrammaticMove = true;
                 this.map.once('moveend', () => { this.isProgrammaticMove = false; });
@@ -203,8 +203,8 @@ export default {
         }
         const mapCenter = this.map.getCenter();
         if (
-            mapCenter.lat !== this.center[0] &&
-            mapCenter.lng !== this.center[1]
+            mapCenter.lat !== this.center[0]
+            && mapCenter.lng !== this.center[1]
         ) {
             this.isProgrammaticMove = true;
             this.map.once('moveend', () => { this.isProgrammaticMove = false; });
@@ -259,8 +259,8 @@ export default {
                     this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
                 }
                 if (
-                    this.map.getCenter().lat !== newCenterLatLng[0] &&
-                    this.map.getCenter().lng !== newCenterLatLng[1]
+                    this.map.getCenter().lat !== newCenterLatLng[0]
+                    && this.map.getCenter().lng !== newCenterLatLng[1]
                 ) {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
@@ -276,7 +276,7 @@ export default {
                                 distance: distance(newCenterLatLng, marker.latLng),
                             }),
                         ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
-                        const closestReport = distances.reduce(  // Get the closest one
+                        const closestReport = distances.reduce( // Get the closest one
                             (acc, item) => (
                                 item.distance < acc.distance ? item : acc
                             ),

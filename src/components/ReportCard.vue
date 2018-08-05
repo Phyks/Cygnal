@@ -92,7 +92,7 @@ export default {
         },
         downvote() {
             const reportID = this.report.id;
-            this.closeReportCard();  // Resets this.report
+            this.closeReportCard(); // Resets this.report
             return this.$store.dispatch('downvote', { id: reportID });
         },
         notifyUser() {
@@ -111,7 +111,7 @@ export default {
         },
         upvote() {
             const reportID = this.report.id;
-            this.closeReportCard();  // Resets this.report
+            this.closeReportCard(); // Resets this.report
             return this.$store.dispatch('upvote', { id: reportID });
         },
     },

@@ -112,7 +112,7 @@ export function setCurrentMapZoom({ commit, state }, { zoom }) {
 }
 
 export function setCurrentPosition(
-    { commit, getters, state },
+    { commit },
     { coords, timestamp },
 ) {
     const currentLocation = {
@@ -122,9 +122,9 @@ export function setCurrentPosition(
         elevation: coords.elevation ? coords.elevation : null,
         vdop: coords.altitudeAccuracy ? coords.altitudeAccuracy : null,
         heading: (
-            (coords.heading !== null && !isNaN(coords.heading))
-            ? coords.heading
-            : null
+            (coords.heading !== null && !Number.isNaN(coords.heading))
+                ? coords.heading
+                : null
         ),
         speed: coords.speed ? coords.speed : null,
         timestamp,
@@ -139,7 +139,7 @@ export function setLocationWatcherId({ commit }, { id }) {
 
 export function setLocationError({ commit, state }, { error }) {
     // Unregister location watcher
-    const watcherID = state.location.watcherID;
+    const { watcherID } = state.location;
     if (watcherID !== null) {
         if (constants.MOCK_LOCATION) {
             clearInterval(watcherID);
