@@ -98,9 +98,14 @@ export default {
     methods: {
         exportGPX() {
             const activityName = this.$t('misc.activityName');
-            const waypoints = this.$store.state.location.gpx.map(
-                item => Object.assign({}, item, { timestamp: new Date(item.timestamp) }),
-            );
+            const waypoints = [];
+            this.$store.state.location.gpx.forEach((item) => {
+                const waypoint = Object.assign({}, item, { timestamp: new Date(item.timestamp) });
+                if (waypoint.elevation === null || waypoint.elevation === undefined) {
+                    delete waypoint.elevation;
+                }
+                waypoints.push(waypoint);
+            });
             const gpx = createGPX(waypoints, {
                 activityName,
                 creator: `Cycl'Assist v${VERSION}`,
