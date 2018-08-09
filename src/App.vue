@@ -98,22 +98,35 @@ export default {
     methods: {
         exportGPX() {
             const activityName = this.$t('misc.activityName');
+
+            const courseKey = 'heading';
+            const eleKey = 'elevation';
+            const hdopKey = 'hdop';
+            const speedKey = 'speed';
+            const vdopKey = 'vdop';
+
             const waypoints = [];
             this.$store.state.location.gpx.forEach((item) => {
                 const waypoint = Object.assign({}, item, { timestamp: new Date(item.timestamp) });
-                if (waypoint.elevation === null || waypoint.elevation === undefined) {
-                    delete waypoint.elevation;
-                }
+                [courseKey, eleKey, hdopKey, speedKey, vdopKey].forEach((key) => {
+                    if (waypoint[key] === null || waypoint[key] === undefined) {
+                        delete waypoint.elevation;
+                    }
+                });
                 waypoints.push(waypoint);
             });
             const gpx = createGPX(waypoints, {
                 activityName,
                 creator: `Cycl'Assist v${VERSION}`,
-                eleKey: 'elevation',
+                courseKey,
+                eleKey,
+                hdopKey,
                 latKey: 'latitude',
                 lonKey: 'longitude',
+                speedKey,
                 startTime: waypoints[0].timestamp,
                 timeKey: 'timestamp',
+                vdopKey,
             });
             FileSaver.saveAs(
                 new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' }),
