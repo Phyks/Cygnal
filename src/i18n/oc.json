@@ -48,11 +48,11 @@
     "menu": {
         "About": "Ajuda",
         "Settings": "Prefer\u00e9ncias",
-        "exportGPX": "",
+        "exportGPX": "Exportar en GPX",
         "shareMapView": "Partejar la vista de la mapa"
     },
     "misc": {
-        "activityName": "",
+        "activityName": "Bicicleta",
         "discard": "Anullar",
         "ok": "D\u2019acc\u00f2rdi",
         "or": "o",
