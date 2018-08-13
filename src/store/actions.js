@@ -5,6 +5,7 @@ import * as constants from '@/constants';
 import i18n from '@/i18n';
 
 import {
+    HAS_VIBRATED_ONCE,
     INTRO_WAS_SEEN,
     INTRO_WAS_UNSEEN,
     IS_DONE_LOADING,
@@ -89,6 +90,10 @@ export function setLocale({ commit }, { locale }) {
 
 export function setSetting({ commit }, { setting, value }) {
     return commit(SET_SETTING, { setting, value });
+}
+
+export function markHasVibratedOnce({ commit }) {
+    return commit(HAS_VIBRATED_ONCE);
 }
 
 export function markIntroAsSeen({ commit }) {

@@ -222,6 +222,15 @@ export default {
             } else {
                 this.$store.state.location.error = 1;
             }
+
+            // Eventually vibrate, to ensure permission is prompted before cycling
+            if (this.$store.state.settings.hasVibratePermission
+                && navigator.vibrate
+                && !this.$store.state.hasVibratedOnce
+            ) {
+                navigator.vibrate(100);
+                this.$store.dispatch('markHasVibratedOnce');
+            }
         }
         this.$store.dispatch('fetchReports').catch(() => {});
     },

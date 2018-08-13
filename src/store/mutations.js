@@ -84,6 +84,7 @@ if (storageAvailable('localStorage')) {
 
 export const initialState = {
     hasGoneThroughIntro: false,
+    hasVibratedOnce: false,
     isLoading: false,
     location: {
         error: null,
@@ -120,6 +121,9 @@ export const initialState = {
 };
 
 export const mutations = {
+    [types.HAS_VIBRATED_ONCE](state) {
+        state.hasVibratedOnce = true;
+    },
     [types.INTRO_WAS_SEEN](state) {
         state.hasGoneThroughIntro = true;
     },
