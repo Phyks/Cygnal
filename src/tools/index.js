@@ -31,12 +31,16 @@ export function mockLocation() {
     const LAT_MAX = 48.81952;
     const LNG_MAX = 2.32077;
 
+    let heading = null;
+    if (Math.random() > 0.25) {
+        heading = Math.random() * 360;
+    }
     const newLocation = {
         coords: {
             accuracy: 10, // In meters
             latitude: (Math.random() * (LAT_MAX - LAT_MIN)) + LAT_MIN,
             longitude: (Math.random() * (LNG_MAX - LNG_MIN)) + LNG_MIN,
-            heading: null, // 20 * (Math.PI / 180),
+            heading,
         },
         timestamp: new Date().getTime(),
     };

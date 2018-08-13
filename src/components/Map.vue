@@ -13,7 +13,7 @@
             <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
 
             <template v-if="positionLatLng">
-                <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :options="markerOptions"></v-lts>
+                <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :heading="headingInRadiansFromNorth" :options="markerOptions"></v-lts>
                 <v-lcirclemarker
                     v-else
                     :lat-lng="positionLatLng"
@@ -60,12 +60,12 @@ import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import {
     LMap, LTileLayer, LMarker, LCircleMarker, LCircle, LPolyline,
 } from 'vue2-leaflet';
-import Vue2LeafletTracksymbol from 'vue2-leaflet-tracksymbol';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import { distance } from '@/tools';
+import LeafletTracksymbol from './LeafletTrackSymbol.vue';
 import ReportMarker from './ReportMarker.vue';
 
 // Fix for a bug in Leaflet default icon
@@ -85,17 +85,15 @@ export default {
         'v-lcirclemarker': LCircleMarker,
         'v-lcircle': LCircle,
         'v-lpolyline': LPolyline,
-        'v-lts': Vue2LeafletTracksymbol,
+        'v-lts': LeafletTracksymbol,
         ReportMarker,
     },
     computed: {
-        markerOptions() {
-            return {
-                fillColor: '#00ff00',
-                color: '#000000',
-                heading: this.heading * (Math.PI / 180), // in radians from North
-                weight: 1,
-            };
+        headingInRadiansFromNorth() {
+            if (this.heading !== null) {
+                return this.heading * (Math.PI / 180); // in radians from North
+            }
+            return null;
         },
         radiusFromAccuracy() {
             if (this.accuracy) {
@@ -134,6 +132,14 @@ export default {
             isProgrammaticMove: false,
             isProgrammaticZoom: false,
             map: null,
+            markerOptions: {
+                fill: true,
+                fillColor: '#00ff00',
+                fillOpacity: 1.0,
+                color: '#000000',
+                opacity: 1.0,
+                weight: 1,
+            },
             markerRadius: 10.0,
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
