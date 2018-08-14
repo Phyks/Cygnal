@@ -23,11 +23,13 @@
         "material-icons": "^0.2.3",
         "moment": "^2.22.2",
         "nosleep.js": "^0.7.0",
+        "ol": "^5.1.3",
         "roboto-fontface": "^0.9.0",
         "vue": "^2.5.2",
         "vue-i18n": "^8.0.0",
         "vue-router": "^3.0.1",
         "vue2-leaflet": "^1.0.2",
+        "vuelayers": "^0.10.13",
         "vuetify": "^1.1.11",
         "vuex": "^3.0.1",
         "whatwg-fetch": "^2.0.4"

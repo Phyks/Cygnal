@@ -147,7 +147,7 @@ if (process.env.THUNDERFOREST_API_KEY) {
     opencyclemapURL += `?apikey=${process.env.THUNDERFOREST_API_KEY}`;
 }
 export const TILE_SERVERS = {
-    'cartodb-voyager': 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    'cartodb-voyager': 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
     opencyclemap: opencyclemapURL,
 };
 export const DEFAULT_TILE_SERVER = 'cartodb-voyager';
