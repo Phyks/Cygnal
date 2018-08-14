@@ -172,6 +172,8 @@ Icons are made from the original works:
     licensed under CC BY-SA on Wikimedia.
 * [Pothole icon](https://commons.wikimedia.org/wiki/File:France_road_sign_A2a.svg)
     licensed under CC BY-SA on Wikimedia.
+* [Compass icon](https://commons.wikimedia.org/wiki/File:Black_and_white_compass.svg)
+    licensed in public domain on Wikimedia.
 * [Work icons](https://www.vecteezy.com/vector-art/87351-road-traffic-cartoon-icons-vector)
     were designed by Vecteezy.
 * [Trash icon](https://pixabay.com/en/trash-waste-trashcan-garbage-99257/) is

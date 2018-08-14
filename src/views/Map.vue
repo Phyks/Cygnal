@@ -63,6 +63,7 @@ function handlePositionError(error) {
 function setPosition(position) {
     const lastLocation = store.getters.getLastLocation;
     if (lastLocation !== null) {
+        // TODO: Should not be lastLocation
         const distanceFromPreviousPoint = distance(
             [lastLocation.latitude, lastLocation.longitude],
             [position.coords.latitude, position.coords.longitude],
@@ -90,12 +91,11 @@ export default {
     },
     computed: {
         currentLatLng() {
-            const currentLocation = this.$store.getters.getLastLocation;
             // Check that this is a correct position
-            if (currentLocation === null) {
+            if (this.currentLocation === null) {
                 return null;
             }
-            return [currentLocation.latitude, currentLocation.longitude];
+            return [this.currentLocation.latitude, this.currentLocation.longitude];
         },
         currentLocation() {
             return this.$store.getters.getLastLocation || {};
@@ -202,7 +202,7 @@ export default {
         },
         showReportDialog(latlng) {
             if (latlng) {
-                this.reportLatLng = [latlng.lat, latlng.lng];
+                this.reportLatLng = [latlng[0], latlng[1]];
             } else {
                 this.reportLatLng = this.currentLatLng;
             }

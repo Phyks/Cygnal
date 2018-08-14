@@ -13,98 +13,52 @@ import potholeIcon from '@/assets/pothole.svg';
 
 export const VERSION = '0.1';
 
+export const NORMAL_ICON_SCALE = 0.625;
+export const LARGE_ICON_SCALE = 1.0;
+export const ICON_ANCHOR = [0, 0.5];
 export const REPORT_TYPES = {
     accident: {
         description: 'reportLabels.accidentDescription',
         label: 'reportLabels.accident',
         image: accidentIcon,
-        marker: {
-            iconUrl: accidentMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: accidentMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
+        marker: accidentMarker,
+        markerLarge: accidentMarker,
 
     },
     gcum: {
         description: 'reportLabels.gcumDescription',
         label: 'reportLabels.gcum',
         image: gcumIcon,
-        marker: {
-            iconUrl: gcumMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: gcumMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
-
+        marker: gcumMarker,
+        markerLarge: gcumMarker,
     },
     interrupt: {
         description: 'reportLabels.interruptDescription',
         label: 'reportLabels.interrupt',
         image: interruptIcon,
-        marker: {
-            iconUrl: interruptMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: interruptMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
+        marker: interruptMarker,
+        markerLarge: interruptMarker,
     },
     misc: {
         description: 'reportLabels.miscDescription',
         label: 'reportLabels.misc',
         image: miscIcon,
-        marker: {
-            iconUrl: miscMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: miscMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
+        marker: miscMarker,
+        markerLarge: miscMarker,
     },
     obstacle: {
         description: 'reportLabels.obstacleDescription',
         label: 'reportLabels.obstacle',
         image: obstacleIcon,
-        marker: {
-            iconUrl: obstacleMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: obstacleMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
+        marker: obstacleMarker,
+        markerLarge: obstacleMarker,
     },
     pothole: {
         description: 'reportLabels.potholeDescription',
         label: 'reportLabels.pothole',
         image: potholeIcon,
-        marker: {
-            iconUrl: potholeMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
-        },
-        markerLarge: {
-            iconUrl: potholeMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
-        },
+        marker: potholeMarker,
+        markerLarge: potholeMarker,
     },
 };
 // Display order of the report types
@@ -112,7 +66,7 @@ export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', '
 
 export const MIN_DISTANCE_REPORT_DETAILS = 40; // in meters
 
-export const MOCK_LOCATION = false;
+export const MOCK_LOCATION = true;
 export const MOCK_LOCATION_USE_GPX = true;
 export const MOCK_LOCATION_GPX_PLAYBACK_SPEED = 2.0;
 export const MOCK_LOCATION_UPDATE_INTERVAL = 5 * 1000; // in milliseconds
@@ -141,13 +95,14 @@ export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;
 
 export const ACCURACY_DISPLAY_THRESHOLD = 100; // in meters
+export const POSITION_MARKER_RADIUS = 10; // in pixels
 
 let opencyclemapURL = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
 if (process.env.THUNDERFOREST_API_KEY) {
     opencyclemapURL += `?apikey=${process.env.THUNDERFOREST_API_KEY}`;
 }
 export const TILE_SERVERS = {
-    'cartodb-voyager': 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    'cartodb-voyager': 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
     opencyclemap: opencyclemapURL,
 };
 export const DEFAULT_TILE_SERVER = 'cartodb-voyager';

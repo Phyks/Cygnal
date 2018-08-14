@@ -9,9 +9,11 @@ import {
     MOCK_LOCATION_LNG_MIN, MOCK_LOCATION_LNG_MAX,
 } from '@/constants';
 
-let mockGPX = null;
+let mockGPX = [];
 if (process.env.NODE_ENV !== 'production') {
-    mockGPX = require('@/tools/mock_gpx.json'); // eslint-disable-line global-require
+    // Use a node_modules require here, this is handled by Webpack to fetch either
+    // a custom mock_gpx.json or a default empty one.
+    mockGPX = require('mock_gpx.json'); // eslint-disable-line global-require
 }
 
 export function distance(latLng1, latLng2) {
@@ -37,7 +39,7 @@ export function mockLocationRandom() {
     }
     const newLocation = {
         coords: {
-            accuracy: 10, // In meters
+            accuracy: Math.random() * 100, // In meters
             latitude: (
                 (Math.random() * (MOCK_LOCATION_LAT_MAX - MOCK_LOCATION_LAT_MIN))
                 + MOCK_LOCATION_LAT_MIN
@@ -55,23 +57,25 @@ export function mockLocationRandom() {
 }
 
 export function mockLocationWithGPX(index, setPosition) {
-    setPosition(mockGPX[index]);
-    if (index < mockGPX.length) {
-        const delay = (
-            moment(mockGPX[index + 1].time).valueOf()
-            - moment(mockGPX[index].time).valueOf()
-        );
-        setTimeout(
-            () => mockLocationWithGPX(index + 1, setPosition),
-            delay / MOCK_LOCATION_GPX_PLAYBACK_SPEED,
-        );
+    if (mockGPX[index]) {
+        setPosition(mockGPX[index]);
+        if (mockGPX[index + 1]) {
+            const delay = (
+                moment(mockGPX[index + 1].time).valueOf()
+                - moment(mockGPX[index].time).valueOf()
+            );
+            setTimeout(
+                () => mockLocationWithGPX(index + 1, setPosition),
+                delay / MOCK_LOCATION_GPX_PLAYBACK_SPEED,
+            );
+        }
     }
 }
 
 export function mockLocation(setPosition) {
     if (MOCK_LOCATION_USE_GPX) {
         mockLocationWithGPX(0, setPosition);
-        return null;
+        return -1; // Return a fake setInterval id
     }
     setPosition(mockLocationRandom());
     return setInterval(

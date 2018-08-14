@@ -44,10 +44,12 @@ module.exports = {
         },
     },
     resolve: {
-        extensions: ['.js', '.vue', '.json'],
         alias: {
             '@': utils.resolve('src'),
-        }
+        },
+        extensions: ['.js', '.vue', '.json'],
+        // Load mock_gpx.json from tests first, tests/default then
+        modules: ['tests/', 'tests/default', 'node_modules'],
     },
     stats: {
         children: false,

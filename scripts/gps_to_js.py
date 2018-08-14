@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import json
 import os
 import sys
@@ -15,13 +16,12 @@ if __name__ == "__main__":
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
-                # TODO: Other fields
                 json_out.append({
                     'time': point.time.isoformat(),
                     'coords': {
                         'accuracy': point.horizontal_dilution,
                         'altitudeAccuracy': point.vertical_dilution,
-                        'heading': None,
+                        'heading': point.course,
                         'latitude': point.latitude,
                         'longitude': point.longitude
                     }
@@ -30,5 +30,5 @@ if __name__ == "__main__":
         break
 
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(script_dir, '../src/tools/mock_gpx.json'), 'w') as fh:
+    with open(os.path.join(script_dir, '../tests/mock_gpx.json'), 'w') as fh:
         json.dump(json_out, fh)
