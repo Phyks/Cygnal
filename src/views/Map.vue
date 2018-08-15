@@ -90,12 +90,11 @@ export default {
     },
     computed: {
         currentLatLng() {
-            const currentLocation = this.$store.getters.getLastLocation;
             // Check that this is a correct position
-            if (currentLocation === null) {
+            if (this.currentLocation === null) {
                 return null;
             }
-            return [currentLocation.latitude, currentLocation.longitude];
+            return [this.currentLocation.latitude, this.currentLocation.longitude];
         },
         currentLocation() {
             return this.$store.getters.getLastLocation;
