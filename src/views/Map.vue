@@ -4,7 +4,7 @@
             <ReportCard></ReportCard>
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
-                    :accuracy="currentLocation.accuracy"
+                    :accuracy="currentLocation.hdop"
                     :center="mapCenter"
                     :heading="currentLocation.heading"
                     :markers="reportsMarkers"
