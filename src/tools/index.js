@@ -37,7 +37,7 @@ export function mockLocationRandom() {
     }
     const newLocation = {
         coords: {
-            accuracy: 10, // In meters
+            accuracy: Math.random() * 100, // In meters
             latitude: (
                 (Math.random() * (MOCK_LOCATION_LAT_MAX - MOCK_LOCATION_LAT_MIN))
                 + MOCK_LOCATION_LAT_MIN

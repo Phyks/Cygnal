@@ -23,10 +23,15 @@
 </template>
 
 <script>
+// TODO:
+//  * Position marker with heading
+//  * markers
+//  * polyline
+//  * reportLatLng
 import 'ol/ol.css';
-import Feature from 'ol/Feature.js';
+import Feature from 'ol/Feature';
 import Map from 'ol/Map';
-import Point from 'ol/geom/Point.js';
+import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
@@ -34,7 +39,9 @@ import XYZ from 'ol/source/XYZ';
 import View from 'ol/View';
 import { defaults as defaultControls } from 'ol/control';
 import { fromLonLat, toLonLat } from 'ol/proj';
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style.js';
+import {
+    Circle as CircleStyle, Fill, Stroke, Style,
+} from 'ol/style';
 
 import * as constants from '@/constants';
 import { distance } from '@/tools';
@@ -86,7 +93,6 @@ export default {
         return {
             attribution: $t('map.attribution'),
             isProgrammaticMove: false,
-            isProgrammaticZoom: false,
             map: null,
             markerOptions: {
                 fill: true,
@@ -107,10 +113,12 @@ export default {
     methods: {
         handleClick(event) {
             event.preventDefault();
+            event.stopPropagation();
             if (this.onPress) {
                 const coords = toLonLat(event.coordinate).reverse();
                 this.onPress(coords);
             }
+            return false;
         },
         hideRecenterButton() {
             if (this.isRecenterButtonShown) {
@@ -118,7 +126,7 @@ export default {
             }
         },
         onMoveStart() {
-            if (!this.isProgrammaticMove && !this.isProgrammaticZoom) {
+            if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }
         },
@@ -132,17 +140,12 @@ export default {
                 this.onMapZoomUpdate(view.getZoom());
             }
         },
-        onZoomStart() {
-            if (!this.isProgrammaticZoom) {
-                this.showRecenterButton();
-            }
-        },
         recenterMap() {
             const view = this.map.getView();
             this.hideRecenterButton();
             if (view.getZoom() !== this.zoom) {
-                this.isProgrammaticZoom = true;
-                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                this.isProgrammaticMove = true;
+                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
             const mapCenter = view.getCenter();
             if (
@@ -154,18 +157,6 @@ export default {
             }
             view.setCenter(this.olCenter);
             view.setZoom(this.zoom);
-        },
-        showCompass() {
-            // TODO
-            return;
-            const north = L.control({ position: 'topright' });
-            north.onAdd = () => {
-                const div = L.DomUtil.create('div', 'compassIcon legend');
-                div.innerHTML = `<img src="${compassNorthIcon}">`;
-                L.DomEvent.disableClickPropagation(div);
-                return div;
-            };
-            this.map.addControl(north);
         },
         showRecenterButton() {
             if (!this.isRecenterButtonShown) {
@@ -184,7 +175,7 @@ export default {
         this.accuracyFeature = new Feature();
         this.accuracyFeature.setStyle(new Style({
             image: new CircleStyle({
-                radius: this.radiusFromAccuracy,  // TODO
+                radius: this.radiusFromAccuracy,
                 fill: new Fill({
                     color: 'rgba(51, 153, 204, 0.25)',
                 }),
@@ -214,6 +205,7 @@ export default {
             this.olPosition ? new Point(this.olPosition) : null,
         );
 
+        this.isProgrammaticMove = true;
         this.map = new Map({
             target: 'map',
             layers: [
@@ -233,29 +225,19 @@ export default {
                 attributionOptions: {
                     collapsible: false,
                 },
+                rotateOptions: {
+                    autoHide: false,
+                },
             }),
             view,
         });
+        this.map.once('moveend', () => {
+            this.isProgrammaticMove = false;
 
-        if (view.getZoom() !== this.zoom) {
-            this.isProgrammaticZoom = true;
-            this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-        }
-        const mapCenter = view.getCenter();
-        if (
-            mapCenter[0] !== this.olCenter[0]
-            && mapCenter[1] !== this.olCenter[1]
-        ) {
-            this.isProgrammaticMove = true;
-            this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-        }
-        view.setCenter(this.olCenter);
-        view.setZoom(this.zoom);
-        this.showCompass();
-
-        this.map.on('click', this.handleClick);
-        this.map.on('movestart', this.onMoveStart);
-        this.map.on('moveend', this.onMoveEnd);
+            this.map.on('click', this.handleClick);
+            this.map.on('movestart', this.onMoveStart);
+            this.map.on('moveend', this.onMoveEnd);
+        });
     },
     props: {
         accuracy: Number,
@@ -285,6 +267,7 @@ export default {
                 this.accuracyFeature.setGeometry(
                     newOlPosition ? new Point(newOlPosition) : null,
                 );
+                this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
             }
         },
         zoom(newZoom) {
@@ -296,8 +279,8 @@ export default {
             if (!this.isRecenterButtonShown) {
                 // Handle programmatic navigation
                 if (view.getZoom() !== newZoom) {
-                    this.isProgrammaticZoom = true;
-                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                    this.isProgrammaticMove = true;
+                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
                 }
                 view.setZoom(newZoom);
             }
@@ -312,8 +295,8 @@ export default {
             if (!this.isRecenterButtonShown) {
                 // Handle programmatic navigation
                 if (view.getZoom() !== this.zoom) {
-                    this.isProgrammaticZoom = true;
-                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
+                    this.isProgrammaticMove = true;
+                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
                 }
                 const currentCenter = view.getCenter();
                 if (

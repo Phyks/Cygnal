@@ -1,7 +1,7 @@
 <template>
     <div>
         <ReportErrorModal v-model="hasError"></ReportErrorModal>
-        <v-bottom-sheet v-model="isActive">
+        <v-bottom-sheet v-model="isActive" persistent>
             <v-card>
                 <v-container fluid>
                     <v-layout row wrap>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+// TODO: persistent
 import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
