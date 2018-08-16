@@ -34,6 +34,7 @@
         "checkingPermissions": "V\u00e9rification des permissions",
         "next": "Suivant",
         "ready": "Tout est pr\u00eat !",
+        "reportIconDescription": " En cliquant sur l'ic\u00f4ne {0}, la bo\u00eete de signalement s'ouvre. Vous pouvez signaler :",
         "reportTypes": "Types de signalements",
         "startReporting": "Commencer \u00e0 signaler !",
         "welcome": "Bienvenue !"

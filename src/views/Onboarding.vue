@@ -12,7 +12,11 @@
             <v-flex xs12>
                 <h2 class="headline pa-3">{{ $t('intro.reportTypes') }}</h2>
 
-                <p class="text-xs-center">En cliquant sur l'icône <v-icon>report_problem</v-icon>, la boîte de signalement s'ouvre. Vous pouvez signaler :</p>
+                <p class="text-xs-center">
+                    <i18n path="intro.reportIconDescription">
+                        <v-icon>report_problem</v-icon>
+                    </i18n>
+                </p>
 
                 <ReportsDescription></ReportsDescription>
 

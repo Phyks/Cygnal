@@ -34,6 +34,7 @@
         "checkingPermissions": "Checking permissions",
         "next": "Next",
         "ready": "Ready to start",
+        "reportIconDescription": "By clicking on icon {0}, the report dialog will open. You can report:",
         "reportTypes": "Report types",
         "startReporting": "Start reporting!",
         "welcome": "Welcome"
