@@ -20,13 +20,13 @@ export const REPORT_TYPES = {
         image: accidentIcon,
         marker: {
             iconUrl: accidentMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: accidentMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
 
     },
@@ -36,13 +36,13 @@ export const REPORT_TYPES = {
         image: gcumIcon,
         marker: {
             iconUrl: gcumMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: gcumMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
 
     },
@@ -52,13 +52,13 @@ export const REPORT_TYPES = {
         image: interruptIcon,
         marker: {
             iconUrl: interruptMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: interruptMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
     },
     misc: {
@@ -67,13 +67,13 @@ export const REPORT_TYPES = {
         image: miscIcon,
         marker: {
             iconUrl: miscMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: miscMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
     },
     obstacle: {
@@ -82,13 +82,13 @@ export const REPORT_TYPES = {
         image: obstacleIcon,
         marker: {
             iconUrl: obstacleMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: obstacleMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
     },
     pothole: {
@@ -97,13 +97,13 @@ export const REPORT_TYPES = {
         image: potholeIcon,
         marker: {
             iconUrl: potholeMarker,
-            iconSize: [40, 40],
-            iconAnchor: [20, 40],
+            iconAnchor: [0, 0.5],
+            iconScale: 0.625,
         },
         markerLarge: {
             iconUrl: potholeMarker,
-            iconSize: [60, 60],
-            iconAnchor: [30, 60],
+            iconAnchor: [0, 0.5],
+            iconScale: 1.0,
         },
     },
 };

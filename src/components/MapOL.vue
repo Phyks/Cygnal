@@ -23,14 +23,10 @@
 </template>
 
 <script>
-// TODO:
-//  * Position marker with heading
-//  * markers
-//  * polyline
-//  * reportLatLng
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
+import LineString from 'ol/geom/LineString';
 import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -40,9 +36,10 @@ import View from 'ol/View';
 import { defaults as defaultControls } from 'ol/control';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import {
-    Circle as CircleStyle, Fill, Stroke, Style,
+    Circle as CircleStyle, Fill, Icon, Stroke, Style,
 } from 'ol/style';
 
+import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import { distance } from '@/tools';
 
@@ -56,6 +53,9 @@ export default {
         },
         olCenter() {
             return fromLonLat([this.center[1], this.center[0]]);
+        },
+        olPolyline() {
+            return this.polyline.map(item => fromLonLat([item[1], item[0]]));
         },
         olPosition() {
             if (this.positionLatLng) {
@@ -106,7 +106,9 @@ export default {
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
             isRecenterButtonShown: false,
+            iconFeatures: {},
             positionFeature: null,
+            polylineFeature: null,
             accuracyFeature: null,
         };
     },
@@ -165,13 +167,7 @@ export default {
         },
     },
     mounted() {
-        const view = new View({
-            center: this.olCenter,
-            maxZoom: this.maxZoom,
-            minZoom: this.minZoom,
-            zoom: this.zoom,
-        });
-
+        // Accuracy
         this.accuracyFeature = new Feature();
         this.accuracyFeature.setStyle(new Style({
             image: new CircleStyle({
@@ -188,6 +184,7 @@ export default {
         this.accuracyFeature.setGeometry(
             this.olPosition ? new Point(this.olPosition) : null,
         );
+        // Position
         this.positionFeature = new Feature();
         this.positionFeature.setStyle(new Style({
             image: new CircleStyle({
@@ -204,6 +201,10 @@ export default {
         this.positionFeature.setGeometry(
             this.olPosition ? new Point(this.olPosition) : null,
         );
+        // Polyline
+        this.polylineFeature = new Feature({
+            geometry: new LineString(this.olPolyline),
+        });
 
         this.isProgrammaticMove = true;
         this.map = new Map({
@@ -217,7 +218,7 @@ export default {
                 }),
                 new VectorLayer({
                     source: new VectorSource({
-                        features: [this.accuracyFeature, this.positionFeature],
+                        features: [this.accuracyFeature, this.positionFeature, this.polylineFeature],
                     }),
                 }),
             ],
@@ -229,7 +230,12 @@ export default {
                     autoHide: false,
                 },
             }),
-            view,
+            view: new View({
+                center: this.olCenter,
+                maxZoom: this.maxZoom,
+                minZoom: this.minZoom,
+                zoom: this.zoom,
+            }),
         });
         this.map.once('moveend', () => {
             this.isProgrammaticMove = false;
@@ -259,6 +265,35 @@ export default {
         },
     },
     watch: {
+        reportLatLng(newReportLatLng) {
+            // TODO
+        },
+        markers(newMarkers) {
+            newMarkers.forEach((marker) => {
+                const icon = constants.REPORT_TYPES[marker.type].marker;
+                const iconFeature = new Feature({
+                    geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                });
+                iconFeature.setStyle(new Style({
+                    image: new Icon({
+                        anchor: icon.iconAnchor,
+                        scale: icon.iconScale,
+                        src: icon.iconUrl,
+                    }),
+                }));
+                this.iconFeatures[marker.id] = iconFeature;
+                this.map.addLayer(new VectorLayer({
+                    source: new VectorSource({
+                        features: [iconFeature],
+                    }),
+                }));
+            });
+        },
+        olPolyline(newOlPolyline) {
+            if (this.polylineFeature) {
+                this.polylineFeature.setGeometry(new LineString(newOlPolyline));
+            }
+        },
         olPosition(newOlPosition) {
             if (this.positionFeature) {
                 this.positionFeature.setGeometry(
@@ -268,6 +303,12 @@ export default {
                     newOlPosition ? new Point(newOlPosition) : null,
                 );
                 this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
+
+                const closestReportID = this.$store.state.reportDetails.id;
+                if (closestReportID) {
+                    // TODO
+                    this.iconFeatures[closestReportID].getStyle().getImage().setScale(1.0);
+                }
             }
         },
         zoom(newZoom) {
