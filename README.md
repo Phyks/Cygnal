@@ -65,6 +65,20 @@ adapt the behavior to your needs.
 You should also have a look at the build variables under the `config/`
 subdirectory.
 
+
+#### Geographical extension
+
+While the frontend could theoretically work in the entire world without much
+modifications, it is currently written with mainland France in mind, mostly
+because that is the territory the authors are most familiar with.
+Additionnally, this limits the volume of geographical data (such as OSM
+extracts) to handle and makes managing the app easier.
+
+You could of course easily extend it to support other territories. The
+French-specific parts of the code so far are:
+* The [`AddressInput`](https://framagit.org/phyks/cyclassist/blob/master/src/components/AddressInput.vue) component which uses the [https://adresse.data.gouv.fr/](https://adresse.data.gouv.fr/) API to autocomplete addresses. You could easily replace it with [Algolia Places](https://community.algolia.com/places/) which covers the entire world.
+
+
 #### Notes
 
 We are using [A la carte](https://vuetifyjs.com/en/guides/a-la-carte) Vuetify
