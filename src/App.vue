@@ -110,7 +110,7 @@ export default {
                 const waypoint = Object.assign({}, item, { timestamp: new Date(item.timestamp) });
                 [courseKey, eleKey, hdopKey, speedKey, vdopKey].forEach((key) => {
                     if (waypoint[key] === null || waypoint[key] === undefined) {
-                        delete waypoint.elevation;
+                        delete waypoint[key];
                     }
                 });
                 waypoints.push(waypoint);
