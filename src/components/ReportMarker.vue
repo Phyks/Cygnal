@@ -4,10 +4,14 @@
 
 <script>
 import L from 'leaflet';
+import { LMarker } from 'vue2-leaflet';
 
 import { REPORT_TYPES } from '@/constants';
 
 export default {
+    components: {
+        'v-lmarker': LMarker,
+    },
     props: {
         marker: Object,
     },
