@@ -141,6 +141,12 @@ python -m server
 
 to spawn the server-side part, listening on `localhost:8081`.
 
+### Useful scripts for dev
+
+You can run `scripts/gps_to_gpx.py` on your GPX trace to create a
+`src/tools/mock_gpx.json` file ready to be used as a mocking source for the
+position data (just edit the `src/constants.js` file accordingly).
+
 
 ## Translating
 

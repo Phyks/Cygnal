@@ -166,11 +166,7 @@ export default {
             // Set up a watcher
             let watchID = null;
             if (constants.MOCK_LOCATION) {
-                setPosition(mockLocation());
-                watchID = setInterval(
-                    () => setPosition(mockLocation()),
-                    constants.MOCK_LOCATION_UPDATE_INTERVAL,
-                );
+                watchID = mockLocation(setPosition);
             } else {
                 if (!('geolocation' in navigator)) {
                     const $t = this.$t.bind(this);

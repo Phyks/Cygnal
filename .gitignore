@@ -9,6 +9,7 @@ yarn-error.log*
 .zanata-cache
 po/*.po
 po/*.pot
+tests/*.gpx
 
 # Editor directories and files
 .idea

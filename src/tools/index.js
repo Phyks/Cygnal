@@ -1,4 +1,18 @@
-import { EARTH_RADIUS } from '@/constants';
+import moment from 'moment';
+
+import {
+    EARTH_RADIUS,
+    MOCK_LOCATION_GPX_PLAYBACK_SPEED,
+    MOCK_LOCATION_UPDATE_INTERVAL,
+    MOCK_LOCATION_USE_GPX,
+    MOCK_LOCATION_LAT_MIN, MOCK_LOCATION_LAT_MAX,
+    MOCK_LOCATION_LNG_MIN, MOCK_LOCATION_LNG_MAX,
+} from '@/constants';
+
+let mockGPX = null;
+if (process.env.NODE_ENV !== 'production') {
+    mockGPX = require('@/tools/mock_gpx.json'); // eslint-disable-line global-require
+}
 
 export function distance(latLng1, latLng2) {
     const lat1 = (latLng1[0] * Math.PI) / 180;
@@ -16,21 +30,7 @@ export function distance(latLng1, latLng2) {
     return EARTH_RADIUS * c;
 }
 
-export function mockLocation() {
-    // Over Paris
-    /*
-    const LAT_MIN = 48.854031;
-    const LNG_MIN = 2.281279;
-    const LAT_MAX = 48.886123;
-    const LNG_MAX = 2.392742;
-    */
-
-    // Over small area
-    const LAT_MIN = 48.81788;
-    const LNG_MIN = 2.31723;
-    const LAT_MAX = 48.81952;
-    const LNG_MAX = 2.32077;
-
+export function mockLocationRandom() {
     let heading = null;
     if (Math.random() > 0.25) {
         heading = Math.random() * 360;
@@ -38,14 +38,46 @@ export function mockLocation() {
     const newLocation = {
         coords: {
             accuracy: 10, // In meters
-            latitude: (Math.random() * (LAT_MAX - LAT_MIN)) + LAT_MIN,
-            longitude: (Math.random() * (LNG_MAX - LNG_MIN)) + LNG_MIN,
+            latitude: (
+                (Math.random() * (MOCK_LOCATION_LAT_MAX - MOCK_LOCATION_LAT_MIN))
+                + MOCK_LOCATION_LAT_MIN
+            ),
+            longitude: (
+                (Math.random() * (MOCK_LOCATION_LNG_MAX - MOCK_LOCATION_LNG_MIN))
+                + MOCK_LOCATION_LNG_MIN
+            ),
             heading,
         },
         timestamp: new Date().getTime(),
     };
     console.log('New mock location: ', newLocation);
     return newLocation;
+}
+
+export function mockLocationWithGPX(index, setPosition) {
+    setPosition(mockGPX[index]);
+    if (index < mockGPX.length) {
+        const delay = (
+            moment(mockGPX[index + 1].time).valueOf()
+            - moment(mockGPX[index].time).valueOf()
+        );
+        setTimeout(
+            () => mockLocationWithGPX(index + 1, setPosition),
+            delay / MOCK_LOCATION_GPX_PLAYBACK_SPEED,
+        );
+    }
+}
+
+export function mockLocation(setPosition) {
+    if (MOCK_LOCATION_USE_GPX) {
+        mockLocationWithGPX(0, setPosition);
+        return null;
+    }
+    setPosition(mockLocationRandom());
+    return setInterval(
+        () => setPosition(mockLocationRandom()),
+        MOCK_LOCATION_UPDATE_INTERVAL,
+    );
 }
 
 export function storageAvailable(type) {
