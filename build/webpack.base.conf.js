@@ -209,7 +209,7 @@ module.exports = {
         }),
         new AppManifestWebpackPlugin({
             logo: path.resolve(__dirname, '../src/assets/logo.svg'),
-            prefix: '.',
+            prefix: '/',
             output: '/static/icons-[hash:8]/',
             inject: true,
             persistentCache: true,
