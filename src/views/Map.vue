@@ -201,7 +201,7 @@ export default {
         },
         showReportDialog(latlng) {
             if (latlng) {
-                this.reportLatLng = [latlng.lat, latlng.lng];
+                this.reportLatLng = [latlng[0], latlng[1]];
             } else {
                 this.reportLatLng = this.currentLatLng;
             }

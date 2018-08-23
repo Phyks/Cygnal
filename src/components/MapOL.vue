@@ -45,6 +45,9 @@ import { distance } from '@/tools';
 
 export default {
     computed: {
+        closestReportID() {
+            return this.$store.state.reportDetails.id;
+        },
         headingInRadiansFromNorth() {
             if (this.heading !== null) {
                 return this.heading * (Math.PI / 180); // in radians from North
@@ -73,7 +76,7 @@ export default {
                         * (Math.PI / 180)))
                     / (2 ** (this.zoom + 8))
                 );
-                if (accuracyInPixels > this.markerRadius) {
+                if (accuracyInPixels > constants.POSITION_MARKER_RADIUS) {
                     return accuracyInPixels;
                 }
             }
@@ -102,7 +105,6 @@ export default {
                 opacity: 1.0,
                 weight: 1,
             },
-            markerRadius: 10.0,
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
             isRecenterButtonShown: false,
@@ -188,7 +190,7 @@ export default {
         this.positionFeature = new Feature();
         this.positionFeature.setStyle(new Style({
             image: new CircleStyle({
-                radius: 6,
+                radius: constants.POSITION_MARKER_RADIUS,
                 fill: new Fill({
                     color: '#3399CC',
                 }),
@@ -218,7 +220,11 @@ export default {
                 }),
                 new VectorLayer({
                     source: new VectorSource({
-                        features: [this.accuracyFeature, this.positionFeature, this.polylineFeature],
+                        features: [
+                            this.accuracyFeature,
+                            this.positionFeature,
+                            this.polylineFeature,
+                        ],
                     }),
                 }),
             ],
@@ -270,15 +276,14 @@ export default {
         },
         markers(newMarkers) {
             newMarkers.forEach((marker) => {
-                const icon = constants.REPORT_TYPES[marker.type].marker;
                 const iconFeature = new Feature({
                     geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
                 });
                 iconFeature.setStyle(new Style({
                     image: new Icon({
-                        anchor: icon.iconAnchor,
-                        scale: icon.iconScale,
-                        src: icon.iconUrl,
+                        anchor: constants.ICON_ANCHOR,
+                        scale: constants.NORMAL_ICON_SCALE,
+                        src: constants.REPORT_TYPES[marker.type].marker,
                     }),
                 }));
                 this.iconFeatures[marker.id] = iconFeature;
@@ -303,12 +308,6 @@ export default {
                     newOlPosition ? new Point(newOlPosition) : null,
                 );
                 this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
-
-                const closestReportID = this.$store.state.reportDetails.id;
-                if (closestReportID) {
-                    // TODO
-                    this.iconFeatures[closestReportID].getStyle().getImage().setScale(1.0);
-                }
             }
         },
         zoom(newZoom) {
@@ -374,6 +373,22 @@ export default {
                 }
                 view.setZoom(this.zoom);
                 view.setCenter(newOlCenter);
+            }
+        },
+        closestReportID(newID, oldID) {
+            if (oldID) {
+                // Reset scale
+                this.iconFeatures[oldID]
+                    .getStyle()
+                    .getImage()
+                    .setScale(constants.NORMAL_ICON_SCALE);
+            }
+
+            if (newID) {
+                this.iconFeatures[newID]
+                    .getStyle()
+                    .getImage()
+                    .setScale(constants.LARGE_ICON_SCALE);
             }
         },
     },
