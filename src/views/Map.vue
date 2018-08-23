@@ -63,6 +63,7 @@ function handlePositionError(error) {
 function setPosition(position) {
     const lastLocation = store.getters.getLastLocation;
     if (lastLocation !== null) {
+        // TODO: Should not be lastLocation
         const distanceFromPreviousPoint = distance(
             [lastLocation.latitude, lastLocation.longitude],
             [position.coords.latitude, position.coords.longitude],

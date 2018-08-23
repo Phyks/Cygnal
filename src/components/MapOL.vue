@@ -23,6 +23,9 @@
 </template>
 
 <script>
+// TODO: Better rotation control
+// TODO: Closing report card with click outside
+// TODO: Map going outside of container + on resize ?
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -46,30 +49,28 @@ import { distance } from '@/tools';
 export default {
     computed: {
         closestReportID() {
+            // Get the closest report ID
             return this.$store.state.reportDetails.id;
         },
-        headingInRadiansFromNorth() {
-            if (this.heading !== null) {
-                return this.heading * (Math.PI / 180); // in radians from North
-            }
-            return null;
-        },
         olCenter() {
+            // Compute center in OL coordinates system
             return fromLonLat([this.center[1], this.center[0]]);
         },
         olPolyline() {
+            // Compute the polyline in OL coordinates system
             return this.polyline.map(item => fromLonLat([item[1], item[0]]));
         },
         olPosition() {
+            // Compute the current position in OL coordinates system
             if (this.positionLatLng) {
                 return fromLonLat([this.positionLatLng[1], this.positionLatLng[0]]);
             }
             return null;
         },
         radiusFromAccuracy() {
+            // Compute the radius (in pixels) based on GPS accuracy, taking
+            // into account the current zoom level
             if (this.accuracy && this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD) {
-                // Compute the radius (in pixels) based on GPS accuracy, taking
-                // into account the current zoom level
                 // Formula coming from https://wiki.openstreetmap.org/wiki/Zoom_levels.
                 const accuracyInPixels = this.accuracy / (
                     (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0]
@@ -87,6 +88,8 @@ export default {
             if (tileServerSetting in constants.TILE_SERVERS) {
                 return constants.TILE_SERVERS[tileServerSetting];
             }
+            // Remove the protocol part, avoid easily avoidable unsecured
+            // content over HTTPS.
             const firstColon = tileServerSetting.indexOf(':');
             return tileServerSetting.substring(firstColon + 1);
         },
@@ -97,28 +100,48 @@ export default {
             attribution: $t('map.attribution'),
             isProgrammaticMove: false,
             map: null,
-            markerOptions: {
-                fill: true,
-                fillColor: '#00ff00',
-                fillOpacity: 1.0,
-                color: '#000000',
-                opacity: 1.0,
-                weight: 1,
-            },
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
             isRecenterButtonShown: false,
-            iconFeatures: {},
-            positionFeature: null,
-            polylineFeature: null,
+            // Variables for easy access to map feature and layers
             accuracyFeature: null,
+            reportsMarkersFeatures: {},
+            reportsMarkersVectorSource: null,
+            mainVectorSource: null,
+            polylineFeature: null,
+            positionFeature: null,
+            reportLatLngFeature: null,
         };
     },
     methods: {
+        drawReportMarker(marker, addedMarkersIDs) {
+            if ((addedMarkersIDs && !addedMarkersIDs.has(marker.id))
+                || this.reportsMarkersFeatures[marker.id]
+            ) {
+                // Skip the marker if it was not added or is already on the map
+                return;
+            }
+
+            // Create a Feature for the marker, to add it on the map
+            const reportMarkerFeature = new Feature({
+                geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+            });
+            reportMarkerFeature.setStyle(new Style({
+                image: new Icon({
+                    anchor: constants.ICON_ANCHOR,
+                    scale: constants.NORMAL_ICON_SCALE,
+                    src: constants.REPORT_TYPES[marker.type].marker,
+                }),
+            }));
+            // Add the marker to the map and keep a reference to it
+            this.reportsMarkersFeatures[marker.id] = reportMarkerFeature;
+            this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
+        },
         handleClick(event) {
             event.preventDefault();
             event.stopPropagation();
             if (this.onPress) {
+                // Reverse coordinates as OL uses lng first.
                 const coords = toLonLat(event.coordinate).reverse();
                 this.onPress(coords);
             }
@@ -146,21 +169,22 @@ export default {
         },
         recenterMap() {
             const view = this.map.getView();
-            this.hideRecenterButton();
-            if (view.getZoom() !== this.zoom) {
-                this.isProgrammaticMove = true;
-                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-            }
             const mapCenter = view.getCenter();
+
+            this.hideRecenterButton();
+
             if (
-                mapCenter[0] !== this.olCenter[0]
-                && mapCenter[1] !== this.olCenter[1]
+                view.getZoom() !== this.zoom
+                || mapCenter[0] !== this.olCenter[0]
+                || mapCenter[1] !== this.olCenter[1]
+                || view.getRotation() !== 0
             ) {
                 this.isProgrammaticMove = true;
                 this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
             view.setCenter(this.olCenter);
             view.setZoom(this.zoom);
+            view.setRotation(0);
         },
         showRecenterButton() {
             if (!this.isRecenterButtonShown) {
@@ -169,8 +193,10 @@ export default {
         },
     },
     mounted() {
-        // Accuracy
-        this.accuracyFeature = new Feature();
+        // Create accuracy circle feature
+        this.accuracyFeature = new Feature({
+            geometry: this.olPosition ? new Point(this.olPosition) : null,
+        });
         this.accuracyFeature.setStyle(new Style({
             image: new CircleStyle({
                 radius: this.radiusFromAccuracy,
@@ -183,11 +209,11 @@ export default {
                 }),
             }),
         }));
-        this.accuracyFeature.setGeometry(
-            this.olPosition ? new Point(this.olPosition) : null,
-        );
-        // Position
-        this.positionFeature = new Feature();
+
+        // Create position marker feature
+        this.positionFeature = new Feature({
+            geometry: this.olPosition ? new Point(this.olPosition) : null,
+        });
         this.positionFeature.setStyle(new Style({
             image: new CircleStyle({
                 radius: constants.POSITION_MARKER_RADIUS,
@@ -200,17 +226,35 @@ export default {
                 }),
             }),
         }));
-        this.positionFeature.setGeometry(
-            this.olPosition ? new Point(this.olPosition) : null,
-        );
-        // Polyline
+
+        // Create polyline feature
         this.polylineFeature = new Feature({
             geometry: new LineString(this.olPolyline),
         });
 
+        // Initialize the map
         this.isProgrammaticMove = true;
+        this.mainVectorSource = new VectorSource({
+            features: [
+                this.accuracyFeature,
+                this.positionFeature,
+                this.polylineFeature,
+            ],
+        });
+        this.reportsMarkersVectorSource = new VectorSource();
+        this.markers.forEach(marker => this.drawReportMarker(marker, null));
         this.map = new Map({
-            target: 'map',
+            controls: defaultControls({
+                attributionOptions: {
+                    collapsible: false,
+                },
+                rotateOptions: {
+                    autoHide: false,
+                },
+                zoomOptions: {
+                    className: 'ol-zoom',
+                },
+            }),
             layers: [
                 new TileLayer({
                     source: new XYZ({
@@ -219,27 +263,18 @@ export default {
                     }),
                 }),
                 new VectorLayer({
-                    source: new VectorSource({
-                        features: [
-                            this.accuracyFeature,
-                            this.positionFeature,
-                            this.polylineFeature,
-                        ],
-                    }),
+                    source: this.mainVectorSource,
+                }),
+                new VectorLayer({
+                    source: this.reportsMarkersVectorSource,
                 }),
             ],
-            controls: defaultControls({
-                attributionOptions: {
-                    collapsible: false,
-                },
-                rotateOptions: {
-                    autoHide: false,
-                },
-            }),
+            target: 'map',
             view: new View({
                 center: this.olCenter,
                 maxZoom: this.maxZoom,
                 minZoom: this.minZoom,
+                rotation: 0,
                 zoom: this.zoom,
             }),
         });
@@ -257,6 +292,7 @@ export default {
             type: Array,
             required: true,
         },
+        // TODO: Handle heading
         heading: Number, // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
@@ -271,61 +307,47 @@ export default {
         },
     },
     watch: {
-        reportLatLng(newReportLatLng) {
-            // TODO
-        },
-        markers(newMarkers) {
-            newMarkers.forEach((marker) => {
-                const iconFeature = new Feature({
-                    geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
-                });
-                iconFeature.setStyle(new Style({
-                    image: new Icon({
-                        anchor: constants.ICON_ANCHOR,
-                        scale: constants.NORMAL_ICON_SCALE,
-                        src: constants.REPORT_TYPES[marker.type].marker,
-                    }),
-                }));
-                this.iconFeatures[marker.id] = iconFeature;
-                this.map.addLayer(new VectorLayer({
-                    source: new VectorSource({
-                        features: [iconFeature],
-                    }),
-                }));
-            });
-        },
-        olPolyline(newOlPolyline) {
-            if (this.polylineFeature) {
-                this.polylineFeature.setGeometry(new LineString(newOlPolyline));
+        closestReportID(newID, oldID) {
+            if (oldID && this.reportsMarkersFeatures[oldID]) {
+                // Reset scale for previous marker
+                this.reportsMarkersFeatures[oldID]
+                    .getStyle()
+                    .getImage()
+                    .setScale(constants.NORMAL_ICON_SCALE);
+            }
+
+            if (newID && this.reportsMarkersFeatures[newID]) {
+                // Set scale for current marker
+                this.reportsMarkersFeatures[newID]
+                    .getStyle()
+                    .getImage()
+                    .setScale(constants.LARGE_ICON_SCALE);
             }
         },
-        olPosition(newOlPosition) {
-            if (this.positionFeature) {
-                this.positionFeature.setGeometry(
-                    newOlPosition ? new Point(newOlPosition) : null,
-                );
-                this.accuracyFeature.setGeometry(
-                    newOlPosition ? new Point(newOlPosition) : null,
-                );
-                this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
-            }
-        },
-        zoom(newZoom) {
-            const view = this.map.getView();
-            if (!this.map) {
-                // Map should have been created
+        markers(newMarkers, oldMarkers) {
+            // Map should have been created
+            if (this.reportsMarkersVectorSource === null) {
                 return;
             }
-            if (!this.isRecenterButtonShown) {
-                // Handle programmatic navigation
-                if (view.getZoom() !== newZoom) {
-                    this.isProgrammaticMove = true;
-                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-                }
-                view.setZoom(newZoom);
-            }
+
+            // Compute the diff between old and new marker arrays, to determine
+            // added and removed markers
+            const oldIDs = new Set(oldMarkers.map(item => item.id));
+            const newIDs = new Set(newMarkers.map(item => item.id));
+
+            // Add new markers to the map
+            const addedMarkersIDs = new Set([...newIDs].filter(x => !oldIDs.has(x)));
+            this.markers.forEach(marker => this.drawReportMarker(marker, addedMarkersIDs));
+
+            // Remove removed markers from the map
+            const removedMarkersIDs = [...oldIDs].filter(x => !newIDs.has(x));
+            removedMarkersIDs.forEach((id) => {
+                this.reportsMarkersVectorSource.removeFeature(this.reportsMarkersFeatures[id]);
+                delete this.reportsMarkersFeatures[id];
+            });
         },
         olCenter(newOlCenter) {
+            // TODO: Review this
             if (!this.map) {
                 // Map should have been created
                 return;
@@ -375,20 +397,62 @@ export default {
                 view.setCenter(newOlCenter);
             }
         },
-        closestReportID(newID, oldID) {
-            if (oldID) {
-                // Reset scale
-                this.iconFeatures[oldID]
-                    .getStyle()
-                    .getImage()
-                    .setScale(constants.NORMAL_ICON_SCALE);
+        olPolyline(newOlPolyline) {
+            if (this.polylineFeature) {
+                // Update polyline trace
+                this.polylineFeature.setGeometry(new LineString(newOlPolyline));
+            }
+        },
+        olPosition(newOlPosition) {
+            if (this.positionFeature) {
+                // Update position marker position
+                this.positionFeature.setGeometry(
+                    newOlPosition ? new Point(newOlPosition) : null,
+                );
+            }
+            if (this.accuracyFeature) {
+                // Update accuracy circle position and radius
+                this.accuracyFeature.setGeometry(
+                    newOlPosition ? new Point(newOlPosition) : null,
+                );
+                this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
+            }
+        },
+        reportLatLng(newReportLatLng) {
+            // Eventually remove old marker
+            if (this.reportLatLngFeature && this.mainVectorSource) {
+                this.mainVectorSource.removeFeature(this.reportLatLngFeature);
+                this.reportLatLngFeature = null;
             }
 
-            if (newID) {
-                this.iconFeatures[newID]
-                    .getStyle()
-                    .getImage()
-                    .setScale(constants.LARGE_ICON_SCALE);
+            // Create unknown report marker if needed
+            if (newReportLatLng && this.mainVectorSource) {
+                this.reportLatLngFeature = new Feature({
+                    geometry: new Point(fromLonLat([newReportLatLng[1], newReportLatLng[0]])),
+                });
+                this.reportLatLngFeature.setStyle(new Style({
+                    image: new Icon({
+                        anchor: constants.ICON_ANCHOR,
+                        scale: constants.NORMAL_ICON_SCALE,
+                        src: unknownMarkerIcon,
+                    }),
+                }));
+                this.mainVectorSource.addFeature(this.reportLatLngFeature);
+            }
+        },
+        zoom(newZoom) {
+            if (!this.map) {
+                // Map should have been created
+                return;
+            }
+            const view = this.map.getView();
+            if (!this.isRecenterButtonShown) {
+                // Handle programmatic navigation
+                if (view.getZoom() !== newZoom) {
+                    this.isProgrammaticMove = true;
+                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+                }
+                view.setZoom(newZoom);
             }
         },
     },
@@ -398,5 +462,12 @@ export default {
 <style scoped>
 .fill-width {
     width: 100%;
+}
+</style>
+
+<style>
+.ol-control button {
+    height: 3em !important;
+    width: 3em !important;
 }
 </style>
