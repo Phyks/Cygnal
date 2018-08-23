@@ -23,6 +23,7 @@
 </template>
 
 <script>
+// TODO: Handle click on markers + resizing
 // TODO: Better rotation control
 // TODO: Closing report card with click outside
 // TODO: Map going outside of container + on resize ?
@@ -46,10 +47,13 @@ import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import { distance } from '@/tools';
 
+const MAIN_VECTOR_LAYER_NAME = 'MAIN';
+const REPORTS_MARKERS_VECTOR_LAYER_NAME = 'REPORTS_MARKERS';
+
 export default {
     computed: {
-        closestReportID() {
-            // Get the closest report ID
+        reportDetailsID() {
+            // Get the currently shown report details ID
             return this.$store.state.reportDetails.id;
         },
         olCenter() {
@@ -125,6 +129,7 @@ export default {
             // Create a Feature for the marker, to add it on the map
             const reportMarkerFeature = new Feature({
                 geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                id: marker.id,
             });
             reportMarkerFeature.setStyle(new Style({
                 image: new Icon({
@@ -140,6 +145,20 @@ export default {
         handleClick(event) {
             event.preventDefault();
             event.stopPropagation();
+
+            if (this.map) {
+                this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                    if (layer.get('name') !== REPORTS_MARKERS_VECTOR_LAYER_NAME) {
+                        return;
+                    }
+                    this.$store.dispatch(
+                        'showReportDetails',
+                        { id: feature.get('id'), userAsked: true },
+                    );
+                });
+                return false;
+            }
+
             if (this.onPress) {
                 // Reverse coordinates as OL uses lng first.
                 const coords = toLonLat(event.coordinate).reverse();
@@ -183,8 +202,8 @@ export default {
                 this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
             view.setCenter(this.olCenter);
-            view.setZoom(this.zoom);
             view.setRotation(0);
+            view.setZoom(this.zoom);
         },
         showRecenterButton() {
             if (!this.isRecenterButtonShown) {
@@ -263,9 +282,11 @@ export default {
                     }),
                 }),
                 new VectorLayer({
+                    name: MAIN_VECTOR_LAYER_NAME,
                     source: this.mainVectorSource,
                 }),
                 new VectorLayer({
+                    name: REPORTS_MARKERS_VECTOR_LAYER_NAME,
                     source: this.reportsMarkersVectorSource,
                 }),
             ],
@@ -284,6 +305,18 @@ export default {
             this.map.on('click', this.handleClick);
             this.map.on('movestart', this.onMoveStart);
             this.map.on('moveend', this.onMoveEnd);
+        });
+
+        // Set pointer to hover when hovering a report marker
+        this.map.on('pointermove', (event) => {
+            if (event.dragging) {
+                return;
+            }
+
+            const hit = this.map.hasFeatureAtPixel(event.pixel, {
+                layerFilter: layer => layer.get('name') === REPORTS_MARKERS_VECTOR_LAYER_NAME,
+            });
+            this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
         });
     },
     props: {
@@ -307,7 +340,7 @@ export default {
         },
     },
     watch: {
-        closestReportID(newID, oldID) {
+        reportDetailsID(newID, oldID) {
             if (oldID && this.reportsMarkersFeatures[oldID]) {
                 // Reset scale for previous marker
                 this.reportsMarkersFeatures[oldID]
@@ -347,7 +380,6 @@ export default {
             });
         },
         olCenter(newOlCenter) {
-            // TODO: Review this
             if (!this.map) {
                 // Map should have been created
                 return;
@@ -355,46 +387,44 @@ export default {
 
             const view = this.map.getView();
             if (!this.isRecenterButtonShown) {
-                // Handle programmatic navigation
-                if (view.getZoom() !== this.zoom) {
-                    this.isProgrammaticMove = true;
-                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-                }
                 const currentCenter = view.getCenter();
+                // Handle programmatic navigation
                 if (
-                    currentCenter[0] !== newOlCenter[0]
-                    && currentCenter[1] !== newOlCenter[1]
+                    view.getZoom() !== this.zoom
+                    || currentCenter[0] !== newOlCenter[0]
+                    || currentCenter[1] !== newOlCenter[1]
                 ) {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+                }
 
-                    // Eventually display closest report
-                    const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
-                    const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
-                    if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
-                        // Compute all markers distance, filter by max distance
-                        const distances = this.markers.map(
-                            marker => ({
-                                id: marker.id,
-                                distance: distance(this.center, marker.latLng),
-                            }),
-                        ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
-                        const closestReport = distances.reduce( // Get the closest one
-                            (acc, item) => (
-                                item.distance < acc.distance ? item : acc
-                            ),
-                            { distance: Number.MAX_VALUE, id: -1 },
-                        );
-                        // TODO: Take into account the history of positions for the direction
-                        if (closestReport.id !== -1) {
-                            this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
-                        } else {
-                            this.$store.dispatch('hideReportDetails');
-                        }
+                // Eventually display closest report
+                const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
+                const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
+                if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
+                    // Compute all markers distance, filter by max distance
+                    const distances = this.markers.map(
+                        marker => ({
+                            id: marker.id,
+                            distance: distance(this.center, marker.latLng),
+                        }),
+                    ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
+                    const closestReport = distances.reduce( // Get the closest one
+                        (acc, item) => (
+                            item.distance < acc.distance ? item : acc
+                        ),
+                        { distance: Number.MAX_VALUE, id: -1 },
+                    );
+                    // TODO: Take into account the history of positions for the direction
+                    if (closestReport.id !== -1) {
+                        this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                    } else {
+                        this.$store.dispatch('hideReportDetails');
                     }
                 }
-                view.setZoom(this.zoom);
                 view.setCenter(newOlCenter);
+                view.setRotation(0);
+                view.setZoom(this.zoom);
             }
         },
         olPolyline(newOlPolyline) {
