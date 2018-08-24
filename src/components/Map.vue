@@ -23,6 +23,7 @@
 </template>
 
 <script>
+// TODO: Rotate the map according to user heading.
 // TODO: Map going outside of container + on resize ?
 import 'ol/ol.css';
 import Feature from 'ol/Feature';

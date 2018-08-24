@@ -91,6 +91,7 @@ export const initialState = {
         gpx: [],
         watcherID: null,
     },
+    lastReportFetchingLocation: [null, null],
     map: {
         center: [null, null],
         zoom: null,
@@ -164,6 +165,19 @@ export const mutations = {
     },
     [types.SET_CURRENT_POSITION](state, { currentLocation }) {
         state.location.gpx.push(currentLocation);
+        if (
+            !state.lastReportFetchingLocation
+            || !state.lastReportFetchingLocation[0]
+            || !state.lastReportFetchingLocation[1]
+        ) {
+            state.lastReportFetchingLocation = [
+                currentLocation.latitude,
+                currentLocation.longitude,
+            ];
+        }
+    },
+    [types.SET_LAST_REPORT_FETCHING_LOCATION](state, { locationLatLng }) {
+        state.lastReportFetchingLocation = locationLatLng;
     },
     [types.SET_LOCATION_ERROR](state, { error }) {
         Vue.set(state.location, 'error', error);

@@ -61,14 +61,20 @@ function handlePositionError(error) {
 }
 
 function setPosition(position) {
-    const lastLocation = store.getters.getLastLocation;
-    if (lastLocation !== null) {
-        // TODO: Should not be lastLocation
+    const lastFetchingLocation = store.state.lastReportFetchingLocation;
+    if (
+        lastFetchingLocation
+        && lastFetchingLocation[0] !== null
+        && lastFetchingLocation[1] !== null
+    ) {
         const distanceFromPreviousPoint = distance(
-            [lastLocation.latitude, lastLocation.longitude],
+            [lastFetchingLocation[0], lastFetchingLocation[1]],
             [position.coords.latitude, position.coords.longitude],
         );
         if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
+            store.dispatch('setLastReportFetchingLocation', {
+                locationLatLng: [position.coords.latitude, position.coords.longitude],
+            });
             store.dispatch('fetchReports');
         }
     }
