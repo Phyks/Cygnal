@@ -24,7 +24,6 @@
 
 <script>
 // TODO: Map going outside of container + on resize ?
-// TODO: Track symbol should be an arrow
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -38,7 +37,7 @@ import View from 'ol/View';
 import { defaults as defaultControls } from 'ol/control';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import {
-    Circle as CircleStyle, Fill, Icon, Stroke, Style,
+    Circle as CircleStyle, Fill, Icon, Stroke, Style, Text,
 } from 'ol/style';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
@@ -51,9 +50,12 @@ const REPORTS_MARKERS_VECTOR_LAYER_NAME = 'REPORTS_MARKERS';
 
 export default {
     computed: {
-        reportDetailsID() {
-            // Get the currently shown report details ID
-            return this.$store.state.reportDetails.id;
+        headingInRadiansFromNorth() {
+            if (this.heading !== null) {
+                // in radians from North
+                return 1.0 * this.heading * (Math.PI / 180);
+            }
+            return null;
         },
         olCenter() {
             // Compute center in OL coordinates system
@@ -86,6 +88,10 @@ export default {
             }
             return null;
         },
+        reportDetailsID() {
+            // Get the currently shown report details ID
+            return this.$store.state.reportDetails.id;
+        },
         tileServer() {
             const tileServerSetting = this.$store.state.settings.tileServer;
             if (tileServerSetting in constants.TILE_SERVERS) {
@@ -117,6 +123,58 @@ export default {
         };
     },
     methods: {
+        setPositionFeatureStyle() {
+            const positionFeatureStyle = this.positionFeature.getStyle();
+            const rotation = this.headingInRadiansFromNorth - Math.PI / 2;
+
+            // If heading is specified
+            if (this.headingInRadiansFromNorth !== null) {
+                // Check current style and update rotation if an arrow is already drawn
+                if (positionFeatureStyle) {
+                    const TextStyle = positionFeatureStyle.getText();
+                    if (TextStyle) {
+                        TextStyle.setRotation(rotation);
+                        return;
+                    }
+                }
+                // Replace style by an arrow otherwise
+                this.positionFeature.setStyle(new Style({
+                    text: new Text({
+                        textBaseline: 'middle',
+                        offsetX: 0,
+                        offsetY: 0,
+                        rotation,
+                        font: '30px sans-serif',
+                        text: '►',
+                        fill: new Fill({
+                            color: '#3399CC',
+                        }),
+                        stroke: new Stroke({
+                            color: '#fff',
+                            width: 2,
+                        }),
+                    }),
+                }));
+                return;
+            }
+
+            // No heading specified, force circle if a circle is not already
+            // displayed
+            if (!positionFeatureStyle || !positionFeatureStyle.getImage()) {
+                this.positionFeature.setStyle(new Style({
+                    image: new CircleStyle({
+                        radius: constants.POSITION_MARKER_RADIUS,
+                        fill: new Fill({
+                            color: '#3399CC',
+                        }),
+                        stroke: new Stroke({
+                            color: '#fff',
+                            width: 2,
+                        }),
+                    }),
+                }));
+            }
+        },
         deleteReportMarker(markerID) {
             const feature = this.reportsMarkersFeatures[markerID];
             if (feature) {
@@ -153,7 +211,6 @@ export default {
             this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
         },
         handleClick(event) {
-            console.log('MAP', event);
             event.preventDefault();
             event.stopPropagation();
 
@@ -245,18 +302,7 @@ export default {
         this.positionFeature = new Feature({
             geometry: this.olPosition ? new Point(this.olPosition) : null,
         });
-        this.positionFeature.setStyle(new Style({
-            image: new CircleStyle({
-                radius: constants.POSITION_MARKER_RADIUS,
-                fill: new Fill({
-                    color: '#3399CC',
-                }),
-                stroke: new Stroke({
-                    color: '#fff',
-                    width: 2,
-                }),
-            }),
-        }));
+        this.setPositionFeatureStyle();
 
         // Create polyline feature
         this.polylineFeature = new Feature({
@@ -350,7 +396,6 @@ export default {
             type: Array,
             required: true,
         },
-        // TODO: Handle heading
         heading: Number, // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
@@ -458,6 +503,7 @@ export default {
                 this.positionFeature.setGeometry(
                     newOlPosition ? new Point(newOlPosition) : null,
                 );
+                this.setPositionFeatureStyle();
             }
             if (this.accuracyFeature) {
                 // Update accuracy circle position and radius

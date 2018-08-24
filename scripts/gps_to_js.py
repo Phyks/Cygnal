@@ -15,13 +15,12 @@ if __name__ == "__main__":
     for track in gpx.tracks:
         for segment in track.segments:
             for point in segment.points:
-                # TODO: Other fields
                 json_out.append({
                     'time': point.time.isoformat(),
                     'coords': {
                         'accuracy': point.horizontal_dilution,
                         'altitudeAccuracy': point.vertical_dilution,
-                        'heading': None,
+                        'heading': point.course,
                         'latitude': point.latitude,
                         'longitude': point.longitude
                     }
