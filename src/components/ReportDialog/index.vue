@@ -1,7 +1,7 @@
 <template>
     <div>
         <ReportErrorModal v-model="hasError"></ReportErrorModal>
-        <v-bottom-sheet v-model="isActive" persistent>
+        <v-bottom-sheet v-model="isActive" persistent id="reportCardSheet">
             <v-card>
                 <v-container fluid>
                     <v-layout row wrap>
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-// TODO: persistent
 import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
@@ -85,6 +84,19 @@ export default {
     },
     mounted() {
         window.addEventListener('keydown', this.hideReportDialogOnEsc);
+
+        // Use persistent mode and recreate the clicking outside event handler
+        // here as Vuetify uses capture mode which has some issues with
+        // OpenLayers events.
+        const app = document.querySelector('[data-app]') || document.body;
+        app.addEventListener(
+            'click',
+            (event) => {
+                if (this.isActive && event.target.closest('#reportCardSheet') === null) {
+                    this.isActive = false;
+                }
+            },
+        );
     },
     props: {
         value: Boolean,

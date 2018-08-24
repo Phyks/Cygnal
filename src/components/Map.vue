@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// TODO: Closing report card with click outside
 // TODO: Map going outside of container + on resize ?
 // TODO: Track symbol should be an arrow
 import 'ol/ol.css';
@@ -154,6 +153,7 @@ export default {
             this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
         },
         handleClick(event) {
+            console.log('MAP', event);
             event.preventDefault();
             event.stopPropagation();
 
@@ -321,6 +321,13 @@ export default {
             this.isProgrammaticMove = false;
 
             this.map.on('click', this.handleClick);
+            // Take care that OpenLayer map actually catches "pointerdown"
+            // events and not "click" events. Then, we need an explicit event
+            // handler for "click" to stop propagation to ReportCard component.
+            document.querySelector('#map').addEventListener(
+                'click',
+                event => event.stopPropagation(),
+            );
             this.map.on('movestart', this.onMoveStart);
             this.map.on('moveend', this.onMoveEnd);
         });
