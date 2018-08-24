@@ -1,38 +1,8 @@
 <template>
     <div class="fill-height fill-width">
-        <v-lmap
-            ref="map"
-            :minZoom="this.minZoom"
-            :maxZoom="this.maxZoom"
-            :options="{ zoomControl: false }"
-            @click="handleClick"
-            @movestart="onMoveStart"
-            @moveend="onMoveEnd"
-            @zoomstart="onZoomStart"
-            >
-            <v-ltilelayer :url="tileServer" :attribution="attribution"></v-ltilelayer>
+        <div id="map" class="fill-height fill-width">
+        </div>
 
-            <template v-if="positionLatLng">
-                <v-lts v-if="heading !== null" :lat-lng="positionLatLng" :heading="headingInRadiansFromNorth" :options="markerOptions"></v-lts>
-                <v-lcirclemarker
-                    v-else
-                    :lat-lng="positionLatLng"
-                    :color="markerOptions.color"
-                    :fillColor="markerOptions.fillColor"
-                    :fillOpacity="1.0"
-                    :weight="markerOptions.weight"
-                    :radius="markerRadius"
-                    >
-                </v-lcirclemarker>
-
-                <v-lcircle v-if="shouldDisplayAccuracy" :lat-lng="positionLatLng" :radius="radiusFromAccuracy"></v-lcircle>
-            </template>
-
-            <v-lpolyline :latLngs="polyline" :opacity="0.6" color="#00FF00"></v-lpolyline>
-
-            <v-lmarker v-if="reportLatLng" :lat-lng="reportLatLng" :icon="unknownMarkerIcon"></v-lmarker>
-            <ReportMarker v-for="marker in markers" :key="marker.id" :marker="marker"></ReportMarker>
-        </v-lmap>
         <v-btn
             absolute
             dark
@@ -53,74 +23,77 @@
 </template>
 
 <script>
-import L from 'leaflet';
-import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+// TODO: Closing report card with click outside
+// TODO: Map going outside of container + on resize ?
+// TODO: Track symbol should be an arrow
+import 'ol/ol.css';
+import Feature from 'ol/Feature';
+import Map from 'ol/Map';
+import LineString from 'ol/geom/LineString';
+import Point from 'ol/geom/Point';
+import TileLayer from 'ol/layer/Tile';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import XYZ from 'ol/source/XYZ';
+import View from 'ol/View';
+import { defaults as defaultControls } from 'ol/control';
+import { fromLonLat, toLonLat } from 'ol/proj';
 import {
-    LMap, LTileLayer, LMarker, LCircleMarker, LCircle, LPolyline,
-} from 'vue2-leaflet';
+    Circle as CircleStyle, Fill, Icon, Stroke, Style,
+} from 'ol/style';
 
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import { distance } from '@/tools';
-import LeafletTracksymbol from './LeafletTrackSymbol.vue';
-import ReportMarker from './ReportMarker.vue';
 
-// Fix for a bug in Leaflet default icon
-// see https://github.com/PaulLeCam/react-leaflet/issues/255#issuecomment-261904061
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl,
-    iconUrl,
-    shadowUrl,
-});
+const MAIN_VECTOR_LAYER_NAME = 'MAIN';
+const REPORTS_MARKERS_VECTOR_LAYER_NAME = 'REPORTS_MARKERS';
 
 export default {
-    components: {
-        'v-lmap': LMap,
-        'v-ltilelayer': LTileLayer,
-        'v-lmarker': LMarker,
-        'v-lcirclemarker': LCircleMarker,
-        'v-lcircle': LCircle,
-        'v-lpolyline': LPolyline,
-        'v-lts': LeafletTracksymbol,
-        ReportMarker,
-    },
     computed: {
-        headingInRadiansFromNorth() {
-            if (this.heading !== null) {
-                return this.heading * (Math.PI / 180); // in radians from North
+        reportDetailsID() {
+            // Get the currently shown report details ID
+            return this.$store.state.reportDetails.id;
+        },
+        olCenter() {
+            // Compute center in OL coordinates system
+            return fromLonLat([this.center[1], this.center[0]]);
+        },
+        olPolyline() {
+            // Compute the polyline in OL coordinates system
+            return this.polyline.map(item => fromLonLat([item[1], item[0]]));
+        },
+        olPosition() {
+            // Compute the current position in OL coordinates system
+            if (this.positionLatLng) {
+                return fromLonLat([this.positionLatLng[1], this.positionLatLng[0]]);
             }
             return null;
         },
         radiusFromAccuracy() {
-            if (this.accuracy) {
-                // Compute the radius (in pixels) based on GPS accuracy, taking
-                // into account the current zoom level
+            // Compute the radius (in pixels) based on GPS accuracy, taking
+            // into account the current zoom level
+            if (this.accuracy && this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD) {
                 // Formula coming from https://wiki.openstreetmap.org/wiki/Zoom_levels.
-                return this.accuracy / (
+                const accuracyInPixels = this.accuracy / (
                     (constants.EARTH_RADIUS * 2 * Math.PI * Math.cos(this.positionLatLng[0]
                         * (Math.PI / 180)))
                     / (2 ** (this.zoom + 8))
                 );
+                if (accuracyInPixels > constants.POSITION_MARKER_RADIUS) {
+                    return accuracyInPixels;
+                }
             }
             return null;
-        },
-        shouldDisplayAccuracy() {
-            // Only display accuracy if circle is large enough
-            return (
-                this.accuracy
-                && this.accuracy < constants.ACCURACY_DISPLAY_THRESHOLD
-                && this.radiusFromAccuracy > this.markerRadius
-            );
         },
         tileServer() {
             const tileServerSetting = this.$store.state.settings.tileServer;
             if (tileServerSetting in constants.TILE_SERVERS) {
                 return constants.TILE_SERVERS[tileServerSetting];
             }
+            // Remove the protocol part, avoid easily avoidable unsecured
+            // content over HTTPS.
             const firstColon = tileServerSetting.indexOf(':');
             return tileServerSetting.substring(firstColon + 1);
         },
@@ -130,32 +103,80 @@ export default {
         return {
             attribution: $t('map.attribution'),
             isProgrammaticMove: false,
-            isProgrammaticZoom: false,
             map: null,
-            markerOptions: {
-                fill: true,
-                fillColor: '#00ff00',
-                fillOpacity: 1.0,
-                color: '#000000',
-                opacity: 1.0,
-                weight: 1,
-            },
-            markerRadius: 10.0,
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
             isRecenterButtonShown: false,
-            unknownMarkerIcon: L.icon({
-                iconAnchor: [20, 40],
-                iconSize: [40, 40],
-                iconUrl: unknownMarkerIcon,
-            }),
+            // Variables for easy access to map feature and layers
+            accuracyFeature: null,
+            reportsMarkersFeatures: {},
+            reportsMarkersVectorSource: null,
+            mainVectorSource: null,
+            polylineFeature: null,
+            positionFeature: null,
+            reportLatLngFeature: null,
         };
     },
     methods: {
-        handleClick(event) {
-            if (this.onPress) {
-                this.onPress(event.latlng);
+        deleteReportMarker(markerID) {
+            const feature = this.reportsMarkersFeatures[markerID];
+            if (feature) {
+                this.reportsMarkersVectorSource.removeFeature(feature);
+                delete this.reportsMarkersFeatures[markerID]; // careful to delete the item itself
             }
+        },
+        drawReportMarker(marker, addedMarkersIDs) {
+            if ((addedMarkersIDs && !addedMarkersIDs.has(marker.id))
+                || this.reportsMarkersFeatures[marker.id]
+            ) {
+                // Skip the marker if it was not added or is already on the map
+                return;
+            }
+
+            // Create a Feature for the marker, to add it on the map
+            const reportMarkerFeature = new Feature({
+                geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                id: marker.id,
+            });
+            reportMarkerFeature.setStyle(new Style({
+                image: new Icon({
+                    anchor: constants.ICON_ANCHOR,
+                    scale: (
+                        marker.id === this.reportDetailsID
+                            ? constants.LARGE_ICON_SCALE
+                            : constants.NORMAL_ICON_SCALE
+                    ),
+                    src: constants.REPORT_TYPES[marker.type].marker,
+                }),
+            }));
+            // Add the marker to the map and keep a reference to it
+            this.reportsMarkersFeatures[marker.id] = reportMarkerFeature;
+            this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
+        },
+        handleClick(event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            let isClickOnMarker = false;
+            if (this.map) {
+                this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
+                    if (layer.get('name') !== REPORTS_MARKERS_VECTOR_LAYER_NAME) {
+                        return;
+                    }
+                    isClickOnMarker = true;
+                    this.$store.dispatch(
+                        'showReportDetails',
+                        { id: feature.get('id'), userAsked: true },
+                    );
+                });
+            }
+
+            if (!isClickOnMarker && this.onPress) {
+                // Reverse coordinates as OL uses lng first.
+                const coords = toLonLat(event.coordinate).reverse();
+                this.onPress(coords);
+            }
+            return false;
         },
         hideRecenterButton() {
             if (this.isRecenterButtonShown) {
@@ -163,49 +184,38 @@ export default {
             }
         },
         onMoveStart() {
-            if (!this.isProgrammaticMove && !this.isProgrammaticZoom) {
+            if (!this.isProgrammaticMove) {
                 this.showRecenterButton();
             }
         },
         onMoveEnd() {
+            const view = this.map.getView();
             if (this.onMapCenterUpdate) {
-                const mapCenter = this.map.getCenter();
-                this.onMapCenterUpdate([mapCenter.lat, mapCenter.lng]);
+                const mapCenterLonLat = toLonLat(view.getCenter());
+                this.onMapCenterUpdate([mapCenterLonLat[1], mapCenterLonLat[0]]);
             }
             if (this.onMapZoomUpdate) {
-                this.onMapZoomUpdate(this.map.getZoom());
-            }
-        },
-        onZoomStart() {
-            if (!this.isProgrammaticZoom) {
-                this.showRecenterButton();
+                this.onMapZoomUpdate(view.getZoom());
             }
         },
         recenterMap() {
+            const view = this.map.getView();
+            const mapCenter = view.getCenter();
+
             this.hideRecenterButton();
-            if (this.map.getZoom() !== this.zoom) {
-                this.isProgrammaticZoom = true;
-                this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-            }
-            const mapCenter = this.map.getCenter();
+
             if (
-                mapCenter.lat !== this.center[0]
-                && mapCenter.lng !== this.center[1]
+                view.getZoom() !== this.zoom
+                || mapCenter[0] !== this.olCenter[0]
+                || mapCenter[1] !== this.olCenter[1]
+                || view.getRotation() !== 0
             ) {
                 this.isProgrammaticMove = true;
                 this.map.once('moveend', () => { this.isProgrammaticMove = false; });
             }
-            this.map.setView(this.center, this.zoom);
-        },
-        showCompass() {
-            const north = L.control({ position: 'topright' });
-            north.onAdd = () => {
-                const div = L.DomUtil.create('div', 'compassIcon legend');
-                div.innerHTML = `<img src="${compassNorthIcon}">`;
-                L.DomEvent.disableClickPropagation(div);
-                return div;
-            };
-            this.map.addControl(north);
+            view.setCenter(this.olCenter);
+            view.setRotation(0);
+            view.setZoom(this.zoom);
         },
         showRecenterButton() {
             if (!this.isRecenterButtonShown) {
@@ -214,21 +224,118 @@ export default {
         },
     },
     mounted() {
-        this.map = this.$refs.map.mapObject;
-        if (this.map.getZoom() !== this.zoom) {
-            this.isProgrammaticZoom = true;
-            this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-        }
-        const mapCenter = this.map.getCenter();
-        if (
-            mapCenter.lat !== this.center[0]
-            && mapCenter.lng !== this.center[1]
-        ) {
-            this.isProgrammaticMove = true;
-            this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-        }
-        this.map.setView(this.center, this.zoom);
-        this.showCompass();
+        // Create accuracy circle feature
+        this.accuracyFeature = new Feature({
+            geometry: this.olPosition ? new Point(this.olPosition) : null,
+        });
+        this.accuracyFeature.setStyle(new Style({
+            image: new CircleStyle({
+                radius: this.radiusFromAccuracy,
+                fill: new Fill({
+                    color: 'rgba(51, 153, 204, 0.25)',
+                }),
+                stroke: new Stroke({
+                    color: '#3399CC',
+                    width: 2,
+                }),
+            }),
+        }));
+
+        // Create position marker feature
+        this.positionFeature = new Feature({
+            geometry: this.olPosition ? new Point(this.olPosition) : null,
+        });
+        this.positionFeature.setStyle(new Style({
+            image: new CircleStyle({
+                radius: constants.POSITION_MARKER_RADIUS,
+                fill: new Fill({
+                    color: '#3399CC',
+                }),
+                stroke: new Stroke({
+                    color: '#fff',
+                    width: 2,
+                }),
+            }),
+        }));
+
+        // Create polyline feature
+        this.polylineFeature = new Feature({
+            geometry: new LineString(this.olPolyline),
+        });
+
+        // Initialize the map
+        this.isProgrammaticMove = true;
+        this.mainVectorSource = new VectorSource({
+            features: [
+                this.accuracyFeature,
+                this.positionFeature,
+                this.polylineFeature,
+            ],
+        });
+        // Initialize markers
+        this.reportsMarkersVectorSource = new VectorSource();
+        this.markers.forEach(marker => this.drawReportMarker(marker, null));
+        // Create the rotate label
+        const rotateLabel = document.createElement('img');
+        rotateLabel.src = compassNorthIcon;
+        rotateLabel.style.width = '100%';
+        rotateLabel.style.height = '100%';
+        // Create the map object
+        this.map = new Map({
+            controls: defaultControls({
+                attributionOptions: {
+                    collapsible: false,
+                },
+                rotateOptions: {
+                    autoHide: false,
+                    label: rotateLabel,
+                },
+                zoom: false,
+            }),
+            layers: [
+                new TileLayer({
+                    source: new XYZ({
+                        url: this.tileServer,
+                        attributions: this.attribution,
+                    }),
+                }),
+                new VectorLayer({
+                    name: MAIN_VECTOR_LAYER_NAME,
+                    source: this.mainVectorSource,
+                }),
+                new VectorLayer({
+                    name: REPORTS_MARKERS_VECTOR_LAYER_NAME,
+                    source: this.reportsMarkersVectorSource,
+                }),
+            ],
+            target: 'map',
+            view: new View({
+                center: this.olCenter,
+                maxZoom: this.maxZoom,
+                minZoom: this.minZoom,
+                rotation: 0,
+                zoom: this.zoom,
+            }),
+        });
+        this.map.once('moveend', () => {
+            this.isProgrammaticMove = false;
+
+            this.map.on('click', this.handleClick);
+            this.map.on('movestart', this.onMoveStart);
+            this.map.on('moveend', this.onMoveEnd);
+        });
+
+        // Set pointer to hover when hovering a report marker
+        this.map.on('pointermove', (event) => {
+            if (event.dragging) {
+                return;
+            }
+
+            const hit = this.map.hasFeatureAtPixel(event.pixel, {
+                layerFilter: layer => layer.get('name') === REPORTS_MARKERS_VECTOR_LAYER_NAME,
+            });
+            this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        });
     },
     props: {
         accuracy: Number,
@@ -236,6 +343,7 @@ export default {
             type: Array,
             required: true,
         },
+        // TODO: Handle heading
         heading: Number, // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
@@ -250,93 +358,168 @@ export default {
         },
     },
     watch: {
+        reportDetailsID(newID, oldID) {
+            [oldID, newID].forEach((id) => {
+                // We actually have to delete and recreate the feature,
+                // OpenLayer won't refresh the view if we only change the
+                // size. :/
+                this.deleteReportMarker(id);
+                const marker = this.markers.find(item => item.id === id);
+                if (marker) {
+                    this.drawReportMarker(marker, null);
+                }
+            });
+        },
+        markers(newMarkers, oldMarkers) {
+            // Map should have been created
+            if (this.reportsMarkersVectorSource === null) {
+                return;
+            }
+
+            // Compute the diff between old and new marker arrays, to determine
+            // added and removed markers
+            const oldIDs = new Set(oldMarkers.map(item => item.id));
+            const newIDs = new Set(newMarkers.map(item => item.id));
+
+            // Add new markers to the map
+            const addedMarkersIDs = new Set([...newIDs].filter(x => !oldIDs.has(x)));
+            this.markers.forEach(marker => this.drawReportMarker(marker, addedMarkersIDs));
+
+            // Remove removed markers from the map
+            const removedMarkersIDs = [...oldIDs].filter(x => !newIDs.has(x));
+            removedMarkersIDs.forEach(id => this.deleteReportMarker(id));
+        },
+        olCenter(newOlCenter) {
+            if (!this.map) {
+                // Map should have been created
+                return;
+            }
+
+            const view = this.map.getView();
+            if (!this.isRecenterButtonShown) {
+                const currentCenter = view.getCenter();
+                // Handle programmatic navigation
+                if (
+                    view.getZoom() !== this.zoom
+                    || currentCenter[0] !== newOlCenter[0]
+                    || currentCenter[1] !== newOlCenter[1]
+                ) {
+                    this.isProgrammaticMove = true;
+                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
+                }
+
+                // Eventually display closest report
+                const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
+                const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
+                if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
+                    // Compute all markers distance, filter by max distance
+                    const distances = this.markers.map(
+                        marker => ({
+                            id: marker.id,
+                            distance: distance(this.center, marker.latLng),
+                        }),
+                    ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
+                    const closestReport = distances.reduce( // Get the closest one
+                        (acc, item) => (
+                            item.distance < acc.distance ? item : acc
+                        ),
+                        { distance: Number.MAX_VALUE, id: -1 },
+                    );
+                    // TODO: Take into account the history of positions for the direction
+                    if (closestReport.id !== -1) {
+                        this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                    } else {
+                        this.$store.dispatch('hideReportDetails');
+                    }
+                }
+
+                // Update view
+                view.setCenter(newOlCenter);
+                view.setRotation(0);
+                view.setZoom(this.zoom);
+            }
+        },
+        olPolyline(newOlPolyline) {
+            if (this.polylineFeature) {
+                // Update polyline trace
+                this.polylineFeature.setGeometry(new LineString(newOlPolyline));
+            }
+        },
+        olPosition(newOlPosition) {
+            if (this.positionFeature) {
+                // Update position marker position
+                this.positionFeature.setGeometry(
+                    newOlPosition ? new Point(newOlPosition) : null,
+                );
+            }
+            if (this.accuracyFeature) {
+                // Update accuracy circle position and radius
+                this.accuracyFeature.setGeometry(
+                    newOlPosition ? new Point(newOlPosition) : null,
+                );
+                this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
+            }
+        },
+        reportLatLng(newReportLatLng) {
+            // Eventually remove old marker
+            if (this.reportLatLngFeature && this.mainVectorSource) {
+                this.mainVectorSource.removeFeature(this.reportLatLngFeature);
+                this.reportLatLngFeature = null;
+            }
+
+            // Create unknown report marker if needed
+            if (newReportLatLng && this.mainVectorSource) {
+                this.reportLatLngFeature = new Feature({
+                    geometry: new Point(fromLonLat([newReportLatLng[1], newReportLatLng[0]])),
+                });
+                this.reportLatLngFeature.setStyle(new Style({
+                    image: new Icon({
+                        anchor: constants.ICON_ANCHOR,
+                        scale: constants.NORMAL_ICON_SCALE,
+                        src: unknownMarkerIcon,
+                    }),
+                }));
+                this.mainVectorSource.addFeature(this.reportLatLngFeature);
+            }
+        },
         zoom(newZoom) {
             if (!this.map) {
                 // Map should have been created
                 return;
             }
+            const view = this.map.getView();
             if (!this.isRecenterButtonShown) {
                 // Handle programmatic navigation
-                if (this.map.getZoom() !== newZoom) {
-                    this.isProgrammaticZoom = true;
-                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-                }
-                this.map.setZoom(newZoom);
-            }
-        },
-        center(newCenterLatLng) {
-            if (!this.map) {
-                // Map should have been created
-                return;
-            }
-
-            if (!this.isRecenterButtonShown) {
-                // Handle programmatic navigation
-                if (this.map.getZoom() !== this.zoom) {
-                    this.isProgrammaticZoom = true;
-                    this.map.once('zoomend', () => { this.isProgrammaticZoom = false; });
-                }
-                if (
-                    this.map.getCenter().lat !== newCenterLatLng[0]
-                    && this.map.getCenter().lng !== newCenterLatLng[1]
-                ) {
+                if (view.getZoom() !== newZoom) {
                     this.isProgrammaticMove = true;
                     this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-
-                    // Eventually display closest report
-                    const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
-                    const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
-                    if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
-                        // Compute all markers distance, filter by max distance
-                        const distances = this.markers.map(
-                            marker => ({
-                                id: marker.id,
-                                distance: distance(newCenterLatLng, marker.latLng),
-                            }),
-                        ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
-                        const closestReport = distances.reduce( // Get the closest one
-                            (acc, item) => (
-                                item.distance < acc.distance ? item : acc
-                            ),
-                            { distance: Number.MAX_VALUE, id: -1 },
-                        );
-                        // TODO: Take into account the history of positions for the direction
-                        if (closestReport.id !== -1) {
-                            this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
-                        } else {
-                            this.$store.dispatch('hideReportDetails');
-                        }
-                    }
                 }
-                this.map.setView(newCenterLatLng, this.zoom);
+                view.setZoom(newZoom);
             }
         },
     },
 };
 </script>
 
-<style>
-.application .leaflet-bar a {
-    color: black;
-}
-
-.compassIcon {
-    background-color: white;
-    border-radius: 50%;
-    width: 42px;
-    height: 42px;
-    box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
-    -webkite-box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
-}
-
-.compassIcon img {
-    width: 100%;
-    height: 100%;
-}
-</style>
-
 <style scoped>
 .fill-width {
     width: 100%;
+}
+</style>
+
+<style>
+#map .ol-control button {
+    height: 3em !important;
+    width: 3em !important;
+}
+
+#map .ol-rotate {
+    background: none !important;
+}
+
+#map .ol-rotate button {
+    background-color: white !important;
+    border: 1px solid rgba(0, 0, 0, .87);
+    border-radius: 100%;
 }
 </style>

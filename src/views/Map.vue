@@ -46,7 +46,7 @@
 import NoSleep from 'nosleep.js';
 
 import LocationError from '@/components/LocationError.vue';
-import Map from '@/components/MapOL.vue';
+import Map from '@/components/Map.vue';
 import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 
