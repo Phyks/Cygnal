@@ -320,6 +320,7 @@ export default {
                 rotateOptions: {
                     autoHide: false,
                     label: rotateLabel,
+                    resetNorth: () => {}, // Ignore click on compass icon
                 },
                 zoom: false,
             }),
@@ -550,5 +551,6 @@ export default {
     background-color: white !important;
     border: 1px solid rgba(0, 0, 0, .87);
     border-radius: 100%;
+    cursor: default;
 }
 </style>
