@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// TODO: Handle click on markers + resizing
 // TODO: Better rotation control
 // TODO: Closing report card with click outside
 // TODO: Map going outside of container + on resize ?
@@ -118,6 +117,13 @@ export default {
         };
     },
     methods: {
+        deleteReportMarker(markerID) {
+            const feature = this.reportsMarkersFeatures[markerID];
+            if (feature) {
+                this.reportsMarkersVectorSource.removeFeature(feature);
+                delete this.reportsMarkersFeatures[markerID]; // careful to delete the item itself
+            }
+        },
         drawReportMarker(marker, addedMarkersIDs) {
             if ((addedMarkersIDs && !addedMarkersIDs.has(marker.id))
                 || this.reportsMarkersFeatures[marker.id]
@@ -134,7 +140,11 @@ export default {
             reportMarkerFeature.setStyle(new Style({
                 image: new Icon({
                     anchor: constants.ICON_ANCHOR,
-                    scale: constants.NORMAL_ICON_SCALE,
+                    scale: (
+                        marker.id === this.reportDetailsID
+                            ? constants.LARGE_ICON_SCALE
+                            : constants.NORMAL_ICON_SCALE
+                    ),
                     src: constants.REPORT_TYPES[marker.type].marker,
                 }),
             }));
@@ -146,20 +156,21 @@ export default {
             event.preventDefault();
             event.stopPropagation();
 
+            let isClickOnMarker = false;
             if (this.map) {
                 this.map.forEachFeatureAtPixel(event.pixel, (feature, layer) => {
                     if (layer.get('name') !== REPORTS_MARKERS_VECTOR_LAYER_NAME) {
                         return;
                     }
+                    isClickOnMarker = true;
                     this.$store.dispatch(
                         'showReportDetails',
                         { id: feature.get('id'), userAsked: true },
                     );
                 });
-                return false;
             }
 
-            if (this.onPress) {
+            if (!isClickOnMarker && this.onPress) {
                 // Reverse coordinates as OL uses lng first.
                 const coords = toLonLat(event.coordinate).reverse();
                 this.onPress(coords);
@@ -341,21 +352,16 @@ export default {
     },
     watch: {
         reportDetailsID(newID, oldID) {
-            if (oldID && this.reportsMarkersFeatures[oldID]) {
-                // Reset scale for previous marker
-                this.reportsMarkersFeatures[oldID]
-                    .getStyle()
-                    .getImage()
-                    .setScale(constants.NORMAL_ICON_SCALE);
-            }
-
-            if (newID && this.reportsMarkersFeatures[newID]) {
-                // Set scale for current marker
-                this.reportsMarkersFeatures[newID]
-                    .getStyle()
-                    .getImage()
-                    .setScale(constants.LARGE_ICON_SCALE);
-            }
+            [oldID, newID].forEach((id) => {
+                // We actually have to delete and recreate the feature,
+                // OpenLayer won't refresh the view if we only change the
+                // size. :/
+                this.deleteReportMarker(id);
+                const marker = this.markers.find(item => item.id === id);
+                if (marker) {
+                    this.drawReportMarker(marker, null);
+                }
+            });
         },
         markers(newMarkers, oldMarkers) {
             // Map should have been created
@@ -374,10 +380,7 @@ export default {
 
             // Remove removed markers from the map
             const removedMarkersIDs = [...oldIDs].filter(x => !newIDs.has(x));
-            removedMarkersIDs.forEach((id) => {
-                this.reportsMarkersVectorSource.removeFeature(this.reportsMarkersFeatures[id]);
-                delete this.reportsMarkersFeatures[id];
-            });
+            removedMarkersIDs.forEach(id => this.deleteReportMarker(id));
         },
         olCenter(newOlCenter) {
             if (!this.map) {
@@ -422,6 +425,8 @@ export default {
                         this.$store.dispatch('hideReportDetails');
                     }
                 }
+
+                // Update view
                 view.setCenter(newOlCenter);
                 view.setRotation(0);
                 view.setZoom(this.zoom);
