@@ -16,6 +16,7 @@ import {
     SET_CURRENT_MAP_CENTER,
     SET_CURRENT_MAP_ZOOM,
     SET_CURRENT_POSITION,
+    SET_LAST_REPORT_FETCHING_LOCATION,
     SET_LOCATION_ERROR,
     SET_LOCATION_WATCHER_ID,
     SET_SETTING,
@@ -34,6 +35,10 @@ export function fetchReports({ commit }) {
             commit(IS_DONE_LOADING);
             throw exc;
         });
+}
+
+export function setLastReportFetchingLocation({ commit }, { locationLatLng }) {
+    return commit(SET_LAST_REPORT_FETCHING_LOCATION, { locationLatLng });
 }
 
 export function downvote({ commit }, { id }) {
