@@ -23,7 +23,6 @@
 
 <script>
 // TODO: Rotate the map according to user heading.
-// TODO: Invert logic to set isProgrammatic on user actions instead
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -107,7 +106,7 @@ export default {
         const $t = this.$t.bind(this);
         return {
             attribution: $t('map.attribution'),
-            isProgrammaticMove: false,
+            isProgrammaticMove: true,
             map: null,
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
@@ -240,11 +239,6 @@ export default {
                 this.isRecenterButtonShown = false;
             }
         },
-        onMoveStart() {
-            if (!this.isProgrammaticMove) {
-                this.showRecenterButton();
-            }
-        },
         onMoveEnd() {
             const view = this.map.getView();
             if (this.onMapCenterUpdate) {
@@ -256,20 +250,11 @@ export default {
             }
         },
         recenterMap() {
-            const view = this.map.getView();
-            const mapCenter = view.getCenter();
+            this.isProgrammaticMove = true;
 
             this.hideRecenterButton();
 
-            if (
-                view.getZoom() !== this.zoom
-                || mapCenter[0] !== this.olCenter[0]
-                || mapCenter[1] !== this.olCenter[1]
-                || view.getRotation() !== 0
-            ) {
-                this.isProgrammaticMove = true;
-                this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-            }
+            const view = this.map.getView();
             view.setCenter(this.olCenter);
             view.setRotation(0);
             view.setZoom(this.zoom);
@@ -363,20 +348,23 @@ export default {
                 zoom: this.zoom,
             }),
         });
-        this.map.once('moveend', () => {
-            this.isProgrammaticMove = false;
 
-            this.map.on('click', this.handleClick);
-            // Take care that OpenLayer map actually catches "pointerdown"
-            // events and not "click" events. Then, we need an explicit event
-            // handler for "click" to stop propagation to ReportCard component.
-            document.querySelector('#map').addEventListener(
-                'click',
-                event => event.stopPropagation(),
-            );
-            this.map.on('movestart', this.onMoveStart);
-            this.map.on('moveend', this.onMoveEnd);
+        // Add click handler
+        this.map.on('click', this.handleClick);
+        // Take care that OpenLayer map actually catches "pointerdown"
+        // events and not "click" events. Then, we need an explicit event
+        // handler for "click" to stop propagation to ReportCard component.
+        document.querySelector('#map').addEventListener(
+            'click',
+            event => event.stopPropagation(),
+        );
+
+        // Show recenter button on dragging the map
+        this.map.on('pointerdrag', () => {
+            this.isProgrammaticMove = false;
+            this.showRecenterButton();
         });
+        this.map.on('moveend', this.onMoveEnd);
 
         // Set pointer to hover when hovering a report marker
         this.map.on('pointermove', (event) => {
@@ -449,17 +437,6 @@ export default {
 
             const view = this.map.getView();
             if (!this.isRecenterButtonShown) {
-                const currentCenter = view.getCenter();
-                // Handle programmatic navigation
-                if (
-                    view.getZoom() !== this.zoom
-                    || currentCenter[0] !== newOlCenter[0]
-                    || currentCenter[1] !== newOlCenter[1]
-                ) {
-                    this.isProgrammaticMove = true;
-                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-                }
-
                 // Eventually display closest report
                 const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
                 const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
@@ -540,14 +517,9 @@ export default {
                 // Map should have been created
                 return;
             }
-            const view = this.map.getView();
             if (!this.isRecenterButtonShown) {
                 // Handle programmatic navigation
-                if (view.getZoom() !== newZoom) {
-                    this.isProgrammaticMove = true;
-                    this.map.once('moveend', () => { this.isProgrammaticMove = false; });
-                }
-                view.setZoom(newZoom);
+                this.map.getView().setZoom(newZoom);
             }
         },
     },
