@@ -90,9 +90,12 @@
         "potholeDescription": "A pothole in the ground."
     },
     "settings": {
+        "autorotate": "Autorotate (current direction up)",
         "customTileServer": "Custom tile server",
         "customTileServerURL": "Custom tile server URL",
         "customTileServerURLHint": "For example: http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultOrientationMode": "Default orientation mode",
+        "fixedNorth": "Fixed (North up)",
         "locale": "Language",
         "skipOnboarding": "Skip onboarding",
         "tileServer": "Map tiles server"

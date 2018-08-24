@@ -126,7 +126,10 @@ export default {
         },
         mapCenter() {
             if (this.hasCenterProvidedByRoute) {
-                return [this.$route.params.lat, this.$route.params.lng];
+                return [
+                    parseFloat(this.$route.params.lat),
+                    parseFloat(this.$route.params.lng),
+                ];
             }
             return this.currentLatLng;
         },

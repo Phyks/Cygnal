@@ -192,6 +192,7 @@ body, html, .application {
 
 .application--wrap {
     min-height: 100% !important;
+    overflow: auto;
 }
 
 .bottom-sheet.dialog {
