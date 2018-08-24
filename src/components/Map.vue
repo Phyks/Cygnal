@@ -1,7 +1,6 @@
 <template>
-    <div class="fill-height fill-width">
-        <div id="map" class="fill-height fill-width">
-        </div>
+    <v-layout row fill-height wrap>
+        <v-flex xs12 id="map"></v-flex>
 
         <v-btn
             absolute
@@ -19,12 +18,12 @@
             >
             <v-icon>my_location</v-icon>
         </v-btn>
-    </div>
+    </v-layout>
 </template>
 
 <script>
 // TODO: Rotate the map according to user heading.
-// TODO: Map going outside of container + on resize ?
+// TODO: Invert logic to set isProgrammatic on user actions instead
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -562,6 +561,10 @@ export default {
 </style>
 
 <style>
+#map {
+    max-height: calc(100vh - 56px);
+}
+
 #map .ol-control button {
     height: 3em !important;
     width: 3em !important;
