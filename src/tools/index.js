@@ -56,7 +56,7 @@ export function mockLocationRandom() {
 
 export function mockLocationWithGPX(index, setPosition) {
     setPosition(mockGPX[index]);
-    if (index < mockGPX.length) {
+    if (index < (mockGPX.length - 1)) {
         const delay = (
             moment(mockGPX[index + 1].time).valueOf()
             - moment(mockGPX[index].time).valueOf()

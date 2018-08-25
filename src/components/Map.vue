@@ -22,7 +22,7 @@
 </template>
 
 <script>
-// TODO: Rotate the map according to user heading.
+// TODO: Restore rotation mode when recentering
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -33,12 +33,13 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import XYZ from 'ol/source/XYZ';
 import View from 'ol/View';
-import { defaults as defaultControls } from 'ol/control';
+import { defaults as defaultControls, Rotate } from 'ol/control';
 import { fromLonLat, toLonLat } from 'ol/proj';
 import {
     Circle as CircleStyle, Fill, Icon, Stroke, Style, Text,
 } from 'ol/style';
 
+import compassIcon from '@/assets/compass.svg';
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
@@ -106,6 +107,7 @@ export default {
         const $t = this.$t.bind(this);
         return {
             attribution: $t('map.attribution'),
+            isInAutorotateMap: false,
             isProgrammaticMove: true,
             map: null,
             maxZoom: constants.MAX_ZOOM,
@@ -123,11 +125,18 @@ export default {
     },
     methods: {
         setPositionFeatureStyle() {
+            if (!this.map || !this.positionFeature) {
+                return;
+            }
+
             const positionFeatureStyle = this.positionFeature.getStyle();
-            const rotation = this.headingInRadiansFromNorth - Math.PI / 2;
 
             // If heading is specified
             if (this.headingInRadiansFromNorth !== null) {
+                const rotation = (this.isInAutorotateMap
+                    ? -Math.PI / 2
+                    : this.headingInRadiansFromNorth + this.map.getView().getRotation() - Math.PI / 2
+                );
                 // Check current style and update rotation if an arrow is already drawn
                 if (positionFeatureStyle) {
                     const TextStyle = positionFeatureStyle.getText();
@@ -239,7 +248,7 @@ export default {
                 this.isRecenterButtonShown = false;
             }
         },
-        onMoveEnd() {
+        onMoveEnd(event) {
             const view = this.map.getView();
             if (this.onMapCenterUpdate) {
                 const mapCenterLonLat = toLonLat(view.getCenter());
@@ -256,10 +265,15 @@ export default {
 
             const view = this.map.getView();
             view.setCenter(this.olCenter);
-            view.setRotation(0);
+            if (this.isInAutorotateMap) {
+                view.setRotation(-this.headingInRadiansFromNorth);
+            } else {
+                view.setRotation(0);
+            }
             view.setZoom(this.zoom);
         },
         showRecenterButton() {
+            this.isInAutorotateMap = false;
             if (!this.isRecenterButtonShown) {
                 this.isRecenterButtonShown = true;
             }
@@ -308,7 +322,10 @@ export default {
         this.markers.forEach(marker => this.drawReportMarker(marker, null));
         // Create the rotate label
         const rotateLabel = document.createElement('img');
-        rotateLabel.src = compassNorthIcon;
+        rotateLabel.src = (this.isInAutorotateMap
+            ? compassIcon
+            : compassNorthIcon
+        );
         rotateLabel.style.width = '100%';
         rotateLabel.style.height = '100%';
         // Create the map object
@@ -320,7 +337,10 @@ export default {
                 rotateOptions: {
                     autoHide: false,
                     label: rotateLabel,
-                    resetNorth: () => {}, // Ignore click on compass icon
+                    resetNorth: () => {
+                        // TODO: Store value in settings?
+                        this.isInAutorotateMap = !this.isInAutorotateMap; // Switch autorotate mode
+                    },
                 },
                 zoom: false,
             }),
@@ -363,6 +383,9 @@ export default {
         // Show recenter button on dragging the map
         this.map.on('pointerdrag', () => {
             this.isProgrammaticMove = false;
+            // Ensure correct orientation of position arrow
+            // TODO: Orientation should be correct while rotating as well
+            this.setPositionFeatureStyle();
             this.showRecenterButton();
         });
         this.map.on('moveend', this.onMoveEnd);
@@ -399,15 +422,13 @@ export default {
         },
     },
     watch: {
-        reportDetailsID(newID, oldID) {
-            [oldID, newID].forEach((id) => {
-                // We actually have to delete and recreate the feature,
-                // OpenLayer won't refresh the view if we only change the
-                // size. :/
-                this.deleteReportMarker(id);
-                const marker = this.markers.find(item => item.id === id);
-                if (marker) {
-                    this.drawReportMarker(marker, null);
+        isInAutorotateMap(newValue) {
+            this.map.getControls().forEach((control) => {
+                if (control instanceof Rotate) {
+                    control.label_.src = (newValue
+                        ? compassIcon
+                        : compassNorthIcon
+                    );
                 }
             });
         },
@@ -465,7 +486,11 @@ export default {
 
                 // Update view
                 view.setCenter(newOlCenter);
-                view.setRotation(0);
+                if (this.isInAutorotateMap) {
+                    view.setRotation(-this.headingInRadiansFromNorth);
+                } else {
+                    view.setRotation(0);
+                }
                 view.setZoom(this.zoom);
             }
         },
@@ -490,6 +515,18 @@ export default {
                 );
                 this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
             }
+        },
+        reportDetailsID(newID, oldID) {
+            [oldID, newID].forEach((id) => {
+                // We actually have to delete and recreate the feature,
+                // OpenLayer won't refresh the view if we only change the
+                // size. :/
+                this.deleteReportMarker(id);
+                const marker = this.markers.find(item => item.id === id);
+                if (marker) {
+                    this.drawReportMarker(marker, null);
+                }
+            });
         },
         reportLatLng(newReportLatLng) {
             // Eventually remove old marker
@@ -551,6 +588,5 @@ export default {
     background-color: white !important;
     border: 1px solid rgba(0, 0, 0, .87);
     border-radius: 100%;
-    cursor: default;
 }
 </style>
