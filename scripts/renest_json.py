@@ -6,6 +6,8 @@ locale = json.loads(sys.stdin.read())
 
 nested_json = {}
 for key, value in locale.items():
+    if not value:
+        continue
     split_key = key.split('.')
     d = nested_json
     for key2 in split_key[:-1]:

@@ -115,3 +115,6 @@ export const DELAY_BETWEEN_API_BATCH_REQUESTS = 1000;
 
 // A vibration sequence for report alarms
 export const REPORT_ALARM_VIBRATION_SEQUENCE = [500];
+
+// Email address to send issues to
+export const CONTACT_EMAIL_ADDRESS = 'phyks+cyclassist@phyks.me';

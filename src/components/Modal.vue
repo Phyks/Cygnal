@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="isModalShown" max-width="290">
+    <v-dialog v-model="isModalShown" :max-width="maxWidth">
         <slot></slot>
     </v-dialog>
 </template>
@@ -36,6 +36,10 @@ export default {
         window.addEventListener('keydown', this.hideModalOnEsc);
     },
     props: {
+        maxWidth: {
+            type: Number,
+            default: 290,
+        },
         value: Boolean,
     },
 };
