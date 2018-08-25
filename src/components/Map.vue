@@ -109,7 +109,7 @@ export default {
         const $t = this.$t.bind(this);
         return {
             attribution: $t('map.attribution'),
-            hasUserAutorotateMap: false,
+            hasUserAutorotateMap: this.$store.state.settings.shouldAutorotateMap,
             isProgrammaticMove: true,
             map: null,
             maxZoom: constants.MAX_ZOOM,
@@ -343,8 +343,8 @@ export default {
                     autoHide: false,
                     label: rotateLabel,
                     resetNorth: () => {
-                        // TODO: Store value in settings?
-                        this.hasUserAutorotateMap = !this.hasUserAutorotateMap; // Switch autorotate mode
+                        // Switch autorotate mode
+                        this.hasUserAutorotateMap = !this.hasUserAutorotateMap;
                     },
                 },
                 zoom: false,

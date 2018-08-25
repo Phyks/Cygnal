@@ -20,8 +20,14 @@
                         required
                         ></v-select>
 
+                    <v-select
+                        :items="orientationModes"
+                        v-model="defaultOrientationMode"
+                        :label="$t('settings.defaultOrientationMode')"
+                        required
+                        ></v-select>
+
                     <v-text-field
-                        ref="shareLinkRef"
                         :hint="$t('settings.customTileServerURLHint')"
                         :label="$t('settings.customTileServerURL')"
                         v-model="customTileServerURL"
@@ -66,6 +72,16 @@ export default {
                 this.$store.dispatch('setSetting', { setting: 'tileServer', value: `custom:${URL}` });
             },
         },
+        defaultOrientationMode: {
+            get() {
+                return this.$store.state.settings.shouldAutorotateMap;
+            },
+            set(newDefaultOrientationMode) {
+                this.$store.dispatch('setSetting',
+                    { setting: 'shouldAutorotateMap', value: newDefaultOrientationMode },
+                );
+            },
+        },
         locale: {
             get() {
                 return this.$store.state.settings.locale;
@@ -107,8 +123,19 @@ export default {
         },
     },
     data() {
+        const $t = this.$t.bind(this);
         return {
             i18nItems: AVAILABLE_LOCALES,
+            orientationModes: [
+                {
+                    text: $t('settings.fixedNorth'),
+                    value: false,
+                },
+                {
+                    text: $t('settings.autorotate'),
+                    value: true,
+                },
+            ],
         };
     },
 };

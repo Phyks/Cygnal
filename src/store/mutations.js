@@ -48,6 +48,7 @@ let hasGeolocationPermission = null;
 let hasPlaySoundPermission = null;
 let hasPreventSuspendPermission = null;
 let hasVibratePermission = null;
+let shouldAutorotateMap = null;
 let skipOnboarding = null;
 let tileServer = null;
 if (storageAvailable('localStorage')) {
@@ -57,6 +58,7 @@ if (storageAvailable('localStorage')) {
     hasPlaySoundPermission = loadDataFromStorage('hasPlaySoundPermission');
     hasPreventSuspendPermission = loadDataFromStorage('hasPreventSuspendPermission');
     hasVibratePermission = loadDataFromStorage('hasVibratePermission');
+    shouldAutorotateMap = loadDataFromStorage('shouldAutorotateMap');
     skipOnboarding = loadDataFromStorage('skipOnboarding');
 
     tileServer = loadDataFromStorage('tileServer');
@@ -116,6 +118,7 @@ export const initialState = {
         hasVibratePermission: (
             hasVibratePermission !== null ? hasVibratePermission : true
         ),
+        shouldAutorotateMap: shouldAutorotateMap !== null || false,
         skipOnboarding: skipOnboarding || false,
         tileServer: tileServer || DEFAULT_TILE_SERVER,
     },
