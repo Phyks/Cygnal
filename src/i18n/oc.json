@@ -3,7 +3,7 @@
         "availableReportsTitle": "Los senhalaments disponibles pel moment son :",
         "lastReportAdded": "Darri\u00e8ra senhalament ajustat {fromNow}.",
         "license": "Lic\u00e9ncia",
-        "licenseDescription": "Lo c\u00f2di font es jos <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Las ic\u00f2nas son basadas sus d'\u00f2bras de Wikimedia, Vecteezy, Pixabay o Flaticon. Las teulas de fons venon <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contributors OpenStreetMap</a> e a <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>. La sasida manuala de la posicion utiliza l'excellenta API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "licenseDescription": "It is released under an <a href=\"https://opensource.org/licenses/MIT\">MIT license</a> (<a href=\"https://framagit.org/phyks/cyclassist\">source code</a>). Icons are based on creations from Wikimedia, Vecteezy, Pixabay or Flaticon. Sounds are based on CC0 works from <a href=\"https://freesound.org/\">freesound.org</a>. The map background is using tiles from <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> or <a href=\"http://thunderforest.com/\">Thunderforest</a>, thanks to <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a> and <a href=\"http://leafletjs.com/\">Leaflet</a>. Collected reports are available under <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL license</a>. Manual location picking uses the awesome API from <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
         "nbActiveReports": "Cap de senhalament actiu. |\u00a0Un senhalament actiu. | {nbActiveReports} senhalaments actius.",
         "nbReports": "Cap de senhalament. | Un senhalament. | {nbReports} senhalaments.",
         "stats": "Estatisticas",
@@ -90,9 +90,12 @@
         "potholeDescription": "Un trauc per la rota."
     },
     "settings": {
+        "autorotate": "",
         "customTileServer": "Servidor de teulas personalizat",
         "customTileServerURL": "URL del servidor de teulas personalizat",
         "customTileServerURLHint": "Per exemple\u00a0: http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultOrientationMode": "",
+        "fixedNorth": "",
         "locale": "Lenga",
         "skipOnboarding": "Passar l'introduccion",
         "tileServer": "Servidor de teulas per la mapa"

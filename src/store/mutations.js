@@ -118,7 +118,7 @@ export const initialState = {
         hasVibratePermission: (
             hasVibratePermission !== null ? hasVibratePermission : true
         ),
-        shouldAutorotateMap: shouldAutorotateMap !== null || false,
+        shouldAutorotateMap: shouldAutorotateMap !== null ? shouldAutorotateMap : false,
         skipOnboarding: skipOnboarding || false,
         tileServer: tileServer || DEFAULT_TILE_SERVER,
     },

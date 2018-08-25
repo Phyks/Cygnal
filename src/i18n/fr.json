@@ -3,7 +3,7 @@
         "availableReportsTitle": "Les signalements disponibles pour l'instant sont :",
         "lastReportAdded": "Dernier signalement ajout\u00e9 {fromNow}.",
         "license": "Licence",
-        "licenseDescription": "Le code source est sous <a href=\"https://opensource.org/licenses/MIT\">licence MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">code source</a>). Les ic\u00f4nes sont bas\u00e9es sur des travaux de Wikimedia, Vecteezy, Pixabay ou Flaticon. Les sons sont bas\u00e9s sur des \u0153uvres sous CC0 de <a href=\"https://freesound.org/\">freesound.org</a>. Les tuiles de fond de carte proviennent de chez <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> ou <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e2ce aux <a href=\"https://www.openstreetmap.org/copyright\">contributeurs OpenStreetMap</a> et \u00e0 <a href=\"http://leafletjs.com/\">Leaflet</a>. Les signalements sont disponibles sous <a href=\"https://opendatacommons.org/licenses/odbl/\">licence ODbL</a>. La saisie manuelle de la position utilise l'excellente API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "licenseDescription": "Le code source est sous <a href=\"https://opensource.org/licenses/MIT\">licence MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">code source</a>). Les ic\u00f4nes sont bas\u00e9es sur des travaux de Wikimedia, Vecteezy, Pixabay ou Flaticon. Les sons sont bas\u00e9s sur des \u0153uvres sous CC0 de <a href=\"https://freesound.org/\">freesound.org</a>. Les tuiles de fond de carte proviennent de chez <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> ou <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e2ce aux <a href=\"https://www.openstreetmap.org/copyright\">contributeurs OpenStreetMap</a> et \u00e0 <a href=\"http://openlayers.org/\">OpenLayers</a>. Les signalements sont disponibles sous <a href=\"https://opendatacommons.org/licenses/odbl/\">licence ODbL</a>. La saisie manuelle de la position utilise l'excellente API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
         "nbActiveReports": "Aucun signalement actif. | Un signalement actif. | {nbActiveReports} signalements actifs.",
         "nbReports": "Aucun signalement. | Un signalement. | {nbReports} signalements.",
         "stats": "Statistiques",
@@ -90,9 +90,12 @@
         "potholeDescription": "Un nid de poule dans la route."
     },
     "settings": {
+        "autorotate": "Rotation automatique (en face en haut)",
         "customTileServer": "Serveur de tuiles personnalis\u00e9",
         "customTileServerURL": "URL du serveur de tuiles personnalis\u00e9",
         "customTileServerURLHint": "Par exemple : http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultOrientationMode": "Mode d'orientation de la carte par d\u00e9faut",
+        "fixedNorth": "Fixe (Nord toujours en haut)",
         "locale": "Langue",
         "skipOnboarding": "Sauter l'introduction",
         "tileServer": "Serveur de tuiles pour la carte"

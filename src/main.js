@@ -6,7 +6,7 @@ import Vue from 'vue';
 
 import '@/css/vendor/roboto-fontface.css';
 import '@/css/vendor/material-icons.css';
-import 'leaflet/dist/leaflet.css'; // eslint-disable-line import/first
+import 'ol/ol.css';
 import 'vuetify/src/stylus/app.styl';
 
 import App from '@/App.vue';

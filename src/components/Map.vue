@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import LineString from 'ol/geom/LineString';
