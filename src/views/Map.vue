@@ -98,7 +98,7 @@ export default {
             return [currentLocation.latitude, currentLocation.longitude];
         },
         currentLocation() {
-            return this.$store.getters.getLastLocation;
+            return this.$store.getters.getLastLocation || {};
         },
         error() {
             const errorCode = this.$store.state.location.error;
