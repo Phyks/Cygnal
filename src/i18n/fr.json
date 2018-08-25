@@ -3,7 +3,7 @@
         "availableReportsTitle": "Les signalements disponibles pour l'instant sont :",
         "lastReportAdded": "Dernier signalement ajout\u00e9 {fromNow}.",
         "license": "Licence",
-        "licenseDescription": "Le code source est sous <a href=\"https://opensource.org/licenses/MIT\">licence MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">code source</a>). Les ic\u00f4nes sont bas\u00e9es sur des travaux de Wikimedia, Vecteezy, Pixabay ou Flaticon. Les sons sont bas\u00e9s sur des \u0153uvres sous CC0 de <a href=\"https://freesound.org/\">freesound.org</a>. Les tuiles de fond de carte proviennent de chez <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> ou <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e2ce aux <a href=\"https://www.openstreetmap.org/copyright\">contributeurs OpenStreetMap</a> et \u00e0 <a href=\"http://openlayers.org/\">OpenLayers</a>. Les signalements sont disponibles sous <a href=\"https://opendatacommons.org/licenses/odbl/\">licence ODbL</a>. La saisie manuelle de la position utilise l'excellente API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
+        "licenseDescription": "Le code source est sous <a href=\"https://opensource.org/licenses/MIT\">licence MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">code source</a>). Les ic\u00f4nes sont bas\u00e9es sur des travaux de Wikimedia, Vecteezy, Pixabay ou Flaticon. Les sons sont bas\u00e9s sur des \u0153uvres sous CC0 de <a href=\"https://freesound.org/\">freesound.org</a>. Les tuiles de fond de carte proviennent de chez <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> ou <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e2ce aux <a href=\"https://www.openstreetmap.org/copyright\">contributeurs OpenStreetMap</a> et \u00e0 <a href=\"http://leafletjs.com/\">Leaflet</a>. Les signalements sont disponibles sous <a href=\"https://opendatacommons.org/licenses/odbl/\">licence ODbL</a>. La saisie manuelle de la position utilise l'excellente API de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.",
         "nbActiveReports": "Aucun signalement actif. | Un signalement actif. | {nbActiveReports} signalements actifs.",
         "nbReports": "Aucun signalement. | Un signalement. | {nbReports} signalements.",
         "stats": "Statistiques",
@@ -50,6 +50,7 @@
         "About": "Aide",
         "Settings": "Pr\u00e9f\u00e9rences",
         "exportGPX": "Exporter en GPX",
+        "reportIssue": "Signaler un bug",
         "shareMapView": "Partager"
     },
     "misc": {
@@ -57,8 +58,7 @@
         "discard": "Annuler",
         "ok": "OK",
         "or": "ou",
-        "retry": "R\u00e9essayer",
-        "spaceBeforeDoublePunctuations": " "
+        "retry": "R\u00e9essayer"
     },
     "permissions": {
         "geolocation": "G\u00e9olocalisation",
@@ -74,6 +74,12 @@
     "reportDialog": {
         "unableToSendDescription": "Une erreur de r\u00e9seau emp\u00eache l'envoi du dernier signalement.",
         "unableToSendTitle": "Impossible d'envoyer le dernier signalement"
+    },
+    "reportIssueModal": {
+        "description": "Description",
+        "includeGPX": "Inclure la trace GPS courante",
+        "reportIssue": "Signaler un bug",
+        "send": "Envoyer"
     },
     "reportLabels": {
         "accident": "Accident",

@@ -41,6 +41,9 @@
                     <v-list-tile @click="goToSettings">
                         <v-list-tile-title>{{ $t("menu.Settings") }}</v-list-tile-title>
                     </v-list-tile>
+                    <v-list-tile @click="isReportIssueModalShown = true">
+                        <v-list-tile-title>{{ $t("menu.reportIssue") }}</v-list-tile-title>
+                    </v-list-tile>
                 </v-list>
             </v-menu>
             <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goBack">
@@ -53,6 +56,7 @@
         <v-content>
             <ReportErrorModal v-model="hasReportError"></ReportErrorModal>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
+            <ReportIssueModal v-model="isReportIssueModalShown"></ReportIssueModal>
             <router-view></router-view>
         </v-content>
     </v-app>
@@ -66,11 +70,13 @@ import moment from 'moment';
 import { DELAY_BETWEEN_API_BATCH_REQUESTS, VERSION } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
+import ReportIssueModal from '@/components/ReportIssueModal.vue';
 import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
 
 export default {
     components: {
         ReportErrorModal,
+        ReportIssueModal,
         ShareMapViewModal,
     },
     computed: {
@@ -90,6 +96,7 @@ export default {
     data() {
         return {
             hasReportError: false,
+            isReportIssueModalShown: false,
             isSendingReports: false,
             isShareMapViewModalShown: false,
             title: "Cycl'Assist",
