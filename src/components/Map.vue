@@ -22,7 +22,6 @@
 </template>
 
 <script>
-// TODO: Restore rotation mode when recentering
 import 'ol/ol.css';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
@@ -56,6 +55,9 @@ export default {
                 return 1.0 * this.heading * (Math.PI / 180);
             }
             return null;
+        },
+        isInAutorotateMap() {
+            return this.isRecenterButtonShown ? false : this.hasUserAutorotateMap;
         },
         olCenter() {
             // Compute center in OL coordinates system
@@ -107,7 +109,7 @@ export default {
         const $t = this.$t.bind(this);
         return {
             attribution: $t('map.attribution'),
-            isInAutorotateMap: false,
+            hasUserAutorotateMap: false,
             isProgrammaticMove: true,
             map: null,
             maxZoom: constants.MAX_ZOOM,
@@ -135,7 +137,11 @@ export default {
             if (this.headingInRadiansFromNorth !== null) {
                 const rotation = (this.isInAutorotateMap
                     ? -Math.PI / 2
-                    : this.headingInRadiansFromNorth + this.map.getView().getRotation() - Math.PI / 2
+                    : (
+                        this.headingInRadiansFromNorth
+                        + this.map.getView().getRotation()
+                        - Math.PI / 2
+                    )
                 );
                 // Check current style and update rotation if an arrow is already drawn
                 if (positionFeatureStyle) {
@@ -248,7 +254,7 @@ export default {
                 this.isRecenterButtonShown = false;
             }
         },
-        onMoveEnd(event) {
+        onMoveEnd() {
             const view = this.map.getView();
             if (this.onMapCenterUpdate) {
                 const mapCenterLonLat = toLonLat(view.getCenter());
@@ -273,7 +279,6 @@ export default {
             view.setZoom(this.zoom);
         },
         showRecenterButton() {
-            this.isInAutorotateMap = false;
             if (!this.isRecenterButtonShown) {
                 this.isRecenterButtonShown = true;
             }
@@ -339,7 +344,7 @@ export default {
                     label: rotateLabel,
                     resetNorth: () => {
                         // TODO: Store value in settings?
-                        this.isInAutorotateMap = !this.isInAutorotateMap; // Switch autorotate mode
+                        this.hasUserAutorotateMap = !this.hasUserAutorotateMap; // Switch autorotate mode
                     },
                 },
                 zoom: false,
@@ -424,8 +429,9 @@ export default {
     watch: {
         isInAutorotateMap(newValue) {
             this.map.getControls().forEach((control) => {
-                if (control instanceof Rotate) {
-                    control.label_.src = (newValue
+                const controlItem = control;
+                if (controlItem instanceof Rotate) {
+                    controlItem.label_.src = (newValue
                         ? compassIcon
                         : compassNorthIcon
                     );

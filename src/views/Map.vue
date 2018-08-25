@@ -128,7 +128,7 @@ export default {
             if (this.hasCenterProvidedByRoute) {
                 return [
                     parseFloat(this.$route.params.lat),
-                    parseFloat(this.$route.params.lng)
+                    parseFloat(this.$route.params.lng),
                 ];
             }
             return this.currentLatLng;
