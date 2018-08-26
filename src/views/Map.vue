@@ -98,7 +98,11 @@ export default {
     computed: {
         currentLatLng() {
             // Check that this is a correct position
-            if (this.currentLocation === null) {
+            if (
+                !this.currentLocation
+                || !this.currentLocation.latitude
+                || !this.currentLocation.longitude
+            ) {
                 return null;
             }
             return [this.currentLocation.latitude, this.currentLocation.longitude];
