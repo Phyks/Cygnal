@@ -1,6 +1,6 @@
 <template>
     <v-layout row fill-height wrap>
-        <v-flex xs12 id="map"></v-flex>
+        <v-flex xs12 id="map" :style="{ height: mapElementHeight }"></v-flex>
 
         <v-btn
             absolute
@@ -57,6 +57,18 @@ export default {
         },
         isInAutorotateMap() {
             return this.isRecenterButtonShown ? false : this.hasUserAutorotateMap;
+        },
+        mapElementHeight() {
+            // Recompute automatically the map element max height
+            // Use logic from VToolbar to compute the toolbar height
+            // FIXME: Ugly hack, easier way I found.
+            let toolbarHeight = 56;
+            if (this.$vuetify.breakpoint.mdAndUp) {
+                toolbarHeight = 64;
+            } else if (this.$vuetify.breakpoint.width > this.$vuetify.breakpoint.height) {
+                toolbarHeight = 48;
+            }
+            return `${this.$vuetify.breakpoint.height - toolbarHeight}px`;
         },
         olCenter() {
             // Compute center in OL coordinates system
@@ -125,69 +137,6 @@ export default {
         };
     },
     methods: {
-        setPositionFeatureStyle() {
-            if (!this.map || !this.positionFeature) {
-                return;
-            }
-
-            const positionFeatureStyle = this.positionFeature.getStyle();
-
-            // If heading is specified
-            if (this.headingInRadiansFromNorth !== null) {
-                const rotation = (this.isInAutorotateMap
-                    ? -Math.PI / 2
-                    : (
-                        this.headingInRadiansFromNorth
-                        + this.map.getView().getRotation()
-                        - Math.PI / 2
-                    )
-                );
-                // Check current style and update rotation if an arrow is already drawn
-                if (positionFeatureStyle) {
-                    const TextStyle = positionFeatureStyle.getText();
-                    if (TextStyle) {
-                        TextStyle.setRotation(rotation);
-                        return;
-                    }
-                }
-                // Replace style by an arrow otherwise
-                this.positionFeature.setStyle(new Style({
-                    text: new Text({
-                        textBaseline: 'middle',
-                        offsetX: 0,
-                        offsetY: 0,
-                        rotation,
-                        font: '30px sans-serif',
-                        text: '►',
-                        fill: new Fill({
-                            color: '#3399CC',
-                        }),
-                        stroke: new Stroke({
-                            color: '#fff',
-                            width: 2,
-                        }),
-                    }),
-                }));
-                return;
-            }
-
-            // No heading specified, force circle if a circle is not already
-            // displayed
-            if (!positionFeatureStyle || !positionFeatureStyle.getImage()) {
-                this.positionFeature.setStyle(new Style({
-                    image: new CircleStyle({
-                        radius: constants.POSITION_MARKER_RADIUS,
-                        fill: new Fill({
-                            color: '#3399CC',
-                        }),
-                        stroke: new Stroke({
-                            color: '#fff',
-                            width: 2,
-                        }),
-                    }),
-                }));
-            }
-        },
         deleteReportMarker(markerID) {
             const feature = this.reportsMarkersFeatures[markerID];
             if (feature) {
@@ -276,6 +225,69 @@ export default {
                 view.setRotation(0);
             }
             view.setZoom(this.zoom);
+        },
+        setPositionFeatureStyle() {
+            if (!this.map || !this.positionFeature) {
+                return;
+            }
+
+            const positionFeatureStyle = this.positionFeature.getStyle();
+
+            // If heading is specified
+            if (this.headingInRadiansFromNorth !== null) {
+                const rotation = (this.isInAutorotateMap
+                    ? -Math.PI / 2
+                    : (
+                        this.headingInRadiansFromNorth
+                        + this.map.getView().getRotation()
+                        - Math.PI / 2
+                    )
+                );
+                // Check current style and update rotation if an arrow is already drawn
+                if (positionFeatureStyle) {
+                    const TextStyle = positionFeatureStyle.getText();
+                    if (TextStyle) {
+                        TextStyle.setRotation(rotation);
+                        return;
+                    }
+                }
+                // Replace style by an arrow otherwise
+                this.positionFeature.setStyle(new Style({
+                    text: new Text({
+                        textBaseline: 'middle',
+                        offsetX: 0,
+                        offsetY: 0,
+                        rotation,
+                        font: '30px sans-serif',
+                        text: '►',
+                        fill: new Fill({
+                            color: '#3399CC',
+                        }),
+                        stroke: new Stroke({
+                            color: '#fff',
+                            width: 2,
+                        }),
+                    }),
+                }));
+                return;
+            }
+
+            // No heading specified, force circle if a circle is not already
+            // displayed
+            if (!positionFeatureStyle || !positionFeatureStyle.getImage()) {
+                this.positionFeature.setStyle(new Style({
+                    image: new CircleStyle({
+                        radius: constants.POSITION_MARKER_RADIUS,
+                        fill: new Fill({
+                            color: '#3399CC',
+                        }),
+                        stroke: new Stroke({
+                            color: '#fff',
+                            width: 2,
+                        }),
+                    }),
+                }));
+            }
         },
         showRecenterButton() {
             if (!this.isRecenterButtonShown) {
@@ -437,6 +449,11 @@ export default {
                 }
             });
         },
+        mapElementHeight() {
+            // Force a redraw of the map after a few milliseconds and the DOM
+            // has updated
+            setTimeout(() => this.map.updateSize(), 200);
+        },
         markers(newMarkers, oldMarkers) {
             // Map should have been created
             if (this.reportsMarkersVectorSource === null) {
@@ -576,10 +593,6 @@ export default {
 </style>
 
 <style>
-#map {
-    max-height: calc(100vh - 56px);
-}
-
 #map .ol-control button {
     height: 3em !important;
     width: 3em !important;
