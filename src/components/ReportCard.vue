@@ -6,7 +6,7 @@
                 <v-flex xs3 md2>
                     <img :src="report.icon" :alt="report.label" class="icon">
                 </v-flex>
-                <v-flex xs5 md6>
+                <v-flex xs4 md6>
                     <v-layout row wrap>
                         <v-flex xs12 class="firstLine subheading font-weight-medium">
                             {{ report.label }}
@@ -22,7 +22,7 @@
                     </v-btn>
                 </v-flex>
 
-                <v-flex xs2 class="text-xs-center">
+                <v-flex xs3 class="text-xs-center">
                     <v-btn role="button" :aria-label="$t('buttons.downvote')" color="red" dark medium icon class="mediumButton" @click.stop="downvote">
                         <v-icon>thumb_down</v-icon>
                     </v-btn>
@@ -145,11 +145,13 @@ export default {
 .mediumButton {
     height: 56px;
     width: 56px;
+    margin: 0;
 }
 
 .smallButton {
     height: 40px;
     width: 40px;
+    margin: 0;
 }
 
 .secondLine {
