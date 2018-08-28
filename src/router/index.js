@@ -4,12 +4,11 @@ import Router from 'vue-router';
 import store from '@/store';
 
 import About from '@/views/About.vue';
+import LazyMap from '@/views/LazyMap.vue';
 import Onboarding from '@/views/Onboarding.vue';
 import Settings from '@/views/Settings.vue';
 
 Vue.use(Router);
-
-const Map = () => import('@/views/Map.vue');
 
 export default new Router({
     routes: [
@@ -21,12 +20,12 @@ export default new Router({
         {
             path: '/map=:zoom/:lat/:lng',
             name: 'SharedMap',
-            component: Map,
+            component: LazyMap,
         },
         {
             path: '/map',
             name: 'Map',
-            component: Map,
+            component: LazyMap,
             beforeEnter: (to, from, next) => {
                 if (to.name !== 'SharedMap') {
                     // Check that intro was seen except if we are in SharedMap view.
