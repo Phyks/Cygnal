@@ -387,14 +387,7 @@ export default {
         });
 
         // Add click handler
-        this.map.on('click', this.handleClick);
-        // Take care that OpenLayer map actually catches "pointerdown"
-        // events and not "click" events. Then, we need an explicit event
-        // handler for "click" to stop propagation to ReportCard component.
-        document.querySelector('#map').addEventListener(
-            'click',
-            event => event.stopPropagation(),
-        );
+        this.map.on('singleclick', this.handleClick);
 
         // Show recenter button on dragging the map
         this.map.on('pointerdrag', () => {
