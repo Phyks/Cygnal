@@ -1,4 +1,3 @@
-import moment from 'moment';
 import Vue from 'vue';
 
 import { messages, getBrowserLocales } from '@/i18n';
@@ -80,8 +79,6 @@ if (storageAvailable('localStorage')) {
             }
         }
     }
-    // Set moment locale
-    moment.locale(locale);
 }
 
 export const initialState = {

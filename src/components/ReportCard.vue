@@ -49,10 +49,12 @@
 </template>
 
 <script>
-import moment from 'moment';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import parseDate from 'date-fns/parse';
 import { Howl } from 'howler';
 
 import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
+import { AVAILABLE_LOCALES } from '@/i18n';
 import beepSound from '@/assets/beep.mp3';
 
 export default {
@@ -62,7 +64,10 @@ export default {
             if (reportID != null) {
                 const report = this.$store.state.reports.find(item => item.id === reportID);
                 return {
-                    fromNow: moment(report.attributes.datetime).fromNow(),
+                    fromNow: distanceInWordsToNow(
+                        parseDate(report.attributes.datetime),
+                        { addSuffix: true, locale: AVAILABLE_LOCALES[this.$i18n.locale].dateFns },
+                    ),
                     icon: this.icons[report.attributes.type],
                     id: report.id,
                     label: this.$t(`reportLabels.${report.attributes.type}`),

@@ -1,6 +1,6 @@
+import formatDate from 'date-fns/format';
 import FileSaver from 'file-saver';
 import createGPX from 'gps-to-gpx';
-import moment from 'moment';
 
 import { VERSION } from '@/constants';
 
@@ -36,6 +36,6 @@ export default function (activityName, locationGPX) {
     });
     FileSaver.saveAs(
         new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' }),
-        `cyclassist_${moment().locale('en').format('YYYY-MM-DD_HH-mm_ddd')}.gpx`,
+        `cyclassist_${formatDate(new Date(), 'YYYY-MM-DD_HH-mm_ddd')}.gpx`,
     );
 }

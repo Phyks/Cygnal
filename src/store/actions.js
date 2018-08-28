@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 import * as api from '@/api';
 import * as constants from '@/constants';
 import i18n from '@/i18n';
@@ -87,8 +85,6 @@ export function showReportDetails({ commit }, { id, userAsked }) {
 export function setLocale({ commit }, { locale }) {
     // Set global Vue-i18n locale
     i18n.locale = locale;
-    // Set moment locale
-    moment.locale(locale);
     // Commit setting into the store
     return commit(SET_SETTING, { setting: 'locale', value: locale });
 }

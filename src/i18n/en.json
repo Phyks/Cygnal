@@ -58,7 +58,8 @@
         "discard": "Discard",
         "ok": "OK",
         "or": "or",
-        "retry": "Retry"
+        "retry": "Retry",
+        "spaceBeforeDoublePunctuations": ""
     },
     "permissions": {
         "geolocation": "Geolocation",
