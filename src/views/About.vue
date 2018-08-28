@@ -26,9 +26,8 @@
 </template>
 
 <script>
-import moment from 'moment';
-
 import { getStats } from '@/api';
+import { distanceInWordsToNow } from '@/tools/date';
 
 import ReportsDescription from '@/components/ReportsDescription.vue';
 
@@ -49,7 +48,7 @@ export default {
             getStats().then((stats) => {
                 this.stats = stats;
                 this.stats.last_added_report_datetime = (
-                    moment(this.stats.last_added_report_datetime).fromNow()
+                    distanceInWordsToNow(Date.parse(this.stats.last_added_report_datetime))
                 );
             });
         },

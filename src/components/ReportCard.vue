@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import moment from 'moment';
 import { Howl } from 'howler';
 
 import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
+import { distanceInWordsToNow } from '@/tools/date';
 import beepSound from '@/assets/beep.mp3';
 
 export default {
@@ -62,7 +62,7 @@ export default {
             if (reportID != null) {
                 const report = this.$store.state.reports.find(item => item.id === reportID);
                 return {
-                    fromNow: moment(report.attributes.datetime).fromNow(),
+                    fromNow: distanceInWordsToNow(Date.parse(report.attributes.datetime)),
                     icon: this.icons[report.attributes.type],
                     id: report.id,
                     label: this.$t(`reportLabels.${report.attributes.type}`),

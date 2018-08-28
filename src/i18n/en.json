@@ -69,6 +69,15 @@
         "preventSuspendDescription": "When the map is displayed, the device will be prevented from going to sleep.",
         "vibrate": "Vibrate"
     },
+    "relativeDate": {
+        "ago": "{duration} ago",
+        "second": "one second | {count} seconds",
+        "minute": "one minute | {count} minutes",
+        "hour": "one hour | {count} hours",
+        "day": "one day | {count} days",
+        "month": "one month | {count} months",
+        "year": "one year | {count} years"
+    },
     "reportCard": {
         "Reported": "Reported {fromNow}."
     },

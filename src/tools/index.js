@@ -1,4 +1,3 @@
-import moment from 'moment';
 
 import {
     EARTH_RADIUS,
@@ -61,8 +60,8 @@ export function mockLocationWithGPX(index, setPosition) {
         setPosition(mockGPX[index]);
         if (mockGPX[index + 1]) {
             const delay = (
-                moment(mockGPX[index + 1].time).valueOf()
-                - moment(mockGPX[index].time).valueOf()
+                Date.parse(mockGPX[index + 1].time).getTime()
+                - Date.parse(mockGPX[index].time).getTime()
             );
             setTimeout(
                 () => mockLocationWithGPX(index + 1, setPosition),

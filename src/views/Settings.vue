@@ -124,8 +124,14 @@ export default {
     },
     data() {
         const $t = this.$t.bind(this);
+        const i18nItems = [];
+        Object.keys(AVAILABLE_LOCALES).forEach(iso => i18nItems.push({
+            iso,
+            name: AVAILABLE_LOCALES[iso].name,
+        }));
+        i18nItems.sort((a, b) => a.iso > b.iso);
         return {
-            i18nItems: AVAILABLE_LOCALES,
+            i18nItems,
             orientationModes: [
                 {
                     text: $t('settings.fixedNorth'),
