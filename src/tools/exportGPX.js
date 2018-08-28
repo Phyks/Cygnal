@@ -1,8 +1,8 @@
-import formatDate from 'date-fns/format';
 import FileSaver from 'file-saver';
 import createGPX from 'gps-to-gpx';
 
 import { VERSION } from '@/constants';
+import { formatDate } from '@/tools/date';
 
 export default function (activityName, locationGPX) {
     const courseKey = 'heading';

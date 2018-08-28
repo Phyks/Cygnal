@@ -1,4 +1,3 @@
-import parseDate from 'date-fns/parse';
 
 import {
     EARTH_RADIUS,
@@ -14,6 +13,14 @@ if (process.env.NODE_ENV !== 'production') {
     // Use a node_modules require here, this is handled by Webpack to fetch either
     // a custom mock_gpx.json or a default empty one.
     mockGPX = require('mock_gpx.json'); // eslint-disable-line global-require
+}
+
+export function addLeadingZeros(number, targetLength) {
+    let output = Math.abs(number).toString();
+    while (output.length < targetLength) {
+        output = `0${output}`;
+    }
+    return output;
 }
 
 export function distance(latLng1, latLng2) {
@@ -61,8 +68,8 @@ export function mockLocationWithGPX(index, setPosition) {
         setPosition(mockGPX[index]);
         if (mockGPX[index + 1]) {
             const delay = (
-                parseDate(mockGPX[index + 1].time).getTime()
-                - parseDate(mockGPX[index].time).getTime()
+                Date.parse(mockGPX[index + 1].time).getTime()
+                - Date.parse(mockGPX[index].time).getTime()
             );
             setTimeout(
                 () => mockLocationWithGPX(index + 1, setPosition),

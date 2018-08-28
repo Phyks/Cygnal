@@ -26,11 +26,8 @@
 </template>
 
 <script>
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-import parseDate from 'date-fns/parse';
-
 import { getStats } from '@/api';
-import { AVAILABLE_LOCALES } from '@/i18n';
+import { distanceInWordsToNow } from '@/tools/date';
 
 import ReportsDescription from '@/components/ReportsDescription.vue';
 
@@ -51,10 +48,7 @@ export default {
             getStats().then((stats) => {
                 this.stats = stats;
                 this.stats.last_added_report_datetime = (
-                    distanceInWordsToNow(
-                        parseDate(this.stats.last_added_report_datetime),
-                        { addSuffix: true, locale: AVAILABLE_LOCALES[this.$i18n.locale].dateFns },
-                    )
+                    distanceInWordsToNow(Date.parse(this.stats.last_added_report_datetime))
                 );
             });
         },

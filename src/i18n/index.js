@@ -1,5 +1,3 @@
-import dateFnsEn from 'date-fns/locale/en';
-import dateFnsFr from 'date-fns/locale/fr';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
@@ -10,18 +8,15 @@ import oc from './oc.json';
 
 export const AVAILABLE_LOCALES = {
     en: {
-        dateFns: dateFnsEn,
         messages: en,
         name: 'English',
     },
     fr: {
-        dateFns: dateFnsFr,
         iso: 'fr',
         messages: fr,
         name: 'Français',
     },
     oc: {
-        dateFns: dateFnsEn,
         iso: 'oc',
         messages: oc,
         name: 'Occitan',
