@@ -58,7 +58,8 @@
         "discard": "Annuler",
         "ok": "OK",
         "or": "ou",
-        "retry": "R\u00e9essayer"
+        "retry": "R\u00e9essayer",
+        "spaceBeforeDoublePunctuations": "&nbsp;"
     },
     "permissions": {
         "geolocation": "G\u00e9olocalisation",

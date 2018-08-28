@@ -57,7 +57,8 @@
         "discard": "Anullar",
         "ok": "D\u2019acc\u00f2rdi",
         "or": "o",
-        "retry": "Ensajar tornamai"
+        "retry": "Ensajar tornamai",
+        "spaceBeforeDoublePunctuations": "&nbsp;"
     },
     "permissions": {
         "geolocation": "Geolocalizacion",
