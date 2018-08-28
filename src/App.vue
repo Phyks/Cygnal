@@ -63,11 +63,7 @@
 </template>
 
 <script>
-import FileSaver from 'file-saver';
-import createGPX from 'gps-to-gpx';
-import moment from 'moment';
-
-import { DELAY_BETWEEN_API_BATCH_REQUESTS, VERSION } from '@/constants';
+import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ReportIssueModal from '@/components/ReportIssueModal.vue';
@@ -104,41 +100,10 @@ export default {
     },
     methods: {
         exportGPX() {
-            const activityName = this.$t('misc.activityName');
-
-            const courseKey = 'heading';
-            const eleKey = 'elevation';
-            const hdopKey = 'hdop';
-            const speedKey = 'speed';
-            const vdopKey = 'vdop';
-
-            const waypoints = [];
-            this.$store.state.location.gpx.forEach((item) => {
-                const waypoint = Object.assign({}, item, { timestamp: new Date(item.timestamp) });
-                [courseKey, eleKey, hdopKey, speedKey, vdopKey].forEach((key) => {
-                    if (waypoint[key] === null || waypoint[key] === undefined) {
-                        delete waypoint[key];
-                    }
-                });
-                waypoints.push(waypoint);
+            import('@/tools/exportGPX' /* webpackChunkName: "MapView" */).then((module) => {
+                const activityName = this.$t('misc.activityName');
+                module.default(activityName, this.$store.state.location.gpx);
             });
-            const gpx = createGPX(waypoints, {
-                activityName,
-                creator: `Cycl'Assist v${VERSION}`,
-                courseKey,
-                eleKey,
-                hdopKey,
-                latKey: 'latitude',
-                lonKey: 'longitude',
-                speedKey,
-                startTime: waypoints[0].timestamp,
-                timeKey: 'timestamp',
-                vdopKey,
-            });
-            FileSaver.saveAs(
-                new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' }),
-                `cyclassist_${moment().locale('en').format('YYYY-MM-DD_HH-mm_ddd')}.gpx`,
-            );
         },
         goToAbout() {
             this.$router.push({ name: 'About' });
