@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import { addLeadingZeros } from '@/tools';
 
 /*
@@ -85,6 +86,8 @@ export function selectUnits(diffReport) {
 export function distanceInWordsToNow(from) {
     const diffReport = diff(from, new Date());
     const units = selectUnits(diffReport);
-    const diffInUnits = diffReport[units];
-    return `${diffInUnits} ${units}`;
+    const diffInUnits = Math.abs(diffReport[units]);
+    return i18n.t('relativeDate.ago', {
+        duration: i18n.tc(`relativeDate.${units}`, diffInUnits, { count: diffInUnits })
+    });
 }
