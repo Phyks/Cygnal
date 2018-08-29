@@ -1,9 +1,18 @@
 import i18n from '@/i18n';
-import { addLeadingZeros } from '@/tools';
 
 /*
+ * Code below is dapted from
  * https://github.com/date-fns/date-fns/blob/v1/src/format/index.js
+ * Licensed under MIT © Sasha Koss.
  */
+export function addLeadingZeros(number, targetLength) {
+    let output = Math.abs(number).toString();
+    while (output.length < targetLength) {
+        output = `0${output}`;
+    }
+    return output;
+}
+
 const FORMATTERS = {
     // Month: 01, 02, ..., 12
     MM: date => addLeadingZeros(date.getMonth() + 1, 2),
@@ -28,9 +37,10 @@ export function formatDate(date, format) {
 }
 
 /*
-Copyright (c) 2014, Yahoo! Inc. All rights reserved.
-Copyrights licensed under the New BSD License.
-See the accompanying LICENSE file for terms.
+ * Code below is adapted from
+ * https://github.com/yahoo/intl-relativeformat/blob/master/src/core.js
+ * Copyright (c) 2014, Yahoo! Inc. All rights reserved.
+ * Copyrights licensed under the New BSD License.
 */
 
 const THRESHOLDS = {
@@ -82,7 +92,6 @@ export function selectUnits(diffReport) {
     return 'year';
 }
 
-// TODO: Locale
 export function distanceInWordsToNow(from) {
     const diffReport = diff(from, new Date());
     const units = selectUnits(diffReport);

@@ -15,14 +15,6 @@ if (process.env.NODE_ENV !== 'production') {
     mockGPX = require('mock_gpx.json'); // eslint-disable-line global-require
 }
 
-export function addLeadingZeros(number, targetLength) {
-    let output = Math.abs(number).toString();
-    while (output.length < targetLength) {
-        output = `0${output}`;
-    }
-    return output;
-}
-
 export function distance(latLng1, latLng2) {
     const lat1 = (latLng1[0] * Math.PI) / 180;
     const lng1 = (latLng1[1] * Math.PI) / 180;
