@@ -71,12 +71,12 @@
     },
     "relativeDate": {
         "ago": "il y a {duration}",
-        "day": "{count} jour | {count} jours",
-        "hour": "{count} heure | {count} heures",
-        "minute": "{count} minute | {count} minutes",
-        "month": "{count} mois | {count} mois",
-        "second": "{count} seconde | {count} secondes",
-        "year": "{count} ann\u00e9e | {count} ann\u00e9es"
+        "day": "un jour | {count} jours",
+        "hour": "une heure | {count} heures",
+        "minute": "une minute | {count} minutes",
+        "month": "un mois | {count} mois",
+        "second": "une seconde | {count} secondes",
+        "year": "un an | {count} ans"
     },
     "reportCard": {
         "Reported": "Signal\u00e9 {fromNow}."

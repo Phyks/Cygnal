@@ -69,6 +69,15 @@
         "preventSuspendDescription": "Quand la mapa es mostrada, lo periferic passar\u00e0 pas en velha.",
         "vibrate": "Vibracions"
     },
+    "relativeDate": {
+        "ago": "fa {duration}",
+        "day": "un jorn | {count} jorns",
+        "hour": "una ora | {count} oras",
+        "minute": "una minuta | {count} minutas",
+        "month": "un mes | {count} meses",
+        "second": "unas segondas | {count} segondas",
+        "year": "un an | {count} ans"
+    },
     "reportCard": {
         "Reported": "Senhalat {fromNow}."
     },
