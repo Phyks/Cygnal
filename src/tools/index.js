@@ -60,8 +60,8 @@ export function mockLocationWithGPX(index, setPosition) {
         setPosition(mockGPX[index]);
         if (mockGPX[index + 1]) {
             const delay = (
-                Date.parse(mockGPX[index + 1].time).getTime()
-                - Date.parse(mockGPX[index].time).getTime()
+                Date.parse(mockGPX[index + 1].time)
+                - Date.parse(mockGPX[index].time)
             );
             setTimeout(
                 () => mockLocationWithGPX(index + 1, setPosition),
