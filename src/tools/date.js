@@ -88,6 +88,6 @@ export function distanceInWordsToNow(from) {
     const units = selectUnits(diffReport);
     const diffInUnits = Math.abs(diffReport[units]);
     return i18n.t('relativeDate.ago', {
-        duration: i18n.tc(`relativeDate.${units}`, diffInUnits, { count: diffInUnits })
+        duration: i18n.tc(`relativeDate.${units}`, diffInUnits, { count: diffInUnits }),
     });
 }
