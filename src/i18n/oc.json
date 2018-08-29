@@ -50,6 +50,7 @@
         "About": "Ajuda",
         "Settings": "Prefer\u00e9ncias",
         "exportGPX": "Exportar en GPX",
+        "reportIssue": "Senhalar un probl\u00e8ma",
         "shareMapView": "Partejar la vista de la mapa"
     },
     "misc": {
@@ -75,6 +76,12 @@
         "unableToSendDescription": "Una error ret empacha lo mandad\u00eds del darri\u00e8r senhalament.",
         "unableToSendTitle": "Impossible d'enviar lo darri\u00e8r senhalament"
     },
+    "reportIssueModal": {
+        "description": "Descripcion",
+        "includeGPX": "Inclure la tra\u00e7a GPS actuala\u00a0?",
+        "reportIssue": "Senhalar un probl\u00e8ma",
+        "send": "Enviar"
+    },
     "reportLabels": {
         "accident": "Accident",
         "accidentDescription": "Un accident sus la rota (automaticament suprimit apr\u00e8p una ora).",
@@ -90,9 +97,12 @@
         "potholeDescription": "Un trauc per la rota."
     },
     "settings": {
+        "autorotate": "Vira automaticament (direccion actuala amont)",
         "customTileServer": "Servidor de teulas personalizat",
         "customTileServerURL": "URL del servidor de teulas personalizat",
         "customTileServerURLHint": "Per exemple\u00a0: http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultOrientationMode": "M\u00f2de orientacion per defaut",
+        "fixedNorth": "Fixada (N\u00f2rd amont)",
         "locale": "Lenga",
         "skipOnboarding": "Passar l'introduccion",
         "tileServer": "Servidor de teulas per la mapa"

@@ -69,6 +69,15 @@
         "preventSuspendDescription": "Quand la carte est affich\u00e9e, l'appareil ne pourra pas passer en veille automatiquement.",
         "vibrate": "Vibrer"
     },
+    "relativeDate": {
+        "ago": "il y a {duration}",
+        "day": "{count} jour | {count} jours",
+        "hour": "{count} heure | {count} heures",
+        "minute": "{count} minute | {count} minutes",
+        "month": "{count} mois | {count} mois",
+        "second": "{count} seconde | {count} secondes",
+        "year": "{count} ann\u00e9e | {count} ann\u00e9es"
+    },
     "reportCard": {
         "Reported": "Signal\u00e9 {fromNow}."
     },
