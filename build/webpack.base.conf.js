@@ -29,12 +29,14 @@ module.exports = {
         minimizer: [
             new UglifyJsPlugin({
                 cache: true,
-                sourceMap: true,
                 parallel: true
             }),
             new OptimizeCSSAssetsPlugin({})
         ],
         splitChunks: {
+            // Required for webpack to respect the vendor chunk. See
+            // https://medium.com/dailyjs/webpack-4-splitchunks-plugin-d9fbbe091fd0
+            // for more details.
             chunks: 'initial',
             cacheGroups: {
                 vendors: {
@@ -86,12 +88,14 @@ module.exports = {
                         : MiniCssExtractPlugin.loader,
                     {
                         loader: 'css-loader',
+                        // PostCSS is run before, see
+                        // https://github.com/webpack-contrib/css-loader#importloaders
                         options: { importLoaders: 1 },
                     },
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: () => [require("autoprefixer")()],
+                            plugins: () => [require("postcss-preset-env")()],
                         },
                     },
                 ],
