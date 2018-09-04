@@ -36,6 +36,10 @@ export function mockLocationRandom() {
     if (Math.random() > 0.25) {
         heading = Math.random() * 360;
     }
+    let speed = null;
+    if (Math.random() > 0.25) {
+        speed = Math.random() * 20;
+    }
     const newLocation = {
         coords: {
             accuracy: Math.random() * 100, // In meters
@@ -48,6 +52,7 @@ export function mockLocationRandom() {
                 + MOCK_LOCATION_LNG_MIN
             ),
             heading,
+            speed,
         },
         timestamp: new Date().getTime(),
     };
