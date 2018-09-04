@@ -49,8 +49,6 @@
 </template>
 
 <script>
-import { Howl } from 'howler';
-
 import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
 import { distanceInWordsToNow } from '@/tools/date';
 import beepSound from '@/assets/beep.mp3';
@@ -77,12 +75,8 @@ export default {
         Object.keys(REPORT_TYPES).forEach((type) => {
             icons[type] = REPORT_TYPES[type].image;
         });
-        const onplayerror = () => this.beepAudio.once('unlock', () => this.beepAudio.play());
         return {
-            beepAudio: new Howl({
-                src: [beepSound],
-                onplayerror,
-            }),
+            beepAudio: new Audio(beepSound),
             icons,
         };
     },

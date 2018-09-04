@@ -16,7 +16,6 @@
         "@babel/polyfill": "^7.0.0",
         "file-saver": "^1.3.8",
         "gps-to-gpx": "git://github.com/phyks/gps-to-gpx.git#2c9da24ca98ecd520ee75276714d4df337696475",
-        "howler": "^2.0.15",
         "material-icons": "^0.2.3",
         "nosleep.js": "^0.7.0",
         "ol": "^5.1.3",
