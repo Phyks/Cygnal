@@ -97,6 +97,7 @@ export const initialState = {
     },
     reportDetails: {
         id: null,
+        previousId: null,
         userAsked: null,
     },
     reports: [],
@@ -192,6 +193,11 @@ export const mutations = {
         state.settings[setting] = value;
     },
     [types.SHOW_REPORT_DETAILS](state, { id, userAsked }) {
+        if (id === null) {
+            // If closing the details, keep track of what the id was to prevent
+            // reopening the details immediately.
+            Vue.set(state.reportDetails, 'previousId', state.reportDetails.id);
+        }
         Vue.set(state.reportDetails, 'id', id);
         Vue.set(state.reportDetails, 'userAsked', userAsked);
     },

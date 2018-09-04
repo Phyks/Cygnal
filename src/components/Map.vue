@@ -493,7 +493,10 @@ export default {
                     );
                     // TODO: Take into account the history of positions for the direction
                     if (closestReport.id !== -1) {
-                        this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                        // Only open the details if the box was not just closed
+                        if (this.$store.state.reportDetails.previousId !== closestReport.id) {
+                            this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                        }
                     } else {
                         this.$store.dispatch('hideReportDetails');
                     }
