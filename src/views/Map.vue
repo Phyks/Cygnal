@@ -14,6 +14,7 @@
                     :polyline="positionHistory"
                     :positionLatLng="currentLatLng"
                     :reportLatLng="reportLatLng"
+                    :speed="currentSpeed"
                     :zoom="mapZoom"
                     ></Map>
                 <v-btn
@@ -109,6 +110,12 @@ export default {
         },
         currentLocation() {
             return this.$store.getters.getLastLocation || {};
+        },
+        currentSpeed() {
+            if (this.hasCenterProvidedByRoute || !this.currentLocation) {
+                return null;
+            }
+            return Math.round(this.currentLocation.speed || 0, 0);
         },
         error() {
             const errorCode = this.$store.state.location.error;

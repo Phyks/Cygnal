@@ -1,5 +1,12 @@
 <template>
     <v-layout row fill-height wrap>
+        <v-flex xs12 class="speed-badge text-xs-center white" v-if="speed !== null && speed !== undefined">
+            <v-layout column>
+                <v-flex xs8 class="title mt-1">{{ speed }}</v-flex>
+                <v-flex xs4 class="caption">km/h</v-flex>
+            </v-layout>
+        </v-flex>
+
         <v-flex xs12 id="map" :style="{ height: mapElementHeight }"></v-flex>
 
         <v-btn
@@ -425,6 +432,7 @@ export default {
         polyline: Array,
         positionLatLng: Array,
         reportLatLng: Array,
+        speed: Number,
         zoom: {
             type: Number,
             required: true,
@@ -585,6 +593,19 @@ export default {
 <style scoped>
 .fill-width {
     width: 100%;
+}
+
+.speed-badge {
+    position: absolute;
+    right: 10px;
+    font-size: 1.14em;
+    margin: 1px;
+    top: calc(3em + 25px);
+    z-index: 1000;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, .87) !important;
 }
 </style>
 
