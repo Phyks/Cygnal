@@ -19,6 +19,8 @@ to the server or any external resource. However, the map background is
 downloaded on demand from [Thunderforest](http://thunderforest.com/) so they
 could know the location of the displayed map.
 
+<img src="support/screenshots/webapp.jpg" width="45%"/> <img src="support/screenshots/reportDialog.jpg" width="45%"/>
+
 ## OpenData
 
 The data collected by https://cyclo.phyks.me/ is available under an
