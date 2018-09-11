@@ -126,6 +126,19 @@ You can use the `wsgi.py` script at the root of the git repository to serve
 the server side part. You can find some `uwsgi` and `nginx` base config files
 under the `support` folder.
 
+#### Importing OpenData
+
+A few OpenData files can be imported in Cycl'Assist, to import roadworks for
+instance. All the useful scripts to import OpenData are in the
+`scripts/opendata` folder. You can set up a daily cron task to automatically
+run the import of roadworks every day.
+
+#### Updating
+
+Database migrations are in the `scripts/migrations` folder, labelled by
+versions. You should run them in order from your current versions to the
+latest one when you upgrade.
+
 
 ## Contributing
 
@@ -142,12 +155,6 @@ python -m server
 ```
 
 to spawn the server-side part, listening on `localhost:8081`.
-
-### Updating
-
-Database migrations are in the `scripts/migrations` folder, labelled by
-versions. You should run them in order from your current versions to the
-latest one when you upgrade.
 
 ### Useful scripts for dev
 
