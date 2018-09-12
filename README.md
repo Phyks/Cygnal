@@ -143,6 +143,12 @@ python -m server
 
 to spawn the server-side part, listening on `localhost:8081`.
 
+### Updating
+
+Database migrations are in the `scripts/migrations` folder, labelled by
+versions. You should run them in order from your current versions to the
+latest one when you upgrade.
+
 ### Useful scripts for dev
 
 You can run `scripts/gps_to_gpx.py` on your GPX trace to create a

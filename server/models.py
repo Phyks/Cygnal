@@ -5,11 +5,12 @@ Models and database definition
 """
 import os
 
-import arrow
 import bottle
 import peewee
 from playhouse.db_url import connect
 from playhouse.shortcuts import model_to_dict
+
+from server.tools import UTC_now
 
 db = connect(os.environ.get('DATABASE', 'sqlite:///reports.db'))
 
@@ -40,8 +41,11 @@ class Report(BaseModel):
     type = peewee.CharField(max_length=255)
     lat = peewee.DoubleField()
     lng = peewee.DoubleField()
+    first_report_datetime = peewee.DateTimeField(
+        default=UTC_now
+    )
     datetime = peewee.DateTimeField(
-        default=lambda: arrow.utcnow().replace(microsecond=0).naive
+        default=UTC_now
     )
     expiration_datetime = peewee.DateTimeField(null=True)
     is_open = peewee.BooleanField(default=True)

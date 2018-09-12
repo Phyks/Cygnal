@@ -85,8 +85,8 @@ export const MOCK_LOCATION_LNG_MAX = 2.392742;
 
 export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500; // in meters
 
-// Minimal ratio between upvotes and downvotes needed for a report to be shown
-export const REPORT_VOTES_THRESHOLD = 0.5;
+// Minimal number of downvotes needed for a report to be masked
+export const REPORT_DOWNVOTES_THRESHOLD = 1;
 
 export const EARTH_RADIUS = 6378137; // in meters
 

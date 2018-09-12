@@ -10,6 +10,7 @@ import os
 import bottle
 
 from server.models import Report
+from server.tools import UTC_now
 from server import jsonapi
 
 
@@ -80,7 +81,7 @@ def get_reports(only_active=False):
     if only_active:
         query = query.where(
             (Report.expiration_datetime == None) |
-            (Report.expiration_datetime > arrow.utcnow().replace(microsecond=0).datetime)
+            (Report.expiration_datetime > UTC_now())
         )
     query = query.order_by(*sorting)
     if page_number and page_size:
@@ -195,7 +196,7 @@ def post_report():
         # Handle expiration
         if r.type in ['accident', 'gcum']:
             r.expiration_datetime = (
-                arrow.utcnow().replace(microsecond=0).shift(hours=+1).datetime
+                arrow.get(UTC_now()).shift(hours=+1).naive
             )
         r.save()
     except KeyError as exc:
@@ -228,7 +229,15 @@ def upvote_report(id):
     r = Report.get(Report.id == id)
     if not r:
         return jsonapi.JsonApiError(404, "Invalid report id.")
+    # Increase upvotes
     r.upvotes += 1
+    # Update report datetime
+    r.datetime = UTC_now()
+    # Update expiration datetime
+    if r.type in ['accident', 'gcum']:
+        r.expiration_datetime = (
+            arrow.get(UTC_now()).shift(hours=+1).naive
+        )
     r.save()
 
     return {
@@ -282,7 +291,7 @@ def get_stats():
     nb_reports = Report.select().count()
     nb_active_reports = Report.select().where(
         (Report.expiration_datetime == None) |
-        (Report.expiration_datetime > arrow.utcnow().replace(microsecond=0).datetime)
+        (Report.expiration_datetime > UTC_now())
     ).count()
     last_added_report_datetime = Report.select().order_by(
         Report.datetime.desc()
