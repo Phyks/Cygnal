@@ -215,8 +215,13 @@ export default {
                 const mapCenterLonLat = toLonLat(view.getCenter());
                 this.onMapCenterUpdate([mapCenterLonLat[1], mapCenterLonLat[0]]);
             }
-            if (this.onMapZoomUpdate) {
-                this.onMapZoomUpdate(view.getZoom());
+            // Show recenter button and call the callback if zoom is updated manually
+            const zoom = view.getZoom();
+            if (zoom !== this.zoom) {
+                this.showRecenterButton();
+                if (this.onMapZoomUpdate) {
+                    this.onMapZoomUpdate(zoom);
+                }
             }
         },
         recenterMap() {
@@ -243,11 +248,11 @@ export default {
             // If heading is specified
             if (this.headingInRadiansFromNorth !== null) {
                 const rotation = (this.isInAutorotateMap
-                    ? -Math.PI / 2
+                    ? - this.map.getView().getRotation() - Math.PI / 2
                     : (
                         this.headingInRadiansFromNorth
                         + this.map.getView().getRotation()
-                        - Math.PI / 2
+                        + Math.PI / 2
                     )
                 );
                 // Check current style and update rotation if an arrow is already drawn
@@ -264,6 +269,7 @@ export default {
                         textBaseline: 'middle',
                         offsetX: 0,
                         offsetY: 0,
+                        rotateWithView: true,
                         rotation,
                         font: '30px sans-serif',
                         text: '►',
@@ -324,7 +330,6 @@ export default {
         this.positionFeature = new Feature({
             geometry: this.olPosition ? new Point(this.olPosition) : null,
         });
-        this.setPositionFeatureStyle();
 
         // Create polyline feature
         this.polylineFeature = new Feature({
@@ -363,6 +368,13 @@ export default {
                     resetNorth: () => {
                         // Switch autorotate mode
                         this.hasUserAutorotateMap = !this.hasUserAutorotateMap;
+
+                        const view = this.map.getView();
+                        if (this.isInAutorotateMap) {
+                            view.setRotation(-this.headingInRadiansFromNorth);
+                        } else {
+                            view.setRotation(0);
+                        }
                     },
                 },
                 zoom: false,
@@ -392,6 +404,8 @@ export default {
                 zoom: this.zoom,
             }),
         });
+        // Set position marker style
+        this.setPositionFeatureStyle();
 
         // Add click handler
         this.map.on('singleclick', this.handleClick);
@@ -399,9 +413,6 @@ export default {
         // Show recenter button on dragging the map
         this.map.on('pointerdrag', () => {
             this.isProgrammaticMove = false;
-            // Ensure correct orientation of position arrow
-            // TODO: Orientation should be correct while rotating as well
-            this.setPositionFeatureStyle();
             this.showRecenterButton();
         });
         this.map.on('moveend', this.onMoveEnd);
