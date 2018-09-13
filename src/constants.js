@@ -15,7 +15,7 @@ export const VERSION = '0.2';
 
 export const NORMAL_ICON_SCALE = 0.625;
 export const LARGE_ICON_SCALE = 1.0;
-export const ICON_ANCHOR = [0, 0.5];
+export const ICON_ANCHOR = [0.5, 1.0];
 export const REPORT_TYPES = {
     accident: {
         description: 'reportLabels.accidentDescription',
