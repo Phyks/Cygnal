@@ -25,7 +25,10 @@ export default {
         onManualLocationPicker(value) {
             this.$store.dispatch(
                 'setCurrentPosition',
-                { latLng: [value.latlng.lat, value.latlng.lng] },
+                {
+                    coords: { latitude: value.latlng.lat, longitude: value.latlng.lng },
+                    timestamp: new Date().getTime(),
+                },
             );
         },
     },

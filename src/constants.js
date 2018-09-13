@@ -23,7 +23,6 @@ export const REPORT_TYPES = {
         image: accidentIcon,
         marker: accidentMarker,
         markerLarge: accidentMarker,
-
     },
     gcum: {
         description: 'reportLabels.gcumDescription',
