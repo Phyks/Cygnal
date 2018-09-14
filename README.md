@@ -142,37 +142,8 @@ latest one when you upgrade.
 
 ## Contributing
 
-The quickest way to get started is to simply run
-
-```
-API_BASE_URL=http://127.0.0.1:8081/ yarn dev
-```
-
-to spawn the client-side webapp, listening on `localhost:8080` and
-
-```
-python -m server
-```
-
-to spawn the server-side part, listening on `localhost:8081`.
-
-### Useful scripts for dev
-
-You can run `scripts/gps_to_gpx.py` on your GPX trace to create a
-`src/tools/mock_gpx.json` file ready to be used as a mocking source for the
-position data (just edit the `src/constants.js` file accordingly).
-
-
-## Translating
-
-Translation is done directly on [Zanata](https://translate.zanata.org/iteration/view/cyclassist/master?dswid=7345).
-
-To add new strings to localize, edit the `src/i18n/en.json` file with your new
-strings (and only this file). Then, you can run `yarn push-locales` to send
-the updated locales to translate and `yarn pull-locales` to fetch the
-translated files. To use these scripts you will need the
-Translate-toolkit(`pip install translate-toolkit`) and the [Zanata Python CLI
-client](https://github.com/zanata/zanata-python-client).
+Check out the [CONTRIBUTING.md](CONTRIBUTING.md) file for all the required doc
+and details before contributing :) Any contributions more than welcome!
 
 
 ## License
