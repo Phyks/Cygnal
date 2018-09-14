@@ -62,9 +62,14 @@
         "retry": "Retry",
         "spaceBeforeDoublePunctuations": "&#8203;"
     },
+    "notification": {
+        "body": "Click to report something!"
+    },
     "permissions": {
         "geolocation": "Geolocation",
         "geolocationDescription": "As of current version, your precise geolocation is handled within your device and never sent from it to any external service. The map background is downloaded on demand from the tile provider and it has then access to an estimate of the displayed position. If you refuse to share your geolocation, you can still pick a location manually but you will miss some geolocation dependent features.",
+        "permanentNotification": "Permanent notification",
+        "permanentNotificationDescription": "Display a permanent notification to quickly jump back to the new report window.",
         "playSound": "Play sound",
         "preventSuspend": "Prevent device from going to sleep",
         "preventSuspendDescription": "When the map is displayed, the device will be prevented from going to sleep.",

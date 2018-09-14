@@ -44,6 +44,7 @@ if (storageAvailable('localStorage')) {
 // Load settings from storage
 let locale = null;
 let hasGeolocationPermission = null;
+let hasPermanentNotificationPermission = null;
 let hasPlaySoundPermission = null;
 let hasPreventSuspendPermission = null;
 let hasVibratePermission = null;
@@ -54,6 +55,7 @@ if (storageAvailable('localStorage')) {
     handleMigrations();
 
     hasGeolocationPermission = loadDataFromStorage('hasGeolocationPermission');
+    hasPermanentNotificationPermission = loadDataFromStorage('hasPermanentNotificationPermission');
     hasPlaySoundPermission = loadDataFromStorage('hasPlaySoundPermission');
     hasPreventSuspendPermission = loadDataFromStorage('hasPreventSuspendPermission');
     hasVibratePermission = loadDataFromStorage('hasVibratePermission');
@@ -106,6 +108,9 @@ export const initialState = {
         locale: locale || 'en',
         hasGeolocationPermission: (
             hasGeolocationPermission !== null ? hasGeolocationPermission : true
+        ),
+        hasPermanentNotificationPermission: (
+            hasPermanentNotificationPermission !== null ? hasPermanentNotificationPermission : true
         ),
         hasPlaySoundPermission: (
             hasPlaySoundPermission !== null ? hasPlaySoundPermission : true
