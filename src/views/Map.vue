@@ -88,6 +88,7 @@ function setPosition(position) {
 export default {
     beforeDestroy() {
         this.disableNoSleep();
+        this.removeNotification();
         this.$store.dispatch('hideReportDetails');
     },
     components: {
@@ -166,10 +167,16 @@ export default {
         return {
             isReportDialogVisible: false,
             noSleep: null,
+            notification: null,
             reportLatLng: null,
         };
     },
     methods: {
+        createNotification() {
+            this.notification = new Notification('Toto', { body: 'Foobar', icon: '', tag: 'CyclassistMap' }); // TODO: icon
+            this.notification.addEventListener('click', this.showReportDialog);
+            this.notification.addEventListener('close', this.createNotification);
+        },
         disableNoSleep() {
             if (this.noSleep) {
                 this.noSleep.disable();
@@ -211,6 +218,13 @@ export default {
         onMapZoomUpdate(zoom) {
             this.$store.dispatch('setCurrentMapZoom', { zoom });
         },
+        removeNotification() {
+            if (this.notification) {
+                this.notification.removeEventListener('close', this.createNotification);
+                this.notification.close();
+                this.notification = null;
+            }
+        },
         resetReportLatLng() {
             this.reportLatLng = null;
         },
@@ -218,6 +232,22 @@ export default {
             if (this.$store.state.settings.hasPreventSuspendPermission) {
                 this.noSleep = new NoSleep();
                 this.noSleep.enable();
+            }
+        },
+        setupNotification() {
+            if (!window.Notification) {
+                // Ensure notification API is available
+                return;
+            }
+
+            if (Notification.permission && Notification.permission === 'granted') {
+                this.createNotification();
+            } else {
+                Notification.requestPermission((permission) => {
+                    if (permission === 'granted') {
+                        this.createNotification();
+                    }
+                });
             }
         },
         showReportDialog(latlng) {
@@ -249,6 +279,8 @@ export default {
             }
         }
         this.$store.dispatch('fetchReports').catch(() => {});
+
+        this.setupNotification();
     },
 };
 </script>
