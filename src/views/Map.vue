@@ -57,6 +57,8 @@ import { distance, mockLocation } from '@/tools';
 import i18n from '@/i18n';
 import store from '@/store';
 
+import AppLogo from '@/assets/logo.svg';
+
 function handlePositionError(error) {
     store.dispatch('setLocationError', { error: error.code });
 }
@@ -173,7 +175,11 @@ export default {
     },
     methods: {
         createNotification() {
-            this.notification = new Notification('Toto', { body: 'Foobar', icon: '', tag: 'CyclassistMap' }); // TODO: icon
+            const $t = this.$t.bind(this);
+            this.notification = new Notification(
+                'Cycl\'Assist',
+                { body: $t('notification.body'), icon: AppLogo, tag: 'CyclassistMap' },
+            );
             this.notification.addEventListener('click', this.showReportDialog);
             this.notification.addEventListener('close', this.createNotification);
         },
@@ -235,8 +241,11 @@ export default {
             }
         },
         setupNotification() {
-            if (!window.Notification) {
-                // Ensure notification API is available
+            if (
+                !window.Notification
+                || !this.$store.state.settings.hasPermanentNotificationPermission
+            ) {
+                // Ensure notification API is available and notification is wanted
                 return;
             }
 

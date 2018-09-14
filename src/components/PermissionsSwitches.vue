@@ -30,6 +30,14 @@
             v-model="hasGeolocationPermission"
             >
         </v-switch>
+        <v-switch
+            class="switch"
+            :messages="[`<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${$t('permissions.permanentNotificationDescription')}`]"
+            color="success"
+            :label="$t('permissions.permanentNotification')"
+            v-model="hasPermanentNotificationPermission"
+            >
+        </v-switch>
     </div>
 </template>
 
@@ -42,6 +50,14 @@ export default {
             },
             set(value) {
                 this.$store.dispatch('setSetting', { setting: 'hasGeolocationPermission', value });
+            },
+        },
+        hasPermanentNotificationPermission: {
+            get() {
+                return this.$store.state.settings.hasPermanentNotificationPermission;
+            },
+            set(value) {
+                this.$store.dispatch('setSetting', { setting: 'hasPermanentNotificationPermission', value });
             },
         },
         hasPlaySoundPermission: {
