@@ -248,7 +248,7 @@ export default {
             // If heading is specified
             if (this.headingInRadiansFromNorth !== null) {
                 const rotation = (this.isInAutorotateMap
-                    ? - this.map.getView().getRotation() - Math.PI / 2
+                    ? -this.map.getView().getRotation() - Math.PI / 2
                     : (
                         this.headingInRadiansFromNorth
                         + this.map.getView().getRotation()
@@ -365,6 +365,7 @@ export default {
                 rotateOptions: {
                     autoHide: false,
                     label: rotateLabel,
+                    tipLabel: this.$t('map.toggleRotationMode'),
                     resetNorth: () => {
                         // Switch autorotate mode
                         this.hasUserAutorotateMap = !this.hasUserAutorotateMap;

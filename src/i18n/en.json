@@ -44,7 +44,8 @@
         "pickALocationManually": "pick a location manually"
     },
     "map": {
-        "attribution": "Map data \u00a9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors"
+        "attribution": "Map data \u00a9 <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors",
+        "toggleRotationMode": "Toggle rotation mode"
     },
     "menu": {
         "About": "Help",
