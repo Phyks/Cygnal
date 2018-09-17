@@ -1,8 +1,8 @@
 <template>
     <v-layout row fill-height wrap>
-        <v-flex xs12 class="speed-badge text-xs-center white" v-if="speed !== null && speed !== undefined">
+        <v-flex xs12 class="speed-badge text-xs-center white" v-if="speedInKmH !== null">
             <v-layout column>
-                <v-flex xs8 class="title mt-1">{{ speed }}</v-flex>
+                <v-flex xs8 class="title mt-1">{{ speedInKmH }}</v-flex>
                 <v-flex xs4 class="caption">km/h</v-flex>
             </v-layout>
         </v-flex>
@@ -111,6 +111,13 @@ export default {
         reportDetailsID() {
             // Get the currently shown report details ID
             return this.$store.state.reportDetails.id;
+        },
+        speedInKmH() {
+            // Convert speed from m/s to km/h
+            if (this.speed !== null && this.speed !== undefined) {
+                return this.speed * 3600 / 1000;
+            }
+            return null;
         },
         tileServer() {
             const tileServerSetting = this.$store.state.settings.tileServer;
@@ -444,7 +451,7 @@ export default {
         polyline: Array,
         positionLatLng: Array,
         reportLatLng: Array,
-        speed: Number,
+        speed: Number, // in m/s
         zoom: {
             type: Number,
             required: true,

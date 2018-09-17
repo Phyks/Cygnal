@@ -38,7 +38,7 @@ export function mockLocationRandom() {
     }
     let speed = null;
     if (Math.random() > 0.25) {
-        speed = Math.random() * 20;
+        speed = Math.random() * 9; // in meters/s
     }
     const newLocation = {
         coords: {
