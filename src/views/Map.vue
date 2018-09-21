@@ -170,6 +170,7 @@ export default {
             isReportDialogVisible: false,
             noSleep: null,
             notification: null,
+            notificationInitializationWatcher: null,
             reportLatLng: null,
         };
     },
@@ -180,8 +181,18 @@ export default {
                 'Cycl\'Assist',
                 { body: $t('notification.body'), icon: AppLogo, tag: 'CyclassistMap' },
             );
-            this.notification.addEventListener('click', this.showReportDialog);
+            this.notification.addEventListener('click', () => {
+                this.showReportDialog();
+                // Recreate permanent notification in case the OS closed it on click.
+                this.createNotification();
+            });
             this.notification.addEventListener('close', this.createNotification);
+
+            // Remove the watcher if still there, no further need to watch properties.
+            if (this.notificationInitializationWatcher) {
+                this.notificationInitializationWatcher();
+                this.notificationInitializationWatcher = null;
+            }
         },
         disableNoSleep() {
             if (this.noSleep) {
@@ -249,12 +260,26 @@ export default {
                 return;
             }
 
+            const that = this;
+            // Only create the notification once the position is ready
+            const createNotificationWhenPositionIsReady = (newValue) => {
+                if (newValue) {
+                    that.createNotification();
+                }
+            };
+
             if (Notification.permission && Notification.permission === 'granted') {
-                this.createNotification();
+                this.notificationInitializationWatcher = this.$watch(
+                    'currentLatLng',
+                    createNotificationWhenPositionIsReady,
+                );
             } else {
                 Notification.requestPermission((permission) => {
                     if (permission === 'granted') {
-                        this.createNotification();
+                        this.notificationInitializationWatcher = this.$watch(
+                            'currentLatLng',
+                            createNotificationWhenPositionIsReady,
+                        );
                     }
                 });
             }
@@ -269,6 +294,8 @@ export default {
         },
     },
     mounted() {
+        this.setupNotification();
+
         if (this.$route.name !== 'SharedMap') {
             // Only enable NoSleep in normal map view (with position tracking).
             this.setNoSleep();
@@ -288,8 +315,6 @@ export default {
             }
         }
         this.$store.dispatch('fetchReports').catch(() => {});
-
-        this.setupNotification();
     },
 };
 </script>
