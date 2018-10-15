@@ -89,6 +89,9 @@ export const REPORT_DOWNVOTES_THRESHOLD = 1;
 
 export const EARTH_RADIUS = 6378137; // in meters
 
+// Keep reports only in a given radius around map center.
+export const KEEP_REPORTS_METERS_AROUND = 10000; // in meters
+
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 10;
 export const MAX_ZOOM = 18;

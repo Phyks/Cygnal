@@ -171,16 +171,6 @@ export const mutations = {
     },
     [types.SET_CURRENT_POSITION](state, { currentLocation }) {
         state.location.gpx.push(currentLocation);
-        if (
-            !state.lastReportFetchingLocation
-            || !state.lastReportFetchingLocation[0]
-            || !state.lastReportFetchingLocation[1]
-        ) {
-            state.lastReportFetchingLocation = [
-                currentLocation.latitude,
-                currentLocation.longitude,
-            ];
-        }
     },
     [types.SET_LAST_REPORT_FETCHING_LOCATION](state, { locationLatLng }) {
         state.lastReportFetchingLocation = locationLatLng;

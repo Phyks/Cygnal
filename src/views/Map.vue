@@ -64,23 +64,6 @@ function handlePositionError(error) {
 }
 
 function setPosition(position) {
-    const lastFetchingLocation = store.state.lastReportFetchingLocation;
-    if (
-        lastFetchingLocation
-        && lastFetchingLocation[0] !== null
-        && lastFetchingLocation[1] !== null
-    ) {
-        const distanceFromPreviousPoint = distance(
-            [lastFetchingLocation[0], lastFetchingLocation[1]],
-            [position.coords.latitude, position.coords.longitude],
-        );
-        if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
-            store.dispatch('setLastReportFetchingLocation', {
-                locationLatLng: [position.coords.latitude, position.coords.longitude],
-            });
-            store.dispatch('fetchReports');
-        }
-    }
     store.dispatch(
         'setCurrentPosition',
         { coords: position.coords, timestamp: position.timestamp },
@@ -158,7 +141,7 @@ export default {
             return this.$store.state.location.gpx.map(item => [item.latitude, item.longitude]);
         },
         reportsMarkers() {
-            return this.$store.getters.notDismissedReports.map(report => ({
+            return this.$store.state.reports.map(report => ({
                 id: report.id,
                 type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],
@@ -230,6 +213,30 @@ export default {
             this.$store.dispatch('setLocationWatcherId', { id: watchID });
         },
         onMapCenterUpdate(center) {
+            // Update reports by default
+            let distanceFromPreviousPoint = constants.UPDATE_REPORTS_DISTANCE_THRESHOLD + 1;
+
+            // If last fetching location is known, only update reports if not too close
+            const lastFetchingLocation = this.$store.state.lastReportFetchingLocation;
+            if (
+                lastFetchingLocation
+                && lastFetchingLocation[0] !== null
+                && lastFetchingLocation[1] !== null
+            ) {
+                distanceFromPreviousPoint = distance(
+                    [lastFetchingLocation[0], lastFetchingLocation[1]],
+                    [center[0], center[1]],
+                );
+            }
+
+            // If necessary, refetch reports
+            if (distanceFromPreviousPoint > constants.UPDATE_REPORTS_DISTANCE_THRESHOLD) {
+                store.dispatch('setLastReportFetchingLocation', {
+                    locationLatLng: center,
+                });
+                store.dispatch('fetchReports').catch(() => {});
+            }
+
             this.$store.dispatch('setCurrentMapCenter', { center });
         },
         onMapZoomUpdate(zoom) {
@@ -314,7 +321,6 @@ export default {
                 this.$store.dispatch('markHasVibratedOnce');
             }
         }
-        this.$store.dispatch('fetchReports').catch(() => {});
     },
 };
 </script>

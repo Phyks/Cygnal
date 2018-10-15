@@ -1,5 +1,6 @@
 import * as api from '@/api';
 import * as constants from '@/constants';
+import { distance } from '@/tools';
 import i18n from '@/i18n';
 
 import {
@@ -22,11 +23,23 @@ import {
     STORE_REPORTS,
 } from './mutations-types';
 
-export function fetchReports({ commit }) {
+export function fetchReports({ commit, state }) {
     commit(IS_LOADING);
     return api.getActiveReports()
         .then((reports) => {
-            commit(STORE_REPORTS, { reports });
+            // Filter reports which are too far
+            const reportsToCommit = reports.filter(
+                (report) => {
+                    if (report.attributes.downvotes >= constants.REPORT_DOWNVOTES_THRESHOLD) {
+                        return false;
+                    }
+                    return distance(
+                        [report.attributes.lat, report.attributes.lng],
+                        state.map.center,
+                    ) < 10000;
+                },
+            );
+            commit(STORE_REPORTS, { reports: reportsToCommit });
             commit(IS_DONE_LOADING);
         })
         .catch((exc) => {
