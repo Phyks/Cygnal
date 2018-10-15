@@ -1,10 +1,8 @@
 <template>
     <v-layout row fill-height wrap>
         <v-flex xs12 class="speed-badge text-xs-center white" v-if="speedInKmH !== null">
-            <v-layout column>
-                <v-flex xs8 class="title mt-1">{{ speedInKmH }}</v-flex>
-                <v-flex xs4 class="caption">km/h</v-flex>
-            </v-layout>
+            <span class="title speed-badge-title mt-2">{{ speedInKmH }}</span>
+            <span class="caption">km/h</span>
         </v-flex>
 
         <v-flex xs12 id="map" :style="{ height: mapElementHeight }"></v-flex>
@@ -617,7 +615,7 @@ export default {
 .speed-badge {
     position: absolute;
     right: 10px;
-    font-size: 1.14em;
+    font-size: 1.5em;
     margin: 1px;
     top: calc(3em + 25px);
     z-index: 1000;
@@ -626,12 +624,17 @@ export default {
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, .87) !important;
 }
+
+.speed-badge-title {
+    display: block;
+}
 </style>
 
 <style>
 #map .ol-control button {
     height: 3em !important;
     width: 3em !important;
+    font-size: 1.5em; /* No different font sizes between touch and not touch screens. */
 }
 
 #map .ol-rotate {
