@@ -10,8 +10,8 @@ serve the issues. This code is the code running behind https://cyclo.phyks.me/
 
 **A sandbox instance if you want to try it out without polluting the main instance
 is available at https://cyclo-dev.phyks.me**. Please note however this is a
-sandbox instance which might be ahead of the official https://cyclo.phyks.me
-instance from time to time, so that it might break from time to time.
+development instance which might be ahead of the official https://cyclo.phyks.me
+instance from time to time. It might break from time to time.
 
 As of current version, only the client side part (code running on your local
 device) handles your geolocation. **Your precise geolocation is never sent**
@@ -20,6 +20,7 @@ downloaded on demand from [Thunderforest](http://thunderforest.com/) so they
 could know the location of the displayed map.
 
 <img src="support/screenshots/webapp.jpg" width="45%"/> <img src="support/screenshots/reportDialog.jpg" width="45%"/>
+
 
 ## OpenData
 
@@ -31,119 +32,18 @@ https://cyclo.phyks.me/api/v1/reports.
 Statistics about the instance can be fetched at
 https://cyclo.phyks.me/api/v1/stats.
 
-## Hosting your own
 
-### Client part
+## Documentation
 
-#### Build setup
-
-``` bash
-# Install JS dependencies
-yarn install
-
-# Serve with hot reload at localhost:8080
-yarn dev
-
-# Build for production with minification
-yarn build
-
-# Build for production and view the bundle analyzer report
-yarn build --report
-```
-
-#### Useful environment variables
-
-You can pass a few environment variables to the `yarn build|dev` commands to
-adapt the behavior to your needs.
-
-* `PUBLIC_PATH=https://.../foobar` to serve the app from a subdirectory.
-* `API_BASE_URL=https://...` to specify the location of the server (defaults
-    to `/`). The value should end with a trailing slash.
-* `THUNDERFOREST_API_KEY=` to pass an API key server to use for
-    [Thunderforest](http://thunderforest.com/) tiles (OpenCycleMap, etc).
-* `API_TOKEN=` to pass a token required to access the server side API (check
-    below in the server part environment variables for more details).
-
-You should also have a look at the build variables under the `config/`
-subdirectory.
-
-
-#### Geographical extension
-
-While the frontend could theoretically work in the entire world without much
-modifications, it is currently written with mainland France in mind, mostly
-because that is the territory the authors are most familiar with.
-Additionnally, this limits the volume of geographical data (such as OSM
-extracts) to handle and makes managing the app easier.
-
-You could of course easily extend it to support other territories. The
-French-specific parts of the code so far are:
-* The [`AddressInput`](https://framagit.org/phyks/cyclassist/blob/master/src/components/AddressInput.vue) component which uses the [https://adresse.data.gouv.fr/](https://adresse.data.gouv.fr/) API to autocomplete addresses. You could easily replace it with [Algolia Places](https://community.algolia.com/places/) which covers the entire world.
-
-
-#### Notes
-
-We are using [A la carte](https://vuetifyjs.com/en/guides/a-la-carte) Vuetify
-components to reduce the size of the build. Check that any extra components
-you might use is indeed included in `src/vuetify.js` file. The `yarn
-list-vuetify-components` command might be useful to help you determine which
-components are used across the code.
-
-
-### Server part
-
-#### Build setup
-
-``` bash
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Start the server
-python -m server
-```
-
-It is better to use a dedicated `virtualenv` if you can :)
-
-API routes are all listed within `server/routes.py` file, with documentation
-strings.
-
-#### Useful environment variables
-
-You can pass a few environment variables to the `python -m server` command to
-adapt its behavior:
-
-* `HOST=` to specify the host to listen to (defaults to `127.0.0.1` which
-    means `localhost` only).
-* `PORT=` to specify the port to listen on (defaults to `8081`).
-* `DATABASE=` to specify a [database URL](http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#db-url) to connect to (defaults to
-    `sqlite:///reports.db` which means a SQLite database named `reports.db` in
-    the current working directory).
-* `API_TOKEN=` to specify a token required to `POST` data to the API.
-
-#### Serving in production
-
-You can use the `wsgi.py` script at the root of the git repository to serve
-the server side part. You can find some `uwsgi` and `nginx` base config files
-under the `support` folder.
-
-#### Importing OpenData
-
-A few OpenData files can be imported in Cycl'Assist, to import roadworks for
-instance. All the useful scripts to import OpenData are in the
-`scripts/opendata` folder. You can set up a daily cron task to automatically
-run the import of roadworks every day.
-
-#### Updating
-
-Database migrations are in the `scripts/migrations` folder, labelled by
-versions. You should run them in order from your current versions to the
-latest one when you upgrade.
+Detailed documentation about this software is available under the
+[`doc/`](doc/) folder. This covers setting up your own instance, API, privacy
+choices etc.
 
 
 ## Contributing
 
 Check out the [CONTRIBUTING.md](CONTRIBUTING.md) file for all the required doc
-and details before contributing :) Any contributions more than welcome!
+and details before contributing :) Any contributions are more than welcome!
 
 
 ## License
