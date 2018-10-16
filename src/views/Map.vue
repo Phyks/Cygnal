@@ -234,7 +234,7 @@ export default {
                 store.dispatch('setLastReportFetchingLocation', {
                     locationLatLng: center,
                 });
-                store.dispatch('fetchReports').catch(() => {});
+                store.dispatch('fetchReports');
             }
 
             this.$store.dispatch('setCurrentMapCenter', { center });
