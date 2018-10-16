@@ -102,7 +102,28 @@ def get_all_reports():
 
     Example::
 
-        GET /api/v1/reports
+        > GET /api/v1/reports
+
+        {
+            "data": [
+                {
+                    "attributes": {
+                        "expiration_datetime": null,
+                        "downvotes": 0,
+                        "datetime": "2018-06-27T16:44:12+00:00",
+                        "is_open": true,
+                        "lat": 48.842005,
+                        "upvotes": 1,
+                        "lng": 2.386278,
+                        "type": "interrupt",
+                        …
+                    },
+                    "type": "reports",
+                    "id": 1
+                },
+                …
+            ]
+        }
 
     .. note::
 
@@ -134,7 +155,28 @@ def get_active_reports():
 
     Example::
 
-        GET /api/v1/reports/active
+        > GET /api/v1/reports/active
+
+        {
+            "data": [
+                {
+                    "attributes": {
+                        "expiration_datetime": null,
+                        "downvotes": 0,
+                        "datetime": "2018-06-27T16:44:12+00:00",
+                        "is_open": true,
+                        "lat": 48.842005,
+                        "upvotes": 1,
+                        "lng": 2.386278,
+                        "type": "interrupt",
+                        …
+                    },
+                    "type": "reports",
+                    "id": 1
+                },
+                …
+            ]
+        }
 
     .. note::
 
@@ -165,12 +207,33 @@ def post_report():
 
     Example::
 
-        POST /api/v1/reports
+        > POST /api/v1/reports
+        > {
+        >     "type": "pothole",
+        >     "lat": 48.84219652060494,
+        >     "lng": 2.385234797066081
+        > }
+
         {
-            "type": "toto",
-            "lat": 32,
-            "lng": 27
+            "data": {
+                "attributes": {
+                    "expiration_datetime": null,
+                    "downvotes": 0,
+                    "datetime": "2018-10-17T13:42:35+00:00",
+                    "first_report_datetime": "2018-10-17T13:42:35+00:00",
+                    "lat": 48.84219652060494,
+                    "upvotes": 0,
+                    "lng": 2.385234797066081,
+                    "type": "pothole",
+                    "is_open": true,
+                    …
+                },
+                "type": "reports",
+                "id": 1161
+            }
         }
+
+    :return: The newly created report object in a JSON ``data`` dict.
     """
     # Handle CORS
     if bottle.request.method == 'OPTIONS':
@@ -214,7 +277,28 @@ def upvote_report(id):
 
     Example::
 
-        POST /api/v1/reports/1/upvote
+        > POST /api/v1/reports/1/upvote
+
+        {
+            "data": {
+                "attributes": {
+                    "expiration_datetime": null,
+                    "downvotes": 0,
+                    "datetime": "2018-10-17T13:42:35+00:00",
+                    "first_report_datetime": "2018-10-17T13:42:35+00:00",
+                    "lat": 48.84219652060494,
+                    "upvotes": 1,
+                    "lng": 2.385234797066081,
+                    "type": "pothole",
+                    "is_open": true,
+                    …
+                },
+                "type": "reports",
+                "id": 1161
+            }
+        }
+
+    :return: The updated report object in a JSON ``data`` dict.
     """
     # Handle CORS
     if bottle.request.method == 'OPTIONS':
@@ -252,7 +336,28 @@ def downvote_report(id):
 
     Example::
 
-        POST /api/v1/reports/1/downvote
+        > POST /api/v1/reports/1/downvote
+
+        {
+            "data": {
+                "attributes": {
+                    "expiration_datetime": null,
+                    "downvotes": 1,
+                    "datetime": "2018-10-17T13:42:35+00:00",
+                    "first_report_datetime": "2018-10-17T13:42:35+00:00",
+                    "lat": 48.84219652060494,
+                    "upvotes": 0,
+                    "lng": 2.385234797066081,
+                    "type": "pothole",
+                    "is_open": true,
+                    …
+                },
+                "type": "reports",
+                "id": 1161
+            }
+        }
+
+    :return: The updated report object in a JSON ``data`` dict.
     """
     # Handle CORS
     if bottle.request.method == 'OPTIONS':
@@ -282,7 +387,18 @@ def get_stats():
 
     Example::
 
-        GET /api/v1/states
+        > GET /api/v1/stats
+
+        {
+            "data": {
+                "nb_active_reports": 606,
+                "nb_reports": 1162,
+                "last_added_report_datetime": "2018-10-17T13:44:16+00:00",
+                …
+            }
+        }
+
+    :return: The available stats about the instance in a JSON ``data`` dict.
     """
     # Handle CORS
     if bottle.request.method == 'OPTIONS':
