@@ -44,7 +44,8 @@
         "pickALocationManually": "causir una posicion manualament"
     },
     "map": {
-        "attribution": "Donadas de la mapa \u00a9 los contribuidors de <a href=\"http://openstreetmap.org\">OpenStreetMap</a>"
+        "attribution": "Donadas de la mapa \u00a9 los contribuidors de <a href=\"http://openstreetmap.org\">OpenStreetMap</a>",
+        "toggleRotationMode": "Cambiar lo m\u00f2de d\u2019orientacion"
     },
     "menu": {
         "About": "Ajuda",
@@ -61,9 +62,14 @@
         "retry": "Ensajar tornamai",
         "spaceBeforeDoublePunctuations": "&nbsp;"
     },
+    "notification": {
+        "body": "Clicatz aqu\u00ed per senhalar quic\u00f2m\u00a0!"
+    },
     "permissions": {
         "geolocation": "Geolocalizacion",
         "geolocationDescription": "Dins la version actuala, v\u00f2stra posicion es tractada dir\u00e8ctament per v\u00f2stre periferic e pas jamai enviada a un servici ext\u00e8rne. Lo fons de mapa es telecargat a la demanda del provesidor de teulas estant e a doncas acc\u00e8s a una estimacion de la posicion mostrada. Se refusatz lo partiment de v\u00f2stra geolocalizacion, poiretz picar una adre\u00e7a a la man all\u00f2c mas perdretz las foncionalitats avan\u00e7adas qu'utilizan la geolocalizacion.",
+        "permanentNotification": "Notificacion permanenta",
+        "permanentNotificationDescription": "Mostrar una notificacion permanenta per anar rapidament a la n\u00f2va fen\u00e8stra de senhalament.",
         "playSound": "Legir los sons",
         "preventSuspend": "Empachar lo periferic de passar en velha",
         "preventSuspendDescription": "Quand la mapa es mostrada, lo periferic passar\u00e0 pas en velha.",

@@ -44,7 +44,8 @@
         "pickALocationManually": "choisir une position manuellement"
     },
     "map": {
-        "attribution": "Donn\u00e9es de la carte \u00a9 les contributeurs <a href=\"http://openstreetmap.org\">OpenStreetMap</a>"
+        "attribution": "Donn\u00e9es de la carte \u00a9 les contributeurs <a href=\"http://openstreetmap.org\">OpenStreetMap</a>",
+        "toggleRotationMode": "Basculer entre les modes de rotation"
     },
     "menu": {
         "About": "Aide",
@@ -61,9 +62,14 @@
         "retry": "R\u00e9essayer",
         "spaceBeforeDoublePunctuations": "&nbsp;"
     },
+    "notification": {
+        "body": "Cliquer pour signaler !"
+    },
     "permissions": {
         "geolocation": "G\u00e9olocalisation",
         "geolocationDescription": "Dans la version actuelle, votre position est trait\u00e9e directement par votre appareil et n'est jamais envoy\u00e9e \u00e0 un service externe. Le fond de carte est t\u00e9l\u00e9charg\u00e9 \u00e0 la demande depuis le fournisseur de tuiles et il a donc acc\u00e8s \u00e0 une estimation de la position affich\u00e9e. Si vous refusez le partage de votre g\u00e9olocalisation, vous pourrez saisir une adresse manuellement \u00e0 la place mais vous perdrez les fonctionnalit\u00e9s avanc\u00e9es qui reposent sur la g\u00e9olocalisation.",
+        "permanentNotification": "Notification permanente",
+        "permanentNotificationDescription": "Afficher une notification permanente pour revenir rapidement \u00e0 la fen\u00eatre de nouveau signalement.",
         "playSound": "\u00c9mettre des sons",
         "preventSuspend": "Emp\u00eacher l'appareil de passer en veille",
         "preventSuspendDescription": "Quand la carte est affich\u00e9e, l'appareil ne pourra pas passer en veille automatiquement.",

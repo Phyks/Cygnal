@@ -78,3 +78,13 @@ contributors</a> and <a href=\"http://leafletjs.com/\">Leaflet</a>.
 
 Manual location picking uses the awesome API from <a
 href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.
+
+
+## Thanks
+
+Thanks a lot to all users, contributors and translators for the help on this
+software.
+
+Among others, thanks to
+
+* [Quenti](https://framapiaf.org/@Quenti) for the Occitan translation.
