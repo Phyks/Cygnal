@@ -98,10 +98,14 @@ export default {
             return this.$store.getters.getLastLocation || {};
         },
         currentSpeed() {
-            if (this.hasCenterProvidedByRoute || !this.currentLocation) {
+            if (
+                this.hasCenterProvidedByRoute
+                || !this.currentLocation
+                || !this.currentLocation.speed
+            ) {
                 return null;
             }
-            return Math.round(this.currentLocation.speed || 0, 0);
+            return Math.round(this.currentLocation.speed, 0);
         },
         error() {
             const errorCode = this.$store.state.location.error;

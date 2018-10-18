@@ -26,7 +26,11 @@ export default {
             this.$store.dispatch(
                 'setCurrentPosition',
                 {
-                    coords: { latitude: value.latlng.lat, longitude: value.latlng.lng },
+                    coords: {
+                        latitude: value.latlng.lat,
+                        longitude: value.latlng.lng,
+                        speed: null,
+                    },
                     timestamp: new Date().getTime(),
                 },
             );
