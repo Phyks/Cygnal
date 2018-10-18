@@ -21,8 +21,11 @@ from shapely.ops import transform
 from server.models import db, Report
 
 level = logging.WARN
+RAISE_ON_EXCEPT = False
 if 'DEBUG' in os.environ:
-    level = logging.info
+    level = logging.INFO
+if 'RAISE_ON_EXCEPT' in os.environ:
+    RAISE_ON_EXCEPT = True
 logging.basicConfig(level=level)
 
 
@@ -38,6 +41,53 @@ def preprocess_lille(data):
             logging.warning('Invalid item in Lille data: %s.', exc)
             continue
     return data
+
+
+def preprocess_loiret(data):
+    out = []
+    for item in data['features']:
+        try:
+            if 'paths' in item['geometry']:
+                paths = item['geometry']['paths']
+            else:
+                paths = [
+                    [
+                        [item['geometry']['x'], item['geometry']['y']]
+                    ]
+                ]
+            for path in paths:
+                if len(path) == 1:
+                    geometry = {
+                        'type': 'Point',
+                        'coordinates': path[0]
+                    }
+                else:
+                    geometry = {
+                        'type': 'LineString',
+                        'coordinates': path
+                    }
+                new_item = {
+                    'fields': item['attributes'],
+                    'geometry': geometry,
+                    'recordid': item['attributes']['OBJECTID']
+                }
+                fields = new_item['fields']
+                # Homogeneize start and end date spelling
+                fields['date_debut'] = arrow.get(
+                    float(fields['STARTDATE']) / 1000
+                ).isoformat()
+                fields['date_fin'] = arrow.get(
+                    float(fields['ENDDATE']) / 1000
+                ).isoformat()
+                # Homogeneize geo shape
+                fields['geo_shape'] = geometry
+                out.append(new_item)
+        except KeyError as exc:
+            logging.warning('Invalid item in Loiret data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
+            continue
+    return out
 
 
 def preprocess_lyon(data):
@@ -58,6 +108,8 @@ def preprocess_lyon(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Lyon data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -80,6 +132,8 @@ def preprocess_montpellier(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Montpellier data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -113,6 +167,8 @@ def preprocess_nancy(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Nancy data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -134,6 +190,8 @@ def preprocess_rennes(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Rennes data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -153,6 +211,8 @@ def preprocess_seine_saint_denis(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Seine-Saint-Denis data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -168,6 +228,8 @@ def preprocess_sicoval(data):
             fields['geo_shape'] = fields['geoshape2']
         except KeyError as exc:
             logging.warning('Invalid item in Sicoval data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return data
 
@@ -181,6 +243,8 @@ def preprocess_toulouse(data):
             fields['date_fin'] = fields['datefin']
         except KeyError as exc:
             logging.warning('Invalid item in Toulouse data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return data
 
@@ -189,20 +253,45 @@ def preprocess_versailles(data):
     out = []
     for item in data['features']:
         try:
-            new_item = {
-                'fields': item['properties'],
-                'geometry': item['geometry'],
-                'recordid': item['properties']['OBJECTID']
-            }
-            fields = new_item['fields']
-            # Homogeneize start date and end date spelling
-            fields['date_debut'] = fields['STARTDATE']
-            fields['date_fin'] = fields['ENDDATE']
-            # Homogeneize geo shape
-            fields['geo_shape'] = item['geometry']
-            out.append(new_item)
+            if 'paths' in item['geometry']:
+                paths = item['geometry']['paths']
+            else:
+                paths = [
+                    [
+                        [item['geometry']['x'], item['geometry']['y']]
+                    ]
+                ]
+            for path in paths:
+                if len(path) == 1:
+                    geometry = {
+                        'type': 'Point',
+                        'coordinates': path[0]
+                    }
+                else:
+                    geometry = {
+                        'type': 'LineString',
+                        'coordinates': path
+                    }
+                new_item = {
+                    'fields': item['attributes'],
+                    'geometry': geometry,
+                    'recordid': item['attributes']['OBJECTID']
+                }
+                fields = new_item['fields']
+                # Homogeneize start and end date spelling
+                fields['date_debut'] = arrow.get(
+                    float(fields['STARTDATE']) / 1000
+                ).isoformat()
+                fields['date_fin'] = arrow.get(
+                    float(fields['ENDDATE']) / 1000
+                ).isoformat()
+                # Homogeneize geo shape
+                fields['geo_shape'] = geometry
+                out.append(new_item)
         except KeyError as exc:
             logging.warning('Invalid item in Versailles data: %s.', exc)
+            if RAISE_ON_EXCEPT:
+                raise
             continue
     return out
 
@@ -210,54 +299,88 @@ def preprocess_versailles(data):
 MIN_DISTANCE_REPORT_DETAILS = 40  # Distance in meters, same as in constants.js
 OPENDATA_URLS = {
     # Work in Lille
+    # https://opendata.lillemetropole.fr/explore/dataset/troncons-de-voirie-impactes-par-des-travaux-en-temps-reel/
+    # Licence Ouverte (Etalab) : https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf
     "lille": {
         "preprocess": preprocess_lille,
         "url": "https://opendata.lillemetropole.fr/explore/dataset/troncons-de-voirie-impactes-par-des-travaux-en-temps-reel/download/?format=json&timezone=Europe/Berlin"
     },
+    # Work in Loiret
+    # https://open-loiret.opendata.arcgis.com/datasets/74c95548589d4ddeb3fcf094f7d61a67_1?geometry=0.609%2C47.694%2C3.245%2C48.016&orderBy=BLOCKNM
+    # Custom license
+    "loiret": {
+        "preprocess": preprocess_loiret,
+        "url": "https://services2.arcgis.com/IEzPuQhCEVCtkVvT/arcgis/rest/services/Travaux_routiers/FeatureServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson",
+    },
     # Work in Lyon
+    # https://data.grandlyon.com/equipements/chantiers-perturbants-de-la-mftropole-de-lyon/
+    # Licence Ouverte : https://download.data.grandlyon.com/files/grandlyon/LicenceOuverte.pdf
     "lyon": {
         "preprocess": preprocess_lyon,
         "url": "https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&outputformat=GEOJSON&maxfeatures=30&request=GetFeature&typename=pvo_patrimoine_voirie.pvochantierperturbant&SRSNAME=urn:ogc:def:crs:EPSG::4171",
     },
     # Work in Montpellier
+    # http://data.montpellier3m.fr/dataset/chantiers-genants-de-montpellier
+    # Licence ODbL : http://opendefinition.org/licenses/odc-odbl/
     "montpellier": {
         "preprocess": preprocess_montpellier,
         "url": "http://data.montpellier3m.fr/sites/default/files/ressources/MMM_MMM_Chantiers.json"
     },
     # Work in Nancy
+    # http://opendata.grandnancy.eu/jeux-de-donnees/detail-dune-fiche-de-donnees/?tx_icsoddatastore_pi1%5Bkeywords%5D=travaux&tx_icsoddatastore_pi1%5Buid%5D=63&tx_icsoddatastore_pi1%5BreturnID%5D=447
+    # Licence libre / Licence Ouverte (Etalab)
     "nancy": {
         "preprocess": preprocess_nancy,
         "url": "https://geoservices.grand-nancy.org/arcgis/rest/services/public/VOIRIE_Info_Travaux_Niveau/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson"
     },
     # Work in Paris
+    # https://opendata.paris.fr/explore/dataset/chantiers-perturbants/
+    # Licence ODbL : http://opendatacommons.org/licenses/odbl/
     "paris": {
         "preprocess": None,
         "url": "https://opendata.paris.fr/explore/dataset/chantiers-perturbants/download/?format=json&timezone=Europe/Berlin",
     },
     # Work in Rennes
+    # http://travaux.data.rennesmetropole.fr/
+    # Usage libre / Licence ODbL : http://opendatacommons.org/licenses/odbl/
     "rennes": {
         "preprocess": preprocess_rennes,
         "url": "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326"
     },
     # Work in Seine-Saint-Denis
+    # https://geo.data.gouv.fr/fr/datasets/12504debb9bb73e717ad710a746541ebf817d98c
+    # Licence Ouverte : https://www.etalab.gouv.fr/licence-ouverte-open-licence
     "seine-saint-denis": {
         "preprocess": preprocess_seine_saint_denis,
         "url": "https://geo.data.gouv.fr/api/geogw/services/5779810963f06a3a8e81541b/feature-types/C1296/download?format=GeoJSON&projection=WGS84"
     },
     # Work in Sicoval (South of Toulouse)
+    # https://data.opendatasoft.com/explore/dataset/travauxincidents@sicoval-haute-garonne/
+    # Licence Ouverte v2.0 (Etalab) : https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf
     "sicoval": {
         "preprocess": preprocess_sicoval,
         "url": "https://data.opendatasoft.com/explore/dataset/travauxincidents@sicoval-haute-garonne/download/?format=json&timezone=Europe/Berlin"
     },
     # Work in Toulouse
+    # https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/
+    # Licence ODbL : http://opendatacommons.org/licenses/odbl/
     "toulouse": {
         "preprocess": preprocess_toulouse,
         "url": "https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/download/?format=json&timezone=Europe/Berlin",
     },
     # Work in Versailles
-    "versailles": {
+    # Licence Ouverte (Etalab)
+    "versailles-blocks": {  # http://www-cavgp.opendata.arcgis.com/datasets/f58091424f38424ba04a2d3933dc979e_0
         "preprocess": preprocess_versailles,
-        "url": "https://www.data.gouv.fr/en/datasets/r/16f90f14-7896-4463-bc35-9809b55c2c1b"
+        "url": "https://services2.arcgis.com/YECJCCLQCtaylXWh/arcgis/rest/services/Waze/FeatureServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson"
+    },
+    "versailles-closures": {  # http://www-cavgp.opendata.arcgis.com/datasets/f58091424f38424ba04a2d3933dc979e_1
+        "preprocess": preprocess_versailles,
+        "url": "https://services2.arcgis.com/YECJCCLQCtaylXWh/arcgis/rest/services/Waze/FeatureServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson"
+    },
+    "versailles-detours": {  # http://www-cavgp.opendata.arcgis.com/datasets/f58091424f38424ba04a2d3933dc979e_2
+        "preprocess": preprocess_versailles,
+        "url": "https://services2.arcgis.com/YECJCCLQCtaylXWh/arcgis/rest/services/Waze/FeatureServer/1/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=4326&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=pjson"
     },
 }
 REPORT_TYPE = 'interrupt'

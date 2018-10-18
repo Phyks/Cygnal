@@ -70,14 +70,16 @@ Icons are made from the original works:
 Beep sound is provided under CC0 license and coming from
 [freesound.org](https://freesound.org/people/thisusernameis/sounds/426888/).
 
-The map background is using tiles from <a
-href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> or
-<a href=\"http://thunderforest.com/\">Thunderforest</a>, thanks to <a
-href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap
-contributors</a> and <a href=\"http://leafletjs.com/\">Leaflet</a>.
+The map background is using tiles from
+[Carto.com](https://carto.com/location-data-services/basemaps/) or
+[Thunderforest](http://thunderforest.com/), thanks to [OpenStreetMap
+contributors](https://www.openstreetmap.org/copyright) and
+[Leaflet](http://leafletjs.com/).
 
-Manual location picking uses the awesome API from <a
-href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>.
+Manual location picking uses the awesome API from [adresse.data.gouv.fr](https://adresse.data.gouv.fr).
+
+Details about the sources and licenses of the opendata imported is available
+in the `scripts/opendata/` scripts.
 
 
 ## Thanks
