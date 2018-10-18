@@ -355,11 +355,11 @@ OPENDATA_URLS = {
         "url": "https://geo.data.gouv.fr/api/geogw/services/5779810963f06a3a8e81541b/feature-types/C1296/download?format=GeoJSON&projection=WGS84"
     },
     # Work in Sicoval (South of Toulouse)
-    # https://data.opendatasoft.com/explore/dataset/travauxincidents@sicoval-haute-garonne/
+    # https://data.sicoval.fr/explore/dataset/travauxincidents/
     # Licence Ouverte v2.0 (Etalab) : https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf
     "sicoval": {
         "preprocess": preprocess_sicoval,
-        "url": "https://data.opendatasoft.com/explore/dataset/travauxincidents@sicoval-haute-garonne/download/?format=json&timezone=Europe/Berlin"
+        "url": "https://data.sicoval.fr/explore/dataset/travauxincidents/download/?format=json&timezone=Europe/Berlin"
     },
     # Work in Toulouse
     # https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/
