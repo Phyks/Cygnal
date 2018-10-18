@@ -24,7 +24,7 @@ export function saveReport(type, lat, lng) {
 }
 
 export function getActiveReports() {
-    return fetch(`${BASE_URL}api/v1/reports/active`)
+    return fetch(`${BASE_URL}api/v1/reports?filter[expiration_datetime][gt?]=${(new Date()).toISOString()}`)
         .then(response => response.json())
         .then(response => response.data)
         .catch((exc) => {

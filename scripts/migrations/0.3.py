@@ -29,6 +29,7 @@ def run_migration():
     migrate(
         migrator.add_column('report', 'first_report_datetime',
                             peewee.DateTimeField(default=UTC_now)),
+        migrator.drop_column('report', 'is_open'),
     )
     query = Report.select()
     for report in query:

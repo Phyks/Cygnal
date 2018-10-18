@@ -10,7 +10,7 @@ import re
 
 import bottle
 
-FILTER_RE = re.compile(r"filter\[([A-z0-9_]+?)\](\[([A-z0-9_]+)\])?")
+FILTER_RE = re.compile(r"filter\[([A-z0-9_]+?)\](\[([A-z0-9_]+\??)\])?")
 
 
 class DateAwareJSONEncoder(json.JSONEncoder):
@@ -76,20 +76,35 @@ def JsonApiParseQuery(query, model, default_sorting=None):
         for value in query.getall(param):
             # Handle operation
             operation = filter_match.group(3)
-            if operation == 'eq' or operation is None:
-                filters.append(field == value)
+            if operation is None:
+                # Default operation is 'eq'
+                operation = 'eq'
+
+            # Handle '?' modifier
+            modifier_filter = None
+            if operation.endswith('?'):
+                modifier_filter = (field == None)
+                operation = operation.rstrip('?')
+
+            if operation == 'eq':
+                operation_filter = (field == value)
             elif operation == 'ne':
-                filters.append(field != value)
+                operation_filter = (field != value)
             elif operation == 'gt':
-                filters.append(field > value)
+                operation_filter = (field > value)
             elif operation == 'ge':
-                filters.append(field >= value)
+                operation_filter = (field >= value)
             elif operation == 'lt':
-                filters.append(field < value)
+                operation_filter = (field < value)
             elif operation == 'le':
-                filters.append(field <= value)
+                operation_filter = (field <= value)
             else:
                 raise ValueError("Invalid filtering operator provided.")
+
+            if modifier_filter:
+                filters.append(modifier_filter | operation_filter)
+            else:
+                filters.append(operation_filter)
 
     # Handle pagination according to JSON API spec
     page_number, page_size = 0, None

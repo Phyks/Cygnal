@@ -48,7 +48,6 @@ class Report(BaseModel):
         default=UTC_now
     )
     expiration_datetime = peewee.DateTimeField(null=True)
-    is_open = peewee.BooleanField(default=True)
     upvotes = peewee.IntegerField(default=0)
     downvotes = peewee.IntegerField(default=0)
 

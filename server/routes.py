@@ -37,9 +37,34 @@ def check_auth():
     return
 
 
-def get_reports(only_active=False):
+@bottle.route('/api/v1/reports', ["GET", "OPTIONS"])
+def get_all_reports():
     """
-    Get reports for the reports getting routes.
+    API v1 GET reports route. Get all reports.
+
+    Example::
+
+        > GET /api/v1/reports
+
+        {
+            "data": [
+                {
+                    "attributes": {
+                        "expiration_datetime": null,
+                        "downvotes": 0,
+                        "datetime": "2018-06-27T16:44:12+00:00",
+                        "lat": 48.842005,
+                        "upvotes": 1,
+                        "lng": 2.386278,
+                        "type": "interrupt",
+                        …
+                    },
+                    "type": "reports",
+                    "id": 1
+                },
+                …
+            ]
+        }
 
     .. note::
 
@@ -78,11 +103,6 @@ def get_reports(only_active=False):
     query = Report.select()
     if filters:
         query = query.where(*filters)
-    if only_active:
-        query = query.where(
-            (Report.expiration_datetime == None) |
-            (Report.expiration_datetime > UTC_now())
-        )
     query = query.order_by(*sorting)
     if page_number and page_size:
         query = query.paginate(page_number, page_size)
@@ -93,111 +113,6 @@ def get_reports(only_active=False):
             for r in query
         ]
     }
-
-
-@bottle.route('/api/v1/reports', ["GET", "OPTIONS"])
-def get_all_reports():
-    """
-    API v1 GET reports route. Get all reports.
-
-    Example::
-
-        > GET /api/v1/reports
-
-        {
-            "data": [
-                {
-                    "attributes": {
-                        "expiration_datetime": null,
-                        "downvotes": 0,
-                        "datetime": "2018-06-27T16:44:12+00:00",
-                        "is_open": true,
-                        "lat": 48.842005,
-                        "upvotes": 1,
-                        "lng": 2.386278,
-                        "type": "interrupt",
-                        …
-                    },
-                    "type": "reports",
-                    "id": 1
-                },
-                …
-            ]
-        }
-
-    .. note::
-
-        Filtering can be done through the ``filter`` GET param, according
-        to JSON API spec (http://jsonapi.org/recommendations/#filtering).
-
-    .. note::
-
-        By default no pagination is done. Pagination can be forced using
-        ``page[size]`` to specify a number of items per page and
-        ``page[number]`` to specify which page to return. Pages are numbered
-        starting from 0.
-
-    .. note::
-
-        Sorting can be handled through the ``sort`` GET param, according to
-        JSON API spec (http://jsonapi.org/format/#fetching-sorting).
-
-    :return: The available reports objects in a JSON ``data`` dict.
-    """
-    return get_reports(only_active=False)
-
-
-@bottle.route('/api/v1/reports/active', ["GET", "OPTIONS"])
-def get_active_reports():
-    """
-    API v1 GET reports route. Only get active reports (those with
-    ``expiration_datetime`` in the future).
-
-    Example::
-
-        > GET /api/v1/reports/active
-
-        {
-            "data": [
-                {
-                    "attributes": {
-                        "expiration_datetime": null,
-                        "downvotes": 0,
-                        "datetime": "2018-06-27T16:44:12+00:00",
-                        "is_open": true,
-                        "lat": 48.842005,
-                        "upvotes": 1,
-                        "lng": 2.386278,
-                        "type": "interrupt",
-                        …
-                    },
-                    "type": "reports",
-                    "id": 1
-                },
-                …
-            ]
-        }
-
-    .. note::
-
-        Filtering can be done through the ``filter`` GET param, according
-        to JSON API spec (http://jsonapi.org/recommendations/#filtering).
-
-    .. note::
-
-        By default no pagination is done. Pagination can be forced using
-        ``page[size]`` to specify a number of items per page and
-        ``page[number]`` to specify which page to return. Pages are numbered
-        starting from 0.
-
-    .. note::
-
-        Sorting can be handled through the ``sort`` GET param, according to
-        JSON API spec (http://jsonapi.org/format/#fetching-sorting).
-
-    :return: The available reports objects in a JSON ``data`` dict.
-    """
-    return get_reports(only_active=True)
 
 
 @bottle.route('/api/v1/reports', ["POST", "OPTIONS"])
@@ -225,7 +140,6 @@ def post_report():
                     "upvotes": 0,
                     "lng": 2.385234797066081,
                     "type": "pothole",
-                    "is_open": true,
                     …
                 },
                 "type": "reports",
@@ -290,7 +204,6 @@ def upvote_report(id):
                     "upvotes": 1,
                     "lng": 2.385234797066081,
                     "type": "pothole",
-                    "is_open": true,
                     …
                 },
                 "type": "reports",
@@ -349,7 +262,6 @@ def downvote_report(id):
                     "upvotes": 0,
                     "lng": 2.385234797066081,
                     "type": "pothole",
-                    "is_open": true,
                     …
                 },
                 "type": "reports",
