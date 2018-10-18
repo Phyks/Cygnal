@@ -9,6 +9,7 @@ import json
 import re
 
 import bottle
+import peewee
 
 FILTER_RE = re.compile(r"filter\[([A-z0-9_]+?)\](\[([A-z0-9_]+\??)\])?")
 
@@ -73,7 +74,15 @@ def JsonApiParseQuery(query, model, default_sorting=None):
         if not filter_match:
             continue
         field = getattr(model, filter_match.group(1))
+
         for value in query.getall(param):
+            if isinstance(field, peewee.DateTimeField):
+                value = arrow.get(value).naive
+            elif isinstance(field, peewee.DoubleField):
+                value = float(value)
+            elif isinstance(field, peewee.IntegerField):
+                value = int(value)
+
             # Handle operation
             operation = filter_match.group(3)
             if operation is None:
