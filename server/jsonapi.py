@@ -10,7 +10,7 @@ import re
 
 import bottle
 
-FILTER_RE = re.compile(r"filter\[([A-z0-9_]+)\]")
+FILTER_RE = re.compile(r"filter\[([A-z0-9_]+?)\](\[([A-z0-9_]+)\])?")
 
 
 class DateAwareJSONEncoder(json.JSONEncoder):
@@ -73,8 +73,23 @@ def JsonApiParseQuery(query, model, default_sorting=None):
         if not filter_match:
             continue
         field = getattr(model, filter_match.group(1))
-        value = query[filter_match.group(0)]
-        filters.append(field == value)
+        for value in query.getall(param):
+            # Handle operation
+            operation = filter_match.group(3)
+            if operation == 'eq' or operation is None:
+                filters.append(field == value)
+            elif operation == 'ne':
+                filters.append(field != value)
+            elif operation == 'gt':
+                filters.append(field > value)
+            elif operation == 'ge':
+                filters.append(field >= value)
+            elif operation == 'lt':
+                filters.append(field < value)
+            elif operation == 'le':
+                filters.append(field <= value)
+            else:
+                raise ValueError("Invalid filtering operator provided.")
 
     # Handle pagination according to JSON API spec
     page_number, page_size = 0, None
