@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { DEFAULT_ZOOM } from '@/constants';
+
 import AddressInput from '@/components/AddressInput.vue';
 
 export default {
@@ -23,17 +25,14 @@ export default {
     },
     methods: {
         onManualLocationPicker(value) {
-            this.$store.dispatch(
-                'setCurrentPosition',
-                {
-                    coords: {
-                        latitude: value.latlng.lat,
-                        longitude: value.latlng.lng,
-                        speed: null,
-                    },
-                    timestamp: new Date().getTime(),
+            this.$router.push({
+                name: 'SharedMap',
+                params: {
+                    lat: value.latlng.lat,
+                    lng: value.latlng.lng,
+                    zoom: DEFAULT_ZOOM,
                 },
-            );
+            });
         },
     },
     props: {

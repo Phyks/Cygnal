@@ -101,11 +101,10 @@ export default {
             if (
                 this.hasCenterProvidedByRoute
                 || !this.currentLocation
-                || !this.currentLocation.speed
             ) {
                 return null;
             }
-            return Math.round(this.currentLocation.speed, 0);
+            return Math.round(this.currentLocation.speed || 0, 0);
         },
         error() {
             const errorCode = this.$store.state.location.error;
