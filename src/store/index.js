@@ -7,7 +7,7 @@ import { initialState as state, mutations } from './mutations';
 import * as getters from './getters';
 
 const plugins = [];
-if (process.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
     plugins.push(createLogger());
 }
 
