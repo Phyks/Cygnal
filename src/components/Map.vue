@@ -46,6 +46,7 @@ import compassIcon from '@/assets/compass.svg';
 import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
+import REPORT_TYPES from '@/report-types';
 import { distance } from '@/tools';
 
 const MAIN_VECTOR_LAYER_NAME = 'MAIN';
@@ -177,7 +178,7 @@ export default {
                             ? constants.LARGE_ICON_SCALE
                             : constants.NORMAL_ICON_SCALE
                     ),
-                    src: constants.REPORT_TYPES[marker.type].marker,
+                    src: REPORT_TYPES[marker.type].marker,
                 }),
             }));
             // Add the marker to the map and keep a reference to it

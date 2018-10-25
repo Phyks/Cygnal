@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import runtime from 'serviceworker-webpack-plugin/lib/runtime';
+
 import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
@@ -135,6 +137,13 @@ export default {
                     this.isSendingReports = false;
                 });
         },
+    },
+    mounted() {
+        if ('serviceWorker' in navigator) {
+            runtime.register().catch((error) => {
+                console.log(`Registration failed with ${error}.`);
+            });
+        }
     },
 };
 </script>
