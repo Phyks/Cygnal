@@ -43,6 +43,7 @@ module.exports = {
         }
     ],
     'no-bitwise': 'off',
+    'no-unused-expressions': ["error", { "allowShortCircuit": true }],
     'function-paren-newline': 'off',
   }
 }

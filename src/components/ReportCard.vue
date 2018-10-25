@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { REPORT_TYPES, REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
+import { REPORT_ALARM_VIBRATION_SEQUENCE } from '@/constants';
+import REPORT_TYPES from '@/report-types';
 import { distanceInWordsToNow } from '@/tools/date';
 import beepSound from '@/assets/beep.mp3';
 

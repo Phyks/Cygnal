@@ -22,7 +22,8 @@
 </template>
 
 <script>
-import { REPORT_TYPES, REPORT_TYPES_ORDER } from '@/constants';
+import { REPORT_TYPES_ORDER } from '@/constants';
+import REPORT_TYPES from '@/report-types';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ReportTile from './ReportTile.vue';

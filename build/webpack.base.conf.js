@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const ServiceWorkerWebpackPlugin = require("serviceworker-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
@@ -189,6 +190,9 @@ module.exports = {
         child_process: 'empty',
     },
     plugins: [
+        new ServiceWorkerWebpackPlugin({
+            entry: path.join(__dirname, '../src/sw.js'),
+        }),
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: utils.assetsPath('css/[name].[contenthash:4].css'),
