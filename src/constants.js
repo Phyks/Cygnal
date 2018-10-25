@@ -11,7 +11,7 @@ import miscIcon from '@/assets/misc.svg';
 import obstacleIcon from '@/assets/obstacle.svg';
 import potholeIcon from '@/assets/pothole.svg';
 
-export const VERSION = '0.2';
+export const VERSION = '0.3';
 
 export const NORMAL_ICON_SCALE = 0.625;
 export const LARGE_ICON_SCALE = 1.0;

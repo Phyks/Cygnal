@@ -19,6 +19,7 @@ from shapely.geometry import Point, shape
 from shapely.ops import transform
 
 from server.models import db, Report
+from server.tools import UTC_now
 
 level = logging.WARN
 RAISE_ON_EXCEPT = False
@@ -27,6 +28,9 @@ if 'DEBUG' in os.environ:
 if 'RAISE_ON_EXCEPT' in os.environ:
     RAISE_ON_EXCEPT = True
 logging.basicConfig(level=level)
+
+# Same as in src/constants.js
+REPORT_DOWNVOTES_THRESHOLD = 1
 
 
 def preprocess_lille(data):
@@ -396,7 +400,24 @@ project = partial(
 def process_opendata(name, data, report_type=REPORT_TYPE):
     # Coordinates of current reports in db, as shapely Points in Lambert93
     current_reports_points = []
-    for report in Report.select().where(Report.type == REPORT_TYPE):
+    active_reports_from_db = Report.select().where(
+        # Load reports from db of the current type
+        (Report.type == REPORT_TYPE) &
+        (
+            # Either with an expiration_datetime in the future
+            (
+                (Report.expiration_datetime != None) &
+                (Report.expiration_datetime > UTC_now())
+            ) |
+            # Or without expiration_datetime but which are still active (shown
+            # on the map)
+            (
+                (Report.expiration_datetime == None) &
+                (Report.downvotes < REPORT_DOWNVOTES_THRESHOLD)
+            )
+        )
+    )
+    for report in active_reports_from_db:
         current_reports_points.append(
             transform(project, Point(report.lng, report.lat))
         )
