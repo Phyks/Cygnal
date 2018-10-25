@@ -1,3 +1,4 @@
+export const DELETE_REPORT = 'DELETE_REPORT';
 export const HAS_VIBRATED_ONCE = 'HAS_VIBRATED_ONCE';
 export const INTRO_WAS_SEEN = 'INTRO_WAS_SEEN';
 export const INTRO_WAS_UNSEEN = 'INTRO_WAS_UNSEEN';

@@ -128,6 +128,12 @@ export const initialState = {
 };
 
 export const mutations = {
+    [types.DELETE_REPORT](state, { report }) {
+        const reportIndex = state.reports.findIndex(item => item.id === report.id);
+        if (reportIndex !== -1) {
+            Vue.delete(state.reports, reportIndex);
+        }
+    },
     [types.HAS_VIBRATED_ONCE](state) {
         state.hasVibratedOnce = true;
     },

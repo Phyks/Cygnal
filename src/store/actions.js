@@ -4,6 +4,7 @@ import { distance } from '@/tools';
 import i18n from '@/i18n';
 
 import {
+    DELETE_REPORT,
     HAS_VIBRATED_ONCE,
     INTRO_WAS_SEEN,
     INTRO_WAS_UNSEEN,
@@ -27,7 +28,7 @@ export function fetchReports({ commit, state }) {
     commit(IS_LOADING);
     return api.getActiveReports()
         .then((reports) => {
-            // Filter reports which are too far
+            // Filter reports which are too far or have too many downvotes
             const reportsToCommit = reports.filter(
                 (report) => {
                     if (report.attributes.downvotes >= constants.REPORT_DOWNVOTES_THRESHOLD) {
@@ -56,7 +57,13 @@ export function downvote({ commit }, { id }) {
     // Hide details
     commit(SHOW_REPORT_DETAILS, { id: null, userAsked: null });
     return api.downvote(id)
-        .then(report => commit(PUSH_REPORT, { report }));
+        .then((report) => {
+            if (report.attributes.downvotes >= constants.REPORT_DOWNVOTES_THRESHOLD) {
+                commit(DELETE_REPORT, { report });
+            } else {
+                commit(PUSH_REPORT, { report });
+            }
+        });
 }
 
 export function upvote({ commit }, { id }) {
