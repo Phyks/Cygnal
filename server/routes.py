@@ -170,7 +170,8 @@ def post_report():
             type=payload['type'],
             lat=payload['lat'],
             lng=payload['lng'],
-            source=payload.get('source', 'unknown')
+            source=payload.get('source', 'unknown'),
+            shape_geojson=payload.get('shape_geojson', None)
         )
         # Handle expiration
         if r.type in ['accident', 'gcum']:

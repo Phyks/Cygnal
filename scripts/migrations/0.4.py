@@ -31,6 +31,10 @@ def run_migration():
             'report', 'source',
             peewee.CharField(max_length=255)
         ),
+        migrator.add_column(
+            'report', 'shape_geojson',
+            peewee.TextField(default=None, null=True)
+        ),
     )
     query = Report.select()
     for report in query:

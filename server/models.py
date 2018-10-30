@@ -51,6 +51,7 @@ class Report(BaseModel):
     upvotes = peewee.IntegerField(default=0)
     downvotes = peewee.IntegerField(default=0)
     source = peewee.CharField(max_length=255)
+    shape_geojson = peewee.TextField(default=None, null=True)
 
     def to_json(self):
         return {
