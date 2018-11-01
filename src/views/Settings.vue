@@ -27,6 +27,15 @@
                         required
                         ></v-select>
 
+                    <v-select
+                        :items="tileCachingDurationOptions"
+                        v-model="tileCachingDuration"
+                        item-text="name"
+                        item-value="duration"
+                        :label="$t('settings.tileCachingDuration')"
+                        required
+                        ></v-select>
+
                     <v-text-field
                         :hint="$t('settings.customTileServerURLHint')"
                         :label="$t('settings.customTileServerURL')"
@@ -51,6 +60,7 @@
 <script>
 import { TILE_SERVERS } from '@/constants';
 import { AVAILABLE_LOCALES } from '@/i18n';
+import { capitalize } from '@/tools';
 
 import PermissionsSwitches from '@/components/PermissionsSwitches.vue';
 
@@ -102,6 +112,34 @@ export default {
                 this.$store.dispatch('unmarkIntroAsSeen');
             },
         },
+        tileCachingDuration: {
+            get() {
+                return this.$store.state.settings.tileCachingDuration;
+            },
+            set(tileCachingDuration) {
+                this.$store.dispatch('setSetting', { setting: 'tileCachingDuration', value: tileCachingDuration });
+            },
+        },
+        tileCachingDurationOptions() {
+            return [
+                {
+                    duration: 0,
+                    name: this.$i18n.t('settings.noCaching'),
+                },
+                {
+                    duration: -1,
+                    name: this.$i18n.t('settings.defaultDuration'),
+                },
+                {
+                    duration: 3600 * 24,
+                    name: capitalize(this.$i18n.tc('relativeDate.day', 1, { count: 1 })),
+                },
+                {
+                    duration: 3600 * 24 * 7,
+                    name: capitalize(this.$i18n.tc('relativeDate.day', 7, { count: 7 })),
+                },
+            ];
+        },
         tileServer: {
             get() {
                 const tileServerStore = this.$store.state.settings.tileServer;
@@ -130,6 +168,7 @@ export default {
             name: AVAILABLE_LOCALES[iso].name,
         }));
         i18nItems.sort((a, b) => a.iso > b.iso);
+
         return {
             i18nItems,
             orientationModes: [
