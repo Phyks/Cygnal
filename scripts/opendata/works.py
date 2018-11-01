@@ -45,7 +45,8 @@ def preprocess_lille(data):
                     # Use lng, lat
                     'coordinates': fields['geo_point_2d'][::-1]
                 },
-                'recordid': item['recordid']
+                'recordid': item['recordid'],
+                'source': 'opendata-lille'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -86,7 +87,8 @@ def preprocess_loiret(data):
                 new_item = {
                     'fields': item['attributes'],
                     'geometry': shape(geo_shape).centroid,
-                    'recordid': item['attributes']['OBJECTID']
+                    'recordid': item['attributes']['OBJECTID'],
+                    'source': 'opendata-loiret'
                 }
                 new_fields = new_item['fields']
                 # Homogeneize geo_shape
@@ -114,7 +116,8 @@ def preprocess_lyon(data):
             new_item = {
                 'fields': item['properties'],
                 'geometry': shape(item['geometry']).centroid,
-                'recordid': item['properties']['identifiant']
+                'recordid': item['properties']['identifiant'],
+                'source': 'opendata-lyon'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -138,7 +141,8 @@ def preprocess_montpellier(data):
             new_item = {
                 'fields': item['properties'],
                 'geometry': shape(item['geometry']).centroid,
-                'recordid': item['properties']['numero']
+                'recordid': item['properties']['numero'],
+                'source': 'opendata-montpellier'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -169,7 +173,8 @@ def preprocess_nancy(data):
             new_item = {
                 'fields': item['attributes'],
                 'geometry': geometry,
-                'recordid': item['attributes']['OBJECTID']
+                'recordid': item['attributes']['OBJECTID'],
+                'source': 'opendata-nancy'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -197,7 +202,8 @@ def preprocess_rennes(data):
             new_item = {
                 'fields': item['properties'],
                 'geometry': shape(item['geometry']),
-                'recordid': item['properties']['id']
+                'recordid': item['properties']['id'],
+                'source': 'opendata-rennes'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -220,7 +226,8 @@ def preprocess_seine_saint_denis(data):
             new_item = {
                 'fields': item['properties'],
                 'geometry': shape(item['geometry']).centroid,
-                'recordid': item['properties']['id']
+                'recordid': item['properties']['id'],
+                'source': 'opendata-seine_saint_denis'
             }
             # Homogeneize geo_shape
             new_item['fields']['geo_shape'] = item['geometry']
@@ -240,7 +247,8 @@ def preprocess_sicoval(data):
             new_item = {
                 'fields': item['fields'],
                 'geometry': item['geometry'],
-                'recordid': item['recordid']
+                'recordid': item['recordid'],
+                'source': 'opendata-sicoval'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -264,7 +272,8 @@ def preprocess_toulouse(data):
             new_item = {
                 'fields': item['fields'],
                 'geometry': item['geometry'],
-                'recordid': item['recordid']
+                'recordid': item['recordid'],
+                'source': 'opendata-toulouse'
             }
             new_fields = new_item['fields']
             # Homogeneize geo_shape
@@ -308,7 +317,8 @@ def preprocess_versailles(data):
                 new_item = {
                     'fields': item['attributes'],
                     'geometry': shape(geometry).centroid,
-                    'recordid': item['attributes']['OBJECTID']
+                    'recordid': item['attributes']['OBJECTID'],
+                    'source': 'opendata-versailles'
                 }
                 new_fields = new_item['fields']
                 # Homogeneize geo_shape
@@ -542,7 +552,8 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
                     type=report_type,
                     expiration_datetime=expiration_datetime,
                     lat=lat,
-                    lng=lng
+                    lng=lng,
+                    source=item['source']
                 )
         except KeyError as exc:
             logging.warning(
