@@ -21,7 +21,7 @@ const ALLOW_CACHING_FROM = [
 global.self.addEventListener('install', (event) => {
     DEBUG && console.log('SW: installing…');
     event.waitUntil(
-        global.caches.open(CACHE_NAME)
+        !DEBUG && global.caches.open(CACHE_NAME) // Don't cache during dev
             .then((cache) => {
                 DEBUG && console.log('SW: cache opened.');
                 cache.addAll(assetsToCache).then(
