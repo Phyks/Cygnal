@@ -12,6 +12,7 @@ export function saveReport(type, lat, lng) {
             type,
             lat,
             lng,
+            source: 'survey',
         }),
         headers: AUTHORIZATION_HEADERS,
     })

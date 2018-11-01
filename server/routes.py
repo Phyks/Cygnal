@@ -140,6 +140,7 @@ def post_report():
                     "upvotes": 0,
                     "lng": 2.385234797066081,
                     "type": "pothole",
+                    "source": "survey"
                     …
                 },
                 "type": "reports",
@@ -168,7 +169,8 @@ def post_report():
         r = Report(
             type=payload['type'],
             lat=payload['lat'],
-            lng=payload['lng']
+            lng=payload['lng'],
+            source=payload.get('source', 'unknown')
         )
         # Handle expiration
         if r.type in ['accident', 'gcum']:

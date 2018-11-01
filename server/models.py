@@ -50,6 +50,7 @@ class Report(BaseModel):
     expiration_datetime = peewee.DateTimeField(null=True)
     upvotes = peewee.IntegerField(default=0)
     downvotes = peewee.IntegerField(default=0)
+    source = peewee.CharField(max_length=255)
 
     def to_json(self):
         return {
