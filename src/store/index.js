@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 
 import * as actions from './actions';
-import { initialState as state, mutations } from './mutations';
+import { initialState, mutations } from './mutations';
 import * as getters from './getters';
 
 const plugins = [];
@@ -13,10 +13,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export default initialState.then(state => new Vuex.Store({
     actions,
     getters,
     mutations,
     plugins,
     state,
-});
+}));
