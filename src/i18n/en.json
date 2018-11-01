@@ -116,10 +116,13 @@
         "customTileServer": "Custom tile server",
         "customTileServerURL": "Custom tile server URL",
         "customTileServerURLHint": "For example: http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultDuration": "Default duration",
         "defaultOrientationMode": "Default orientation mode",
         "fixedNorth": "Fixed (North up)",
         "locale": "Language",
+        "noCaching": "No caching",
         "skipOnboarding": "Skip onboarding",
+        "tileCachingDuration": "Cache map tiles for",
         "tileServer": "Map tiles server"
     },
     "shareMapViewModal": {

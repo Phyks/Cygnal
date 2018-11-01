@@ -2,7 +2,12 @@ import Vue from 'vue';
 
 import { messages, getBrowserLocales } from '@/i18n';
 import { storageAvailable } from '@/tools';
-import { DEFAULT_TILE_SERVER, TILE_SERVERS, VERSION } from '@/constants';
+import {
+    DEFAULT_TILE_CACHING_DURATION,
+    DEFAULT_TILE_SERVER,
+    TILE_SERVERS,
+    VERSION,
+} from '@/constants';
 import * as types from './mutations-types';
 
 function loadDataFromStorage(name) {
@@ -50,6 +55,7 @@ let hasPreventSuspendPermission = null;
 let hasVibratePermission = null;
 let shouldAutorotateMap = null;
 let skipOnboarding = null;
+let tileCachingDuration = null;
 let tileServer = null;
 if (storageAvailable('localStorage')) {
     handleMigrations();
@@ -65,6 +71,11 @@ if (storageAvailable('localStorage')) {
     tileServer = loadDataFromStorage('tileServer');
     if (tileServer && !TILE_SERVERS[tileServer] && !tileServer.startsWith('custom:')) {
         tileServer = null;
+    }
+
+    tileCachingDuration = loadDataFromStorage('tileCachingDuration');
+    if (tileCachingDuration !== null && !Number.isInteger(tileCachingDuration)) {
+        tileCachingDuration = null;
     }
 
     locale = loadDataFromStorage('locale');
@@ -123,6 +134,9 @@ export const initialState = {
         ),
         shouldAutorotateMap: shouldAutorotateMap !== null ? shouldAutorotateMap : false,
         skipOnboarding: skipOnboarding || false,
+        tileCachingDuration: (
+            tileCachingDuration !== null ? tileCachingDuration : DEFAULT_TILE_CACHING_DURATION
+        ),
         tileServer: tileServer || DEFAULT_TILE_SERVER,
     },
 };

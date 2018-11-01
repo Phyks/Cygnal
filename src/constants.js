@@ -52,6 +52,7 @@ export const TILE_SERVERS = {
     opencyclemap: opencyclemapURL,
 };
 export const DEFAULT_TILE_SERVER = 'cartodb-voyager';
+export const DEFAULT_TILE_CACHING_DURATION = -1;
 
 export const GEOCODING_API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search/';
 
