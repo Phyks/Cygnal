@@ -34,6 +34,7 @@
                         item-value="duration"
                         :label="$t('settings.tileCachingDuration')"
                         required
+                        v-if="tileCachingEnabled"
                         ></v-select>
 
                     <v-text-field
@@ -58,6 +59,8 @@
 </template>
 
 <script>
+import localforage from 'localforage';
+
 import { TILE_SERVERS } from '@/constants';
 import { AVAILABLE_LOCALES } from '@/i18n';
 import { capitalize } from '@/tools';
@@ -169,6 +172,11 @@ export default {
         }));
         i18nItems.sort((a, b) => a.iso > b.iso);
 
+        // Only IndexedDB backend can be used in service workers
+        const tileCachingEnabled = (
+            localforage.driver() === localforage.INDEXEDDB
+        );
+
         return {
             i18nItems,
             orientationModes: [
@@ -181,6 +189,7 @@ export default {
                     value: true,
                 },
             ],
+            tileCachingEnabled,
         };
     },
 };

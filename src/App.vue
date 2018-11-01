@@ -82,7 +82,7 @@
 <script>
 import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 
-import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
+import { APP_NAME, DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
 
 import Alert from '@/components/Alert.vue';
 import ReportIssueModal from '@/components/ReportIssueModal.vue';
@@ -127,7 +127,7 @@ export default {
             isSearchModalShown: false,
             isSendingReports: false,
             isShareMapViewModalShown: false,
-            title: "Cycl'Assist",
+            title: APP_NAME,
         };
     },
     methods: {

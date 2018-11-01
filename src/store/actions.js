@@ -1,7 +1,8 @@
 import * as api from '@/api';
 import * as constants from '@/constants';
+import i18n, { messages, getBrowserLocales } from '@/i18n';
+import { handleMigrations, loadDataFromStorage } from '@/storage';
 import { pointToPointDistance } from '@/tools/geometry';
-import i18n from '@/i18n';
 
 import {
     DELETE_REPORT,
@@ -10,6 +11,7 @@ import {
     INTRO_WAS_UNSEEN,
     IS_DONE_LOADING,
     IS_LOADING,
+    LOAD_UNSENT_REPORTS,
     PUSH_REPORT,
     PUSH_UNSENT_REPORT,
     REMOVE_UNSENT_REPORT,
@@ -23,6 +25,135 @@ import {
     SHOW_REPORT_DETAILS,
     STORE_REPORTS,
 } from './mutations-types';
+
+export function populateInitialStateFromStorage({ commit }) {
+    return handleMigrations().then(() => {
+        // Load unsent reports from storage
+        const unsentReportsPromise = loadDataFromStorage(
+            'unsentReports', 'items',
+        ).then(
+            unsentReports => commit(LOAD_UNSENT_REPORTS, {
+                unsentReports: unsentReports || [],
+            }),
+        );
+
+        // Load settings from storage
+        const settingsPromise = loadDataFromStorage('settings', [
+            'hasGeolocationPermission',
+            'hasPermanentNotificationPermission',
+            'hasPlaySoundPermission',
+            'hasPreventSuspendPermission',
+            'hasVibratePermission',
+            'locale',
+            'shouldAutorotateMap',
+            'skipOnboarding',
+            'tileCachingDuration',
+            'tileServer',
+        ], null).then((dbSettings) => {
+            const settings = dbSettings || {};
+
+            if (!(settings.locale in messages)) {
+                settings.locale = null;
+            }
+            if (!settings.locale) {
+                // Get best matching locale from browser
+                const locales = getBrowserLocales();
+                for (let i = 0; i < locales.length; i += 1) {
+                    if (messages[locales[i]]) {
+                        settings.locale = locales[i];
+                        break; // Break at first matching locale
+                    }
+                }
+            }
+            if (
+                settings.tileCachingDuration !== null
+                && !Number.isInteger(settings.tileCachingDuration)
+            ) {
+                settings.tileCachingDuration = null;
+            }
+            if (
+                settings.tileServer
+                && !constants.TILE_SERVERS[settings.tileServer]
+                && !settings.tileServer.startsWith('custom:')
+            ) {
+                settings.tileServer = null;
+            }
+
+            commit(SET_SETTING, {
+                setting: 'locale',
+                value: settings.locale || 'en',
+            });
+            commit(SET_SETTING, {
+                setting: 'hasGeolocationPermission',
+                value: (
+                    settings.hasGeolocationPermission !== null
+                        ? settings.hasGeolocationPermission
+                        : true
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'hasPermanentNotificationPermission',
+                value: (
+                    settings.hasPermanentNotificationPermission !== null
+                        ? settings.hasPermanentNotificationPermission
+                        : true
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'hasPlaySoundPermission',
+                value: (
+                    settings.hasPlaySoundPermission !== null
+                        ? settings.hasPlaySoundPermission
+                        : true
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'hasPreventSuspendPermission',
+                value: (
+                    settings.hasPreventSuspendPermission !== null
+                        ? settings.hasPreventSuspendPermission
+                        : true
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'hasVibratePermission',
+                value: (
+                    settings.hasVibratePermission !== null
+                        ? settings.hasVibratePermission
+                        : true
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'shouldAutorotateMap',
+                value: (
+                    settings.shouldAutorotateMap !== null
+                        ? settings.shouldAutorotateMap
+                        : false
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'skipOnboarding',
+                value: settings.skipOnboarding || false,
+            });
+            commit(SET_SETTING, {
+                setting: 'tileCachingDuration',
+                value: (
+                    settings.tileCachingDuration !== null
+                        ? settings.tileCachingDuration
+                        : constants.DEFAULT_TILE_CACHING_DURATION
+                ),
+            });
+            commit(SET_SETTING, {
+                setting: 'tileServer',
+                value: settings.tileServer || constants.DEFAULT_TILE_SERVER,
+            });
+        });
+
+        return Promise.all(
+            [settingsPromise, unsentReportsPromise],
+        );
+    });
+}
 
 export function fetchReports({ commit, state }) {
     commit(IS_LOADING);

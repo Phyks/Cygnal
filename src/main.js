@@ -15,18 +15,21 @@ import router from '@/router';
 import store from '@/store';
 import '@/vuetify';
 
-// Ensure locale is correctly set from the store value
-store.dispatch('setLocale', { locale: store.state.settings.locale });
-
 Vue.config.productionTip = false;
 
-new Vue({ // eslint-disable-line no-new
-    el: '#app',
-    router,
-    i18n,
-    store,
-    components: { App },
-    render(h) {
-        return h('App');
-    },
+// Populate the store with settings from the storage
+store.dispatch('populateInitialStateFromStorage').then(() => {
+    // Ensure locale is correctly set from the store value
+    store.dispatch('setLocale', { locale: store.state.settings.locale });
+
+    new Vue({ // eslint-disable-line no-new
+        el: '#app',
+        router,
+        i18n,
+        store,
+        components: { App },
+        render(h) {
+            return h('App');
+        },
+    });
 });
