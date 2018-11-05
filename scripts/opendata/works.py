@@ -2,6 +2,7 @@
 """
 Import French opendata about works on roads.
 """
+import datetime
 import json
 import logging
 import os
@@ -33,6 +34,51 @@ logging.basicConfig(level=level)
 
 # Same as in src/constants.js
 REPORT_DOWNVOTES_THRESHOLD = 1
+
+
+def preprocess_hauts_de_seine(data):
+    out = []
+    for item in data:
+        try:
+            fields = item['fields']
+            new_item = {
+                'fields': fields,
+                'geometry': {
+                    'type': 'Point',
+                    # Use lng, lat
+                    'coordinates': fields['geo_point_2d'][::-1]
+                },
+                'recordid': item['recordid'],
+                'source': 'opendata-hauts-de-seine'
+            }
+            new_fields = new_item['fields']
+            # Guess start date / end date
+            # If the item is in the data, it should be valid for the current
+            # trimester.
+            now = datetime.datetime.now()
+            new_fields['date_debut'] = arrow.get(
+                datetime.datetime(
+                    now.year,
+                    (now.month // 3) * 3,
+                    1
+                )
+            ).isoformat()
+            new_fields['date_fin'] = arrow.get(
+                datetime.datetime(
+                    now.year,
+                    (now.month // 3 + 1) * 3,
+                    1
+                )
+            ).isoformat()
+            out.append(new_item)
+        except KeyError as exc:
+            logging.warning(
+                'Invalid item %s in Lille data: %s.',
+                item.get('recordid', '?'),
+                exc
+            )
+            continue
+    return out
 
 
 def preprocess_lille(data):
@@ -406,11 +452,17 @@ def preprocess_versailles(data):
 
 MIN_DISTANCE_REPORT_DETAILS = 40  # Distance in meters, same as in constants.js
 OPENDATA_URLS = {
+    # Work in Hauts de Seine
+    # https://opendata.hauts-de-seine.fr/explore/dataset/travaux-sur-la-voirie-departementale-lignes/information/
+    # Licence Ouverte (Etalab) : https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf
+    "hauts-de-seine": {
+        "preprocess": preprocess_hauts_de_seine,
+        "url": "https://opendata.hauts-de-seine.fr/explore/dataset/travaux-sur-la-voirie-departementale-lignes/download/?format=json&timezone=Europe/Berlin",
+    },
     # Work in Lille
     # https://opendata.lillemetropole.fr/explore/dataset/troncons-de-voirie-impactes-par-des-travaux-en-temps-reel/
     # Licence Ouverte (Etalab) : https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf
     "lille": {
-        # https://opendata.lillemetropole.fr/explore/dataset/carrefours-de-voirie-impactes-par-des-travaux-temps-reel/information/
         "preprocess": preprocess_lille,
         "url": "https://opendata.lillemetropole.fr/explore/dataset/troncons-de-voirie-impactes-par-des-travaux-en-temps-reel/download/?format=json&timezone=Europe/Berlin"
     },
