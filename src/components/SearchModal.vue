@@ -58,13 +58,11 @@ export default {
     methods: {
         onManualLocationPicker(value) {
             this.isActive = false;
-            this.$router.push({
-                name: 'SharedMap',
-                params: {
-                    lat: value.latlng.lat,
-                    lng: value.latlng.lng,
-                    zoom: DEFAULT_ZOOM,
-                },
+            this.$store.dispatch('setCurrentMapZoom', {
+                zoom: DEFAULT_ZOOM,
+            });
+            this.$store.dispatch('setCurrentMapCenter', {
+                center: [value.latlng.lat, value.latlng.lng],
             });
         },
     },

@@ -6,10 +6,11 @@
                 <Map
                     :accuracy="currentLocation.hdop"
                     :center="mapCenter"
+                    :hasGeolocationTracking="!hasCenterProvidedByRoute && hasGeolocationTracking"
                     :heading="currentLocation.heading"
                     :markers="reportsMarkers"
-                    :onMapCenterUpdate="onMapCenterUpdate"
-                    :onMapZoomUpdate="onMapZoomUpdate"
+                    :onMapCenterManualUpdate="onMapCenterManualUpdate"
+                    :onMapZoomManualUpdate="onMapZoomManualUpdate"
                     :onPress="showReportDialog"
                     :polyline="positionHistory"
                     :positionLatLng="currentLatLng"
@@ -29,7 +30,7 @@
                     @click.native.stop="() => showReportDialog()"
                     role="button"
                     :aria-label="$t('buttons.reportProblem')"
-                    v-if="!hasCenterProvidedByRoute"
+                    v-if="!hasCenterProvidedByRoute && hasGeolocationTracking"
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
@@ -61,6 +62,10 @@ import AppLogo from '@/assets/logo.svg';
 
 function handlePositionError(error) {
     store.dispatch('setLocationError', { error: error.code });
+    store.dispatch('setCurrentMapZoom', { zoom: constants.MAP_ZOOM_WITHOUT_GEOLOCATION });
+    store.dispatch('setCurrentMapCenter', {
+        center: constants.MAP_CENTER_WITHOUT_GEOLOCATION,
+    });
 }
 
 function setPosition(position) {
@@ -100,7 +105,7 @@ export default {
         currentSpeed() {
             if (
                 this.hasCenterProvidedByRoute
-                || !this.currentLocation
+                || !this.hasGeolocationTracking
             ) {
                 return null;
             }
@@ -124,6 +129,9 @@ export default {
         hasCenterProvidedByRoute() {
             return this.$route.params.lat && this.$route.params.lng;
         },
+        hasGeolocationTracking() {
+            return Object.keys(this.currentLocation).length > 0;
+        },
         mapCenter() {
             if (this.hasCenterProvidedByRoute) {
                 return [
@@ -131,13 +139,25 @@ export default {
                     parseFloat(this.$route.params.lng),
                 ];
             }
-            return this.currentLatLng;
+            if (this.$store.state.map.center.every(item => item !== null)) {
+                return this.$store.state.map.center;
+            }
+            if (!this.hasGeolocationTracking) {
+                return constants.MAP_CENTER_WITHOUT_GEOLOCATION;
+            }
+            return [null, null];
         },
         mapZoom() {
+            if (this.$route.params.zoom) {
+                return parseInt(this.$route.params.zoom, 10);
+            }
+            if (this.$store.state.map.zoom) {
+                return this.$store.state.map.zoom;
+            }
             return (
-                this.$route.params.zoom
-                    ? parseInt(this.$route.params.zoom, 10)
-                    : constants.DEFAULT_ZOOM
+                this.hasGeolocationTracking
+                    ? constants.DEFAULT_ZOOM
+                    : constants.MAP_ZOOM_WITHOUT_GEOLOCATION
             );
         },
         positionHistory() {
@@ -215,7 +235,7 @@ export default {
             }
             this.$store.dispatch('setLocationWatcherId', { id: watchID });
         },
-        onMapCenterUpdate(center) {
+        onMapCenterManualUpdate(center) {
             // Update reports by default
             let distanceFromPreviousPoint = constants.UPDATE_REPORTS_DISTANCE_THRESHOLD + 1;
 
@@ -242,7 +262,7 @@ export default {
 
             this.$store.dispatch('setCurrentMapCenter', { center });
         },
-        onMapZoomUpdate(zoom) {
+        onMapZoomManualUpdate(zoom) {
             this.$store.dispatch('setCurrentMapZoom', { zoom });
         },
         removeNotification() {

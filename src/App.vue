@@ -91,7 +91,10 @@ export default {
             return this.$store.state.location.gpx.length > 0;
         },
         isMapLoaded() {
-            return this.$store.state.map.center.every(item => item !== null);
+            return (
+                this.$store.state.map.center.every(item => item !== null)
+                || this.$store.getters.getLastLocation
+            );
         },
         unsentReportsLength() {
             return this.$store.state.unsentReports.length;

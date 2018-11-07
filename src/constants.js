@@ -37,8 +37,11 @@ export const EARTH_RADIUS = 6378137; // in meters
 export const KEEP_REPORTS_METERS_AROUND = 10000; // in meters
 
 export const DEFAULT_ZOOM = 17;
-export const MIN_ZOOM = 10;
+export const MIN_ZOOM = 6;
 export const MAX_ZOOM = 18;
+
+export const MAP_CENTER_WITHOUT_GEOLOCATION = [46.589, 2.944];
+export const MAP_ZOOM_WITHOUT_GEOLOCATION = 6;
 
 export const ACCURACY_DISPLAY_THRESHOLD = 100; // in meters
 export const POSITION_MARKER_RADIUS = 10; // in pixels

@@ -78,7 +78,10 @@ export default {
         },
         olCenter() {
             // Compute center in OL coordinates system
-            return fromLonLat([this.center[1], this.center[0]]);
+            if (this.center.every(item => item !== null)) {
+                return fromLonLat([this.center[1], this.center[0]]);
+            }
+            return this.center;
         },
         olPolyline() {
             // Compute the polyline in OL coordinates system
@@ -135,10 +138,10 @@ export default {
             attribution: $t('map.attribution'),
             hasUserAutorotateMap: this.$store.state.settings.shouldAutorotateMap,
             isProgrammaticMove: true,
+            isRecenterButtonShown: false,
             map: null,
             maxZoom: constants.MAX_ZOOM,
             minZoom: constants.MIN_ZOOM,
-            isRecenterButtonShown: false,
             // Variables for easy access to map feature and layers
             accuracyFeature: null,
             reportsMarkersFeatures: {},
@@ -217,16 +220,16 @@ export default {
         },
         onMoveEnd() {
             const view = this.map.getView();
-            if (this.onMapCenterUpdate) {
+            if (this.onMapCenterManualUpdate && !this.isProgrammaticMove) {
                 const mapCenterLonLat = toLonLat(view.getCenter());
-                this.onMapCenterUpdate([mapCenterLonLat[1], mapCenterLonLat[0]]);
+                this.onMapCenterManualUpdate([mapCenterLonLat[1], mapCenterLonLat[0]]);
             }
             // Show recenter button and call the callback if zoom is updated manually
             const zoom = view.getZoom();
             if (zoom !== this.zoom) {
                 this.showRecenterButton();
-                if (this.onMapZoomUpdate) {
-                    this.onMapZoomUpdate(zoom);
+                if (this.onMapZoomManualUpdate) {
+                    this.onMapZoomManualUpdate(zoom);
                 }
             }
         },
@@ -236,7 +239,7 @@ export default {
             this.hideRecenterButton();
 
             const view = this.map.getView();
-            view.setCenter(this.olCenter);
+            view.setCenter(this.olPosition);
             if (this.isInAutorotateMap) {
                 view.setRotation(-this.headingInRadiansFromNorth);
             } else {
@@ -309,6 +312,9 @@ export default {
             }
         },
         showRecenterButton() {
+            if (!this.hasGeolocationTracking) {
+                return;
+            }
             if (!this.isRecenterButtonShown) {
                 this.isRecenterButtonShown = true;
             }
@@ -442,11 +448,12 @@ export default {
             type: Array,
             required: true,
         },
+        hasGeolocationTracking: Boolean,
         heading: Number, // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
-        onMapCenterUpdate: Function,
-        onMapZoomUpdate: Function,
+        onMapCenterManualUpdate: Function,
+        onMapZoomManualUpdate: Function,
         polyline: Array,
         positionLatLng: Array,
         reportLatLng: Array,
@@ -499,7 +506,7 @@ export default {
             }
 
             const view = this.map.getView();
-            if (!this.isRecenterButtonShown) {
+            if (!this.isRecenterButtonShown && newOlCenter.every(item => item !== null)) {
                 // Eventually display closest report
                 const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
                 const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
@@ -536,6 +543,9 @@ export default {
                     view.setRotation(0);
                 }
                 view.setZoom(this.zoom);
+
+                // Show recenter button
+                this.showRecenterButton();
             }
         },
         olPolyline(newOlPolyline) {
@@ -558,6 +568,11 @@ export default {
                     newOlPosition ? new Point(newOlPosition) : null,
                 );
                 this.accuracyFeature.getStyle().getImage().setRadius(this.radiusFromAccuracy);
+            }
+
+            // Update view center
+            if (!this.isRecenterButtonShown) {
+                this.map.getView().setCenter(newOlPosition);
             }
         },
         reportDetailsID(newID, oldID) {
