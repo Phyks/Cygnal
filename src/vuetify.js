@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/es5/components/Vuetify';
+import VAlert from 'vuetify/es5/components/VAlert';
 import VApp from 'vuetify/es5/components/VApp';
 import VBadge from 'vuetify/es5/components/VBadge';
 import VBottomSheet from 'vuetify/es5/components/VBottomSheet';
@@ -22,6 +23,7 @@ import VToolbar from 'vuetify/es5/components/VToolbar';
 
 Vue.use(Vuetify, {
     components: {
+        VAlert,
         VApp,
         VBadge,
         VBottomSheet,

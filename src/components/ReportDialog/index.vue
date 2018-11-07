@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ReportErrorModal v-model="hasError"></ReportErrorModal>
+        <Alert :error="$t('reportDialog.unableToSendDescription')" :onDismiss="dismissError" v-if="hasError"></Alert>
         <v-bottom-sheet v-model="isActive" id="reportCardSheet">
             <v-card>
                 <v-container fluid>
@@ -25,7 +25,7 @@
 import { REPORT_TYPES_ORDER } from '@/constants';
 import REPORT_TYPES from '@/report-types';
 
-import ReportErrorModal from '@/components/ReportErrorModal.vue';
+import Alert from '@/components/Alert.vue';
 import ReportTile from './ReportTile.vue';
 
 export default {
@@ -33,7 +33,7 @@ export default {
         window.removeEventListener('keydown', this.hideReportDialogOnEsc);
     },
     components: {
-        ReportErrorModal,
+        Alert,
         ReportTile,
     },
     computed: {
@@ -57,6 +57,9 @@ export default {
         };
     },
     methods: {
+        dismissError() {
+            this.hasError = false;
+        },
         hideReportDialogOnEsc(event) {
             let isEscape = false;
             if ('key' in event) {

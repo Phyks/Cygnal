@@ -57,7 +57,7 @@
             </div>
         </v-toolbar>
         <v-content>
-            <ReportErrorModal v-model="hasReportError"></ReportErrorModal>
+            <Alert :error="$t('reportDialog.unableToSendDescription')" :onDismiss="dismissError" v-if="hasReportError"></Alert>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <ReportIssueModal v-model="isReportIssueModalShown"></ReportIssueModal>
             <SearchModal v-model="isSearchModalShown"></SearchModal>
@@ -71,14 +71,14 @@ import runtime from 'serviceworker-webpack-plugin/lib/runtime';
 
 import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
 
-import ReportErrorModal from '@/components/ReportErrorModal.vue';
+import Alert from '@/components/Alert.vue';
 import ReportIssueModal from '@/components/ReportIssueModal.vue';
 import SearchModal from '@/components/SearchModal.vue';
 import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
 
 export default {
     components: {
-        ReportErrorModal,
+        Alert,
         ReportIssueModal,
         SearchModal,
         ShareMapViewModal,
@@ -111,6 +111,9 @@ export default {
         };
     },
     methods: {
+        dismissError() {
+            this.hasReportError = false;
+        },
         exportGPX() {
             import('@/tools/exportGPX' /* webpackChunkName: "MapView" */).then((module) => {
                 const activityName = this.$t('misc.activityName');

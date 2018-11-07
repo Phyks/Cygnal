@@ -2,6 +2,7 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
+            <Alert :error="error" v-if="error" :onDismiss="clearError"></Alert>
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
                     :accuracy="currentLocation.hdop"
@@ -36,10 +37,6 @@
                 </v-btn>
                 <ReportDialog v-model="isReportDialogVisible" :latLng="reportLatLng" :onHide="resetReportLatLng"></ReportDialog>
             </v-flex>
-            <v-flex xs12 sm6 offset-sm3 md4 offset-md4 fill-height v-else class="pa-3">
-                <LocationError :error="error" :retryFunction="initializePositionWatching" v-if="error"></LocationError>
-                <p class="text-xs-center" v-else>{{ $t('geolocation.fetching') }}</p>
-            </v-flex>
         </v-layout>
     </v-container>
 </template>
@@ -47,7 +44,7 @@
 <script>
 import NoSleep from 'nosleep.js';
 
-import LocationError from '@/components/LocationError.vue';
+import Alert from '@/components/Alert.vue';
 import Map from '@/components/Map.vue';
 import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
@@ -82,7 +79,7 @@ export default {
         this.$store.dispatch('hideReportDetails');
     },
     components: {
-        LocationError,
+        Alert,
         Map,
         ReportCard,
         ReportDialog,
@@ -181,6 +178,9 @@ export default {
         };
     },
     methods: {
+        clearError() {
+            store.dispatch('setLocationError', { error: null });
+        },
         createNotification() {
             const $t = this.$t.bind(this);
             this.notification = new Notification(
