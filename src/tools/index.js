@@ -112,3 +112,7 @@ export function storageAvailable(type) {
         && storage.length !== 0;
     }
 }
+
+export function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

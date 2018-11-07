@@ -52,6 +52,7 @@
         "Settings": "Settings",
         "exportGPX": "Export GPX",
         "reportIssue": "Report an issue",
+        "search": "Search",
         "shareMapView": "Share map view"
     },
     "misc": {
@@ -110,6 +111,9 @@
         "obstacleDescription": "An obstacle on the bike lane (stones, bulky waste, etc.).",
         "pothole": "Pothole",
         "potholeDescription": "A pothole in the ground."
+    },
+    "searchModal": {
+        "searchModal": "Search a location"
     },
     "settings": {
         "autorotate": "Autorotate (current direction up)",

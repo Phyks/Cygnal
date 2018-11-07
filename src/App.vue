@@ -29,10 +29,13 @@
                     <v-icon>more_vert</v-icon>
                 </v-btn>
                 <v-list>
+                    <v-list-tile @click="isSearchModalShown = true" v-if="isMapLoaded">
+                        <v-list-tile-title>{{ $t("menu.search") }}</v-list-tile-title>
+                    </v-list-tile>
                     <v-list-tile @click="exportGPX" v-if="isExportGPXMenuEntryVisible">
                         <v-list-tile-title>{{ $t("menu.exportGPX") }}</v-list-tile-title>
                     </v-list-tile>
-                    <v-list-tile @click="isShareMapViewModalShown = true" v-if="isShareMapViewMenuEntryVisible">
+                    <v-list-tile @click="isShareMapViewModalShown = true" v-if="isMapLoaded">
                         <v-list-tile-title>{{ $t("menu.shareMapView") }}</v-list-tile-title>
                     </v-list-tile>
                     <v-list-tile @click="goToAbout">
@@ -57,6 +60,7 @@
             <ReportErrorModal v-model="hasReportError"></ReportErrorModal>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <ReportIssueModal v-model="isReportIssueModalShown"></ReportIssueModal>
+            <SearchModal v-model="isSearchModalShown"></SearchModal>
             <router-view></router-view>
         </v-content>
     </v-app>
@@ -69,12 +73,14 @@ import { DELAY_BETWEEN_API_BATCH_REQUESTS } from '@/constants';
 
 import ReportErrorModal from '@/components/ReportErrorModal.vue';
 import ReportIssueModal from '@/components/ReportIssueModal.vue';
+import SearchModal from '@/components/SearchModal.vue';
 import ShareMapViewModal from '@/components/ShareMapViewModal.vue';
 
 export default {
     components: {
         ReportErrorModal,
         ReportIssueModal,
+        SearchModal,
         ShareMapViewModal,
     },
     computed: {
@@ -84,7 +90,7 @@ export default {
         isExportGPXMenuEntryVisible() {
             return this.$store.state.location.gpx.length > 0;
         },
-        isShareMapViewMenuEntryVisible() {
+        isMapLoaded() {
             return this.$store.state.map.center.every(item => item !== null);
         },
         unsentReportsLength() {
@@ -95,6 +101,7 @@ export default {
         return {
             hasReportError: false,
             isReportIssueModalShown: false,
+            isSearchModalShown: false,
             isSendingReports: false,
             isShareMapViewModalShown: false,
             title: "Cycl'Assist",

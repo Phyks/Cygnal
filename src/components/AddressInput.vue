@@ -13,6 +13,7 @@
         append-icon="my_location"
         :rules="rules"
         v-on:input="onInputHandler"
+        :menu-props="{ auto: true, overflowY: true }"
         ></v-combobox>
 </template>
 
@@ -21,9 +22,11 @@ import { GEOCODING_API_ENDPOINT } from '@/constants';
 
 export default {
     props: {
+        clearOnSelection: Boolean,
         label: String,
         hint: String,
         onInput: Function,
+        value: Boolean,
     },
     data() {
         return {
@@ -83,6 +86,11 @@ export default {
                         label: APIItem.properties.label,
                     };
                     this.onInput(this.selectedItem);
+                    if (this.clearOnSelection) {
+                        this.$nextTick(() => {
+                            this.select = null;
+                        });
+                    }
                     return;
                 }
 
