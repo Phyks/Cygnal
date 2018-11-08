@@ -1,8 +1,9 @@
 <template>
     <div class="alert-wrapper">
-        <v-alert class="alert" type="error" v-model="showAlert" :dismissible="true" transition="slide-y-transition">
-            {{ error }}
+        <v-alert class="alert" :type="type" v-model="showAlert" :dismissible="true" transition="slide-y-transition">
+            {{ text }}
             <v-progress-linear
+                v-if="autoDismiss"
                 class="progress"
                 v-model="progressValue"
                 background-opacity="0"
@@ -31,18 +32,26 @@ export default {
             }
         },
     },
-    mounted() {
-        this.interval = setInterval(() => {
-            this.progressValue -= 4;
-            if (this.progressValue < 0) {
-                this.showAlert = false;
-                this.clearTimer();
-            }
-        }, 100);
+    updated() {
+        this.clearTimer();
+        if (this.autoDismiss) {
+            this.interval = setInterval(() => {
+                this.progressValue -= 4;
+                if (this.progressValue < 0) {
+                    this.showAlert = false;
+                    this.clearTimer();
+                }
+            }, 100);
+        }
     },
     props: {
-        error: String,
+        autoDismiss: {
+            type: Boolean,
+            default: true,
+        },
+        text: String,
         onDismiss: Function,
+        type: String,
     },
     watch: {
         showAlert(newAlert) {
@@ -58,7 +67,7 @@ export default {
 .alert-wrapper {
     position: absolute;
     top: 0;
-    z-index: 9999;
+    z-index: 1001;
     width: 100%;
 }
 

@@ -57,7 +57,7 @@
             </div>
         </v-toolbar>
         <v-content>
-            <Alert :error="$t('reportDialog.unableToSendDescription')" :onDismiss="dismissError" v-if="hasReportError"></Alert>
+            <Alert type="error" :text="$t('reportDialog.unableToSend')" :onDismiss="dismissError" v-if="hasReportError"></Alert>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <ReportIssueModal v-model="isReportIssueModalShown"></ReportIssueModal>
             <SearchModal v-model="isSearchModalShown"></SearchModal>

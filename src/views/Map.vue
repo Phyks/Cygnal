@@ -2,7 +2,9 @@
     <v-container fluid fill-height class="no-padding">
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
-            <Alert :error="error" v-if="error" :onDismiss="clearError"></Alert>
+            <Alert type="error" :text="error" v-if="error" :onDismiss="clearError"></Alert>
+            <Alert :autoDismiss="false" type="info" :text="$t('geolocation.fetching')" v-if="hasPromptedGeolocation && !hasGeolocationTracking && !hasGeolocationError"></Alert>
+            <!-- TODO: Show an alert when fetching geolocation -->
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
                     :accuracy="currentLocation.hdop"
@@ -170,6 +172,8 @@ export default {
     },
     data() {
         return {
+            hasGeolocationError: false,
+            hasPromptedGeolocation: false,
             isReportDialogVisible: false,
             noSleep: null,
             notification: null,
@@ -226,13 +230,17 @@ export default {
 
                 watchID = navigator.geolocation.watchPosition(
                     setPosition,
-                    handlePositionError,
+                    (error) => {
+                        this.hasGeolocationError = true;
+                        handlePositionError(error);
+                    },
                     {
                         enableHighAccuracy: true,
                         maximumAge: 30000,
                     },
                 );
             }
+            this.hasPromptedGeolocation = true;
             this.$store.dispatch('setLocationWatcherId', { id: watchID });
         },
         onMapCenterManualUpdate(center) {

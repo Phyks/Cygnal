@@ -60,7 +60,6 @@
         "discard": "Discard",
         "ok": "OK",
         "or": "or",
-        "retry": "Retry",
         "spaceBeforeDoublePunctuations": "&#8203;"
     },
     "notification": {
@@ -89,8 +88,7 @@
         "Reported": "Reported {fromNow}."
     },
     "reportDialog": {
-        "unableToSendDescription": "There was a network issue preventing from sending the latest report.",
-        "unableToSendTitle": "Unable to send latest report"
+        "unableToSend": "There was a network issue preventing from sending the latest report."
     },
     "reportIssueModal": {
         "description": "Description",
