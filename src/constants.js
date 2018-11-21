@@ -31,10 +31,8 @@ export const UPDATE_REPORTS_DISTANCE_THRESHOLD = 500; // in meters
 // Minimal number of downvotes needed for a report to be masked
 export const REPORT_DOWNVOTES_THRESHOLD = 1;
 
-// Earth radius as recommended by the International Union of Geodesy and
-// Geophysics
-// https://rosettacode.org/wiki/Haversine_formula
-export const EARTH_RADIUS = 6371000; // in meters
+// Earth radius at equator
+export const EARTH_RADIUS = 6378137; // in meters
 
 // Keep reports only in a given radius around map center.
 export const KEEP_REPORTS_METERS_AROUND = 10000; // in meters
