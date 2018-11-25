@@ -73,7 +73,7 @@ def preprocess_hauts_de_seine(data):
             out.append(new_item)
         except KeyError as exc:
             logging.warning(
-                'Invalid item %s in Lille data: %s.',
+                'Invalid item %s in Hauts-de-Seine data: %s.',
                 item.get('recordid', '?'),
                 exc
             )
