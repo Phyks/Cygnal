@@ -28,6 +28,7 @@
 
 <script>
 import Feature from 'ol/Feature';
+import GeoJSON from 'ol/format/GeoJSON';
 import Map from 'ol/Map';
 import LineString from 'ol/geom/LineString';
 import Point from 'ol/geom/Point';
@@ -47,7 +48,7 @@ import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import REPORT_TYPES from '@/report-types';
-import { distance } from '@/tools';
+import { pointToGeometryDistance } from '@/tools/geometry';
 
 const MAIN_VECTOR_LAYER_NAME = 'MAIN';
 const REPORTS_MARKERS_VECTOR_LAYER_NAME = 'REPORTS_MARKERS';
@@ -168,22 +169,48 @@ export default {
                 return;
             }
 
-            // Create a Feature for the marker, to add it on the map
+            // Read geometry from the marker object
+            const geometry = (new GeoJSON()).readGeometry(
+                marker.geometry,
+            );
+            geometry.transform('EPSG:4326', 'EPSG:3857');
             const reportMarkerFeature = new Feature({
-                geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                geometry,
                 id: marker.id,
             });
-            reportMarkerFeature.setStyle(new Style({
-                image: new Icon({
-                    anchor: constants.ICON_ANCHOR,
-                    scale: (
-                        marker.id === this.reportDetailsID
-                            ? constants.LARGE_ICON_SCALE
-                            : constants.NORMAL_ICON_SCALE
-                    ),
-                    src: REPORT_TYPES[marker.type].marker,
+            // Create a Feature for the marker, to add it on the map
+            reportMarkerFeature.setStyle([
+                new Style({
+                    stroke: new Stroke({
+                        color: (
+                            marker.id === this.reportDetailsID
+                                ? `rgb(${constants.MARKER_AREA_HL_COLOR.join(',')})`
+                                : `rgb(${constants.MARKER_AREA_NORMAL_COLOR.join(',')})`
+                        ),
+                        lineDash: [4],
+                        width: 3,
+                    }),
+                    fill: new Fill({
+                        color: (
+                            marker.id === this.reportDetailsID
+                                ? `rgb(${constants.MARKER_AREA_HL_COLOR.join(',')}, 0.3)`
+                                : `rgb(${constants.MARKER_AREA_NORMAL_COLOR.join(',')}, 0.3)`
+                        ),
+                    }),
                 }),
-            }));
+                new Style({
+                    image: new Icon({
+                        anchor: constants.ICON_ANCHOR,
+                        scale: (
+                            marker.id === this.reportDetailsID
+                                ? constants.LARGE_ICON_SCALE
+                                : constants.NORMAL_ICON_SCALE
+                        ),
+                        src: REPORT_TYPES[marker.type].marker,
+                    }),
+                    geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                }),
+            ]);
             // Add the marker to the map and keep a reference to it
             this.reportsMarkersFeatures[marker.id] = reportMarkerFeature;
             this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
@@ -507,34 +534,6 @@ export default {
 
             const view = this.map.getView();
             if (!this.isRecenterButtonShown && newOlCenter.every(item => item !== null)) {
-                // Eventually display closest report
-                const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
-                const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
-                if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
-                    // Compute all markers distance, filter by max distance
-                    const distances = this.markers.map(
-                        marker => ({
-                            id: marker.id,
-                            distance: distance(this.center, marker.latLng),
-                        }),
-                    ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
-                    const closestReport = distances.reduce( // Get the closest one
-                        (acc, item) => (
-                            item.distance < acc.distance ? item : acc
-                        ),
-                        { distance: Number.MAX_VALUE, id: -1 },
-                    );
-                    // TODO: Take into account the history of positions for the direction
-                    if (closestReport.id !== -1) {
-                        // Only open the details if the box was not just closed
-                        if (this.$store.state.reportDetails.previousId !== closestReport.id) {
-                            this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
-                        }
-                    } else {
-                        this.$store.dispatch('hideReportDetails');
-                    }
-                }
-
                 // Update view
                 view.setCenter(newOlCenter);
                 if (this.isInAutorotateMap) {
@@ -573,6 +572,35 @@ export default {
             // Update view center
             if (!this.isRecenterButtonShown) {
                 this.map.getView().setCenter(newOlPosition);
+            }
+
+            // Eventually display closest report
+            const isReportDetailsAlreadyShown = this.$store.state.reportDetails.id;
+            const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
+            if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
+                // Compute all markers distance, filter by max distance
+                // TODO: Compute distance to geometry, not to point
+                const distances = this.markers.map(
+                    marker => ({
+                        id: marker.id,
+                        distance: pointToGeometryDistance(this.positionLatLng, marker.geometry),
+                    }),
+                ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
+                const closestReport = distances.reduce( // Get the closest one
+                    (acc, item) => (
+                        item.distance < acc.distance ? item : acc
+                    ),
+                    { distance: Number.MAX_VALUE, id: -1 },
+                );
+                // TODO: Take into account the history of positions for the direction
+                if (closestReport.id !== -1) {
+                    // Only open the details if the box was not just closed
+                    if (this.$store.state.reportDetails.previousId !== closestReport.id) {
+                        this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
+                    }
+                } else {
+                    this.$store.dispatch('hideReportDetails');
+                }
             }
         },
         reportDetailsID(newID, oldID) {

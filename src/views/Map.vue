@@ -61,7 +61,8 @@ import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 
 import * as constants from '@/constants';
-import { distance, mockLocation } from '@/tools';
+import { mockLocation } from '@/tools';
+import { pointToPointDistance } from '@/tools/geometry';
 
 import i18n from '@/i18n';
 import store from '@/store';
@@ -176,6 +177,14 @@ export default {
                 id: report.id,
                 type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],
+                geometry: (
+                    report.attributes.shape_geojson
+                        ? JSON.parse(report.attributes.shape_geojson)
+                        : {
+                            type: 'Point',
+                            coordinates: [report.attributes.lng, report.attributes.lat],
+                        }
+                ),
             }));
         },
     },
@@ -263,7 +272,7 @@ export default {
                 && lastFetchingLocation[0] !== null
                 && lastFetchingLocation[1] !== null
             ) {
-                distanceFromPreviousPoint = distance(
+                distanceFromPreviousPoint = pointToPointDistance(
                     [lastFetchingLocation[0], lastFetchingLocation[1]],
                     [center[0], center[1]],
                 );

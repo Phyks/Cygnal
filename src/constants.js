@@ -4,6 +4,9 @@ export const NORMAL_ICON_SCALE = 0.625;
 export const LARGE_ICON_SCALE = 1.0;
 export const ICON_ANCHOR = [0.5, 1.0];
 
+export const MARKER_AREA_HL_COLOR = [255, 152, 0];
+export const MARKER_AREA_NORMAL_COLOR = [33, 33, 33];
+
 // Display order of the report types
 export const REPORT_TYPES_ORDER = ['gcum', 'interrupt', 'obstacle', 'pothole', 'accident', 'misc'];
 

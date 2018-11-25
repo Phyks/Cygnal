@@ -14,27 +14,6 @@ if (process.env.NODE_ENV !== 'production') {
     mockGPX = require('mock_gpx.json'); // eslint-disable-line global-require
 }
 
-/**
- * Cheap distance computation based on
- * https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016.
- */
-export function distance(latLng1, latLng2) {
-    const cos = Math.cos((latLng1[0] + latLng2[0]) / 2 * Math.PI / 180);
-    const cos2 = 2 * cos * cos - 1;
-    const cos3 = 2 * cos * cos2 - cos;
-    const cos4 = 2 * cos * cos3 - cos2;
-    const cos5 = 2 * cos * cos4 - cos3;
-
-    // Multipliers for converting longitude and latitude degrees into distance
-    // (http://1.usa.gov/1Wb1bv7)
-    const kx = 1000 * (111.41513 * cos - 0.09455 * cos3 + 0.00012 * cos5);
-    const ky = 1000 * (111.13209 - 0.56605 * cos2 + 0.0012 * cos4);
-
-    const dx = (latLng1[1] - latLng2[1]) * kx;
-    const dy = (latLng1[0] - latLng2[0]) * ky;
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
 export function mockLocationRandom() {
     let heading = null;
     if (Math.random() > 0.25) {

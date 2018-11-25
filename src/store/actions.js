@@ -1,6 +1,6 @@
 import * as api from '@/api';
 import * as constants from '@/constants';
-import { distance } from '@/tools';
+import { pointToPointDistance } from '@/tools/geometry';
 import i18n from '@/i18n';
 
 import {
@@ -34,7 +34,7 @@ export function fetchReports({ commit, state }) {
                     if (report.attributes.downvotes >= constants.REPORT_DOWNVOTES_THRESHOLD) {
                         return false;
                     }
-                    return distance(
+                    return pointToPointDistance(
                         [report.attributes.lat, report.attributes.lng],
                         state.map.center,
                     ) < 10000;

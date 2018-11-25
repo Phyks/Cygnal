@@ -17,7 +17,8 @@ import requests
 
 from functools import partial
 
-from shapely.geometry import LineString, MultiPolygon, Point, Polygon
+from shapely.geometry import (LineString, MultiPolygon, MultiLineString,
+                              MultiPoint, Point)
 from shapely.geometry import mapping, shape
 from shapely.ops import transform
 
@@ -596,22 +597,49 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
 
             # Report geographical shape
             if 'geo_shape' in fields:
-                geo_shape = shape(fields['geo_shape'])
+                maybe_multi_geo_shape = shape(fields['geo_shape'])
             else:
-                geo_shape = shape(item['geometry'])
+                maybe_multi_geo_shape = shape(item['geometry'])
 
-            if isinstance(geo_shape, MultiPolygon):
-                # Split multipolygons into multiple polygons
+            geo_shapes = []
+            if (
+                isinstance(maybe_multi_geo_shape, MultiPolygon)
+                or isinstance(maybe_multi_geo_shape, MultiPoint)
+            ):
+                # Split MultiPolygon into multiple Polygon
+                # Same for MultiPoint
                 positions = [
                     p.centroid
-                    for p in geo_shape
+                    for p in maybe_multi_geo_shape
                 ]
-            else:
+                geo_shapes = [
+                    p
+                    for p in maybe_multi_geo_shape
+                ]
+            elif isinstance(maybe_multi_geo_shape, MultiLineString):
+                # Split MultiLineString into multiple LineString
                 positions = [
-                    geo_shape.centroid
+                    p.interpolate(0.5, normalized=True)
+                    for p in maybe_multi_geo_shape
                 ]
+                geo_shapes = [
+                    p
+                    for p in maybe_multi_geo_shape
+                ]
+            elif isinstance(maybe_multi_geo_shape, LineString):
+                # LineString, interpolate midpoint
+                positions = [
+                    maybe_multi_geo_shape.interpolate(0.5, normalized=True)
+                ]
+                geo_shapes = [maybe_multi_geo_shape]
+            else:
+                # Polygon or Point
+                positions = [
+                    maybe_multi_geo_shape.centroid
+                ]
+                geo_shapes = [maybe_multi_geo_shape]
 
-            for position in positions:
+            for (geo_shape, position) in zip(geo_shapes, positions):
                 # Check if this precise position is already in the database
                 if transform(project, position) in current_reports_points:
                     logging.info(
