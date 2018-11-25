@@ -176,6 +176,14 @@ export default {
                 id: report.id,
                 type: report.attributes.type,
                 latLng: [report.attributes.lat, report.attributes.lng],
+                geometry: (
+                    report.attributes.shape_geojson
+                        ? JSON.parse(report.attributes.shape_geojson)
+                        : {
+                            type: 'Point',
+                            coordinates: [report.attributes.lng, report.attributes.lat],
+                        }
+                ),
             }));
         },
     },

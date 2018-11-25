@@ -28,6 +28,7 @@
 
 <script>
 import Feature from 'ol/Feature';
+import GeoJSON from 'ol/format/GeoJSON';
 import Map from 'ol/Map';
 import LineString from 'ol/geom/LineString';
 import Point from 'ol/geom/Point';
@@ -168,22 +169,48 @@ export default {
                 return;
             }
 
-            // Create a Feature for the marker, to add it on the map
+            // Read geometry from the marker object
+            const geometry = (new GeoJSON()).readGeometry(
+                marker.geometry,
+            );
+            geometry.transform('EPSG:4326', 'EPSG:3857');
             const reportMarkerFeature = new Feature({
-                geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                geometry,
                 id: marker.id,
             });
-            reportMarkerFeature.setStyle(new Style({
-                image: new Icon({
-                    anchor: constants.ICON_ANCHOR,
-                    scale: (
-                        marker.id === this.reportDetailsID
-                            ? constants.LARGE_ICON_SCALE
-                            : constants.NORMAL_ICON_SCALE
-                    ),
-                    src: REPORT_TYPES[marker.type].marker,
+            // Create a Feature for the marker, to add it on the map
+            reportMarkerFeature.setStyle([
+                new Style({
+                    stroke: new Stroke({
+                        color: (
+                            marker.id === this.reportDetailsID
+                                ? `rgb(${constants.MARKER_AREA_HL_COLOR.join(',')})`
+                                : `rgb(${constants.MARKER_AREA_NORMAL_COLOR.join(',')})`
+                        ),
+                        lineDash: [4],
+                        width: 3,
+                    }),
+                    fill: new Fill({
+                        color: (
+                            marker.id === this.reportDetailsID
+                                ? `rgb(${constants.MARKER_AREA_HL_COLOR.join(',')}, 0.3)`
+                                : `rgb(${constants.MARKER_AREA_NORMAL_COLOR.join(',')}, 0.3)`
+                        ),
+                    }),
                 }),
-            }));
+                new Style({
+                    image: new Icon({
+                        anchor: constants.ICON_ANCHOR,
+                        scale: (
+                            marker.id === this.reportDetailsID
+                                ? constants.LARGE_ICON_SCALE
+                                : constants.NORMAL_ICON_SCALE
+                        ),
+                        src: REPORT_TYPES[marker.type].marker,
+                    }),
+                    geometry: new Point(fromLonLat([marker.latLng[1], marker.latLng[0]])),
+                }),
+            ]);
             // Add the marker to the map and keep a reference to it
             this.reportsMarkersFeatures[marker.id] = reportMarkerFeature;
             this.reportsMarkersVectorSource.addFeature(reportMarkerFeature);
@@ -512,6 +539,7 @@ export default {
                 const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
                 if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
                     // Compute all markers distance, filter by max distance
+                    // TODO: Compute distance to geometry, not to point
                     const distances = this.markers.map(
                         marker => ({
                             id: marker.id,
