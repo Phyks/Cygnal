@@ -5,7 +5,9 @@
                 <h2 class="display-1 pa-3">{{ $t('intro.welcome') }}</h2>
                 <p>{{ $t('about.summary') }}</p>
                 <p><img src="@/assets/logo.svg" alt="Logo"/></p>
-                <v-btn role="button" round color="green" dark @click="step += 1">{{ $t('intro.next') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="step += 1">
+                    {{ $t('intro.next') }}
+                </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap class="text-xs-center blue lighten-2 px-2" v-if="step == 1">
@@ -20,7 +22,9 @@
 
                 <ReportsDescription></ReportsDescription>
 
-                <v-btn role="button" round color="green" dark @click="step += 1">{{ $t('intro.next') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="step += 1">
+                    {{ $t('intro.next') }}
+                </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap class="text-xs-center blue lighten-2" v-if="step == 2">
@@ -33,14 +37,18 @@
                     </v-flex>
                 </v-layout>
 
-                <v-btn role="button" round color="green" dark @click="step += 1">{{ $t('intro.next') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="step += 1">
+                    {{ $t('intro.next') }}
+                </v-btn>
             </v-flex>
         </v-layout>
         <v-layout row wrap class="text-xs-center blue lighten-2" v-if="step == 3">
             <v-flex xs8 offset-xs2>
                 <h2 class="headline pa-3">{{ $t('intro.ready') }}</h2>
                 <p><img src="@/assets/logo.svg" alt="Logo"/></p>
-                <v-btn role="button" round color="green" dark @click="goToMap">{{ $t('intro.startReporting') }}</v-btn>
+                <v-btn role="button" round color="green" dark @click="goToMap">
+                    {{ $t('intro.startReporting') }}
+                </v-btn>
             </v-flex>
         </v-layout>
     </v-container>

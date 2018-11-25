@@ -1,6 +1,11 @@
 <template>
     <div>
-        <Alert type="error" :text="$t('reportDialog.unableToSend')" :onDismiss="dismissError" v-if="hasError"></Alert>
+        <Alert
+            type="error"
+            :text="$t('reportDialog.unableToSend')"
+            :onDismiss="dismissError"
+            v-if="hasError"
+            ></Alert>
         <v-bottom-sheet v-model="isActive" id="reportCardSheet">
             <v-card>
                 <v-container fluid>

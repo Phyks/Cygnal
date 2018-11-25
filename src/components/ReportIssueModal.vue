@@ -4,8 +4,15 @@
             <v-card-title class="headline">{{ $t('reportIssueModal.reportIssue') }}</v-card-title>
 
             <v-card-text>
-                <v-textarea :label="$t('reportIssueModal.description')" v-model="description"></v-textarea>
-                <v-checkbox v-if="isIncludeGPXVisible" :label="$t('reportIssueModal.includeGPX')" v-model="shouldIncludeGPX"></v-checkbox>
+                <v-textarea
+                    :label="$t('reportIssueModal.description')"
+                    v-model="description"
+                    ></v-textarea>
+                <v-checkbox
+                    v-if="isIncludeGPXVisible"
+                    :label="$t('reportIssueModal.includeGPX')"
+                    v-model="shouldIncludeGPX"
+                    ></v-checkbox>
             </v-card-text>
 
             <v-card-actions>

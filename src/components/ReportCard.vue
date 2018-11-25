@@ -17,13 +17,31 @@
                     </v-layout>
                 </v-flex>
                 <v-flex xs2 class="text-xs-center">
-                    <v-btn role="button" :aria-label="$t('buttons.upvote')" color="green" dark small icon class="smallButton" @click.stop="upvote">
+                    <v-btn
+                        role="button"
+                        :aria-label="$t('buttons.upvote')"
+                        color="green"
+                        dark
+                        small
+                        icon
+                        class="smallButton"
+                        @click.stop="upvote"
+                        >
                         <v-icon>thumb_up</v-icon>
                     </v-btn>
                 </v-flex>
 
                 <v-flex xs3 class="text-xs-center">
-                    <v-btn role="button" :aria-label="$t('buttons.downvote')" color="red" dark medium icon class="mediumButton" @click.stop="downvote">
+                    <v-btn
+                        role="button"
+                        :aria-label="$t('buttons.downvote')"
+                        color="red"
+                        dark
+                        medium
+                        icon
+                        class="mediumButton"
+                        @click.stop="downvote"
+                        >
                         <v-icon>thumb_down</v-icon>
                     </v-btn>
                 </v-flex>

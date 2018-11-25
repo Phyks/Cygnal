@@ -1,12 +1,21 @@
 <template>
     <Modal v-model="isActive">
         <v-card>
-            <v-card-title class="headline">{{ $t('shareMapViewModal.shareCurrentMapView') }}</v-card-title>
+            <v-card-title class="headline">
+                {{ $t('shareMapViewModal.shareCurrentMapView') }}
+            </v-card-title>
 
             <v-card-text>
                 {{ $t('shareMapViewModal.copyURLToShareCurrentMapView') }}
 
-                <v-text-field ref="shareLinkRef" readonly :hint="shareLinkHint" @click="copyShareLink" v-model="shareMapViewURL" prepend-icon="share"></v-text-field>
+                <v-text-field
+                    ref="shareLinkRef"
+                    readonly
+                    :hint="shareLinkHint"
+                    @click="copyShareLink"
+                    v-model="shareMapViewURL"
+                    prepend-icon="share"
+                    ></v-text-field>
             </v-card-text>
 
             <v-card-actions>

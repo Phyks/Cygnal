@@ -3,7 +3,12 @@
         <v-layout row wrap fill-height>
             <ReportCard></ReportCard>
             <Alert type="error" :text="error" v-if="error" :onDismiss="clearError"></Alert>
-            <Alert :autoDismiss="false" type="info" :text="$t('geolocation.fetching')" v-if="hasPromptedGeolocation && !hasGeolocationTracking && !hasGeolocationError"></Alert>
+            <Alert
+                :autoDismiss="false"
+                type="info"
+                :text="$t('geolocation.fetching')"
+                v-if="hasPromptedGeolocation && !hasGeolocationTracking && !hasGeolocationError"
+                ></Alert>
             <!-- TODO: Show an alert when fetching geolocation -->
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
@@ -37,7 +42,11 @@
                     >
                     <v-icon>report_problem</v-icon>
                 </v-btn>
-                <ReportDialog v-model="isReportDialogVisible" :latLng="reportLatLng" :onHide="resetReportLatLng"></ReportDialog>
+                <ReportDialog
+                    v-model="isReportDialogVisible"
+                    :latLng="reportLatLng"
+                    :onHide="resetReportLatLng"
+                    ></ReportDialog>
             </v-flex>
         </v-layout>
     </v-container>

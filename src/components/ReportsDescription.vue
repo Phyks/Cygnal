@@ -1,8 +1,13 @@
 <template>
     <table class="margin-auto">
-        <tr v-for="type in REPORT_TYPES_ORDER">
+        <tr v-for="type in REPORT_TYPES_ORDER" :key="type">
             <td class="pa-2"><img class="reportIcon" :src="REPORT_TYPES[type].image"/></td>
-            <td class="pa-2 text-xs-left"><strong>{{ $t(REPORT_TYPES[type].label) }}</strong><span v-html="$t('misc.spaceBeforeDoublePunctuations')"></span>: {{ $t(REPORT_TYPES[type].description) }}</td>
+            <td class="pa-2 text-xs-left">
+                <strong>{{ $t(REPORT_TYPES[type].label) }}</strong><span
+                    v-html="$t('misc.spaceBeforeDoublePunctuations')"
+                    ></span>:
+                {{ $t(REPORT_TYPES[type].description) }}
+            </td>
         </tr>
     </table>
 </template>

@@ -27,8 +27,8 @@ export function distance(latLng1, latLng2) {
 
     // Multipliers for converting longitude and latitude degrees into distance
     // (http://1.usa.gov/1Wb1bv7)
-    kx = 1000 * (111.41513 * cos - 0.09455 * cos3 + 0.00012 * cos5);
-    ky = 1000 * (111.13209 - 0.56605 * cos2 + 0.0012 * cos4);
+    const kx = 1000 * (111.41513 * cos - 0.09455 * cos3 + 0.00012 * cos5);
+    const ky = 1000 * (111.13209 - 0.56605 * cos2 + 0.0012 * cos4);
 
     const dx = (latLng1[1] - latLng2[1]) * kx;
     const dy = (latLng1[0] - latLng2[0]) * ky;

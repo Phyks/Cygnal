@@ -24,7 +24,11 @@
                     <v-icon>cloud_upload</v-icon>
                 </v-badge>
             </v-btn>
-            <v-menu offset-y class="menu" v-if="$route.name === 'Onboarding' || $route.name === 'Map' || $route.name === 'SharedMap'">
+            <v-menu
+                offset-y
+                class="menu"
+                v-if="showMenu"
+                >
                 <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
                     <v-icon>more_vert</v-icon>
                 </v-btn>
@@ -53,11 +57,20 @@
                 <v-icon>arrow_back</v-icon>
             </v-btn>
             <div>
-                <v-progress-linear v-if="isLoading" :indeterminate="true" class="progressBar"></v-progress-linear>
+                <v-progress-linear
+                    v-if="isLoading"
+                    :indeterminate="true"
+                    class="progressBar"
+                    ></v-progress-linear>
             </div>
         </v-toolbar>
         <v-content>
-            <Alert type="error" :text="$t('reportDialog.unableToSend')" :onDismiss="dismissError" v-if="hasReportError"></Alert>
+            <Alert
+                type="error"
+                :text="$t('reportDialog.unableToSend')"
+                :onDismiss="dismissError"
+                v-if="hasReportError"
+                ></Alert>
             <ShareMapViewModal v-model="isShareMapViewModalShown"></ShareMapViewModal>
             <ReportIssueModal v-model="isReportIssueModalShown"></ReportIssueModal>
             <SearchModal v-model="isSearchModalShown"></SearchModal>
@@ -94,6 +107,13 @@ export default {
             return (
                 this.$store.state.map.center.every(item => item !== null)
                 || this.$store.getters.getLastLocation
+            );
+        },
+        showMenu() {
+            return (
+                this.$route.name === 'Onboarding'
+                || this.$route.name === 'Map'
+                || this.$route.name === 'SharedMap'
             );
         },
         unsentReportsLength() {

@@ -4,7 +4,7 @@
             <v-container fill-height fluid class="pa-0">
                 <v-layout fill-height>
                     <v-flex xs12 class="text-xs-center">
-                        <img :src="imageSrc" class="icon"></img>
+                        <img :src="imageSrc" class="icon"/>
                         <p>{{ label }}</p>
                     </v-flex>
                 </v-layout>

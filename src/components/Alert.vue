@@ -1,6 +1,12 @@
 <template>
     <div class="alert-wrapper">
-        <v-alert class="alert" :type="type" v-model="showAlert" :dismissible="true" transition="slide-y-transition">
+        <v-alert
+            class="alert"
+            :type="type"
+            v-model="showAlert"
+            :dismissible="true"
+            transition="slide-y-transition"
+            >
             {{ text }}
             <v-progress-linear
                 v-if="autoDismiss"
