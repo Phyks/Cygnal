@@ -600,33 +600,16 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
             else:
                 geo_shape = shape(item['geometry'])
 
-            if isinstance(geo_shape, Point):
-                # Single point for the item, add a report on it
-                positions = [geo_shape]
-            elif isinstance(geo_shape, LineString):
-                # LineString (e.g. along a way), add a report at each end
-                # TODO: More positions, put a report at each intersection?
-                positions = [
-                    Point(geo_shape.coords[0]),
-                    Point(geo_shape.coords[-1])
-                ]
-            elif isinstance(geo_shape, Polygon):
-                # TODO: Finer position, put a report at intersections?
-                positions = [
-                    geo_shape.centroid,
-                ]
-            elif isinstance(geo_shape, MultiPolygon):
-                # TODO: Finer position, put a report at intersections?
+            if isinstance(geo_shape, MultiPolygon):
+                # Split multipolygons into multiple polygons
                 positions = [
                     p.centroid
                     for p in geo_shape
                 ]
             else:
-                logging.warning(
-                    'Unsupported geometry for record %s: %s.',
-                    (item['recordid'], geo_shape)
-                )
-                continue
+                positions = [
+                    geo_shape.centroid
+                ]
 
             for position in positions:
                 # Check if this precise position is already in the database
