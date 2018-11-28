@@ -61,7 +61,8 @@ import ReportCard from '@/components/ReportCard.vue';
 import ReportDialog from '@/components/ReportDialog/index.vue';
 
 import * as constants from '@/constants';
-import { distance, mockLocation } from '@/tools';
+import { mockLocation } from '@/tools';
+import { pointToPointDistance } from '@/tools/geometry';
 
 import i18n from '@/i18n';
 import store from '@/store';

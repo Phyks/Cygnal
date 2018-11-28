@@ -48,7 +48,7 @@ import compassNorthIcon from '@/assets/compassNorth.svg';
 import unknownMarkerIcon from '@/assets/unknownMarker.svg';
 import * as constants from '@/constants';
 import REPORT_TYPES from '@/report-types';
-import { distance } from '@/tools';
+import { pointToGeometryDistance, pointToPointDistance } from '@/tools/geometry';
 
 const MAIN_VECTOR_LAYER_NAME = 'MAIN';
 const REPORTS_MARKERS_VECTOR_LAYER_NAME = 'REPORTS_MARKERS';
@@ -543,7 +543,7 @@ export default {
                     const distances = this.markers.map(
                         marker => ({
                             id: marker.id,
-                            distance: distance(this.center, marker.latLng),
+                            distance: pointToGeometryDistance(this.center, marker.geometry),
                         }),
                     ).filter(item => item.distance < constants.MIN_DISTANCE_REPORT_DETAILS);
                     const closestReport = distances.reduce( // Get the closest one

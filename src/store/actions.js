@@ -1,6 +1,6 @@
 import * as api from '@/api';
 import * as constants from '@/constants';
-import { distance } from '@/tools';
+import { pointToPointDistance } from '@/tools/geometry';
 import i18n from '@/i18n';
 
 import {
