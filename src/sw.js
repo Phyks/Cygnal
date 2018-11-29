@@ -82,6 +82,10 @@ global.self.addEventListener('fetch', (event) => {
 
     // For the other requests, try to match it in the cache, otherwise do a
     // network call
+    if (DEBUG) {
+        // Never match from cache in production
+        return;
+    }
     const resource = global.caches.open(CACHE_NAME).then(
         cache => cache.match(request).then(
             (response) => {
