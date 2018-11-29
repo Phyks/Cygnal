@@ -29,7 +29,7 @@ def run_migration():
     migrate(
         migrator.add_column(
             'report', 'source',
-            peewee.CharField(max_length=255)
+            peewee.CharField(max_length=255, default='')
         ),
         migrator.add_column(
             'report', 'shape_geojson',
