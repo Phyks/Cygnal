@@ -4,12 +4,13 @@ import interruptMarker from '@/assets/interruptMarker.svg';
 import miscMarker from '@/assets/miscMarker.svg';
 import obstacleMarker from '@/assets/obstacleMarker.svg';
 import potholeMarker from '@/assets/potholeMarker.svg';
-import accidentIcon from '@/assets/accident.svg';
-import gcumIcon from '@/assets/gcum.svg';
-import interruptIcon from '@/assets/interrupt.svg';
-import miscIcon from '@/assets/misc.svg';
-import obstacleIcon from '@/assets/obstacle.svg';
-import potholeIcon from '@/assets/pothole.svg';
+import accidentIcon from '@/assets/reportIcons/accident.svg';
+import gcumIcon from '@/assets/reportIcons/gcum.svg';
+import interruptIcon from '@/assets/reportIcons/interrupt.svg';
+import miscIcon from '@/assets/reportIcons/misc.svg';
+import obstacleIcon from '@/assets/reportIcons/obstacle.svg';
+import potholeIcon from '@/assets/reportIcons/pothole.svg';
+
 
 export default {
     accident: {

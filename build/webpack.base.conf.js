@@ -2,6 +2,7 @@
 const path = require('path')
 const svg2png = require('svg2png')
 const webpack = require('webpack')
+const SpritePlugin = require('svg-sprite-loader/plugin');
 
 const AppManifestWebpackPlugin = require('app-manifest-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -52,7 +53,7 @@ module.exports = {
         },
         extensions: ['.js', '.vue', '.json'],
         // Load mock_gpx.json from tests first, tests/default then
-        modules: ['tests/', 'tests/default', 'node_modules'],
+        modules: ['tests/', 'tests/default', 'node_modules', 'spritesmith-generated'],
     },
     stats: {
         children: false,
@@ -141,6 +142,7 @@ module.exports = {
             },
             {
                 test: /\.svg$/,
+                exclude: /assets\/reportIcons/,
                 use: [
                     {
                         loader: "svg-url-loader",
@@ -157,6 +159,26 @@ module.exports = {
                             disable: process.env.NODE_ENV !== 'production',
                         },
                     },
+                ],
+            },
+            // Create a sprite with icons from the reports
+            {
+                test: /\.svg$/,
+                include: /assets\/reportIcons/,
+                use: [
+                    {
+                        loader: "svg-sprite-loader",
+                        options: {
+                            extract: true,
+                            publicPath: '/static/',
+                        },
+                    },
+                    {
+                        loader: 'image-webpack-loader',
+                        options: {
+                            disable: process.env.NODE_ENV !== 'production',
+                        },
+                    }
                 ],
             },
             {
@@ -190,6 +212,7 @@ module.exports = {
         child_process: 'empty',
     },
     plugins: [
+        new SpritePlugin(),
         new ServiceWorkerWebpackPlugin({
             entry: path.join(__dirname, '../src/sw.js'),
         }),
