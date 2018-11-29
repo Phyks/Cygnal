@@ -86,6 +86,11 @@ command might be useful to help you determine which components are used across
 the code.
 
 
+### Unittests
+
+Unittests are written in `.spec.js` files placed next to the tested JS module.
+
+
 ## Translating
 
 Translation is done directly on [Zanata](https://translate.zanata.org/iteration/view/cyclassist/master?dswid=7345).

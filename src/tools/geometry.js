@@ -13,25 +13,12 @@
  * @note                    This is used with latitude and longitude in mind,
  *                          hence the names, but is much more generic and can
  *                          be used with any (X, Y) coordinates.
- *
- * Examples:
- * @code
- *      const ring = [[0, 0], [0, 1], [1, 1], [0.5, 0.5], [1, 0], [0, 0]];
- *      isInRing([0, 0], ring, false) === true
- *      isInRing([0, 0], ring, true) === false
- *      isInRing([0.25, 0.25], ring, false) === true
- *      isInRing([0.25, 0.25], ring, true) === true
- *      isInRing([0.8, 0.6], ring, true) === false
- *      isInRing([0.8, 0.6], ring, false) === false
- *      isInRing([2, 2], ring, false) === false
- *      isInRing([2, 2], ring, true) === false
- * @endcode
  */
 export function isInRing(latLng, ring, ignoreBoundary) {
     let isInside = false;
 
     // If the ring is a full loop, ignore the duplicate point
-    let openRing = Array.concat([], ring);
+    let openRing = [].concat(ring);
     if (
         openRing[0][0] === openRing[openRing.length - 1][0]
         && openRing[0][1] === openRing[openRing.length - 1][1]
@@ -80,15 +67,6 @@ export function isInRing(latLng, ring, ignoreBoundary) {
  * @note            This is used with latitude and longitude in mind, hence the
  *                  names, but is much more generic and can be used with any
  *                  (X, Y) coordinates.
- *
- * Examples:
- * @code
- *      isInBBox([0.5, 0.5], [0, 0, 1, 1]) === true
- *      isInBBox([0, 1], [0, 0, 1, 1]) === true
- *      isInBBox([1, 0], [0, 0, 1, 1]) === true
- *      isInBBox([2, 0], [0, 0, 1, 1]) === false
- *      isInBBox([0, 2], [0, 0, 1, 1]) === false
- * @endcode
  */
 export function isInBBox(latLng, bbox) {
     return (
@@ -112,11 +90,6 @@ export function isInBBox(latLng, bbox) {
  *                  names, but is much more generic and can be used with any
  *                  (X, Y) coordinates.
  * @note            This works with a polygon or polyline.
- *
- * Examples:
- * @code
- *      computeBBox([[0, 0], [1, 0], [1, 1], [0, 1]]) === [0, 0, 1, 1]
- * @endcode
  */
 export function computeBBox(polygon) {
     const latList = polygon.map(item => item[0]);
@@ -145,19 +118,6 @@ export function computeBBox(polygon) {
  * @note                    This is used with latitude and longitude in mind,
  *                          hence the names, but is much more generic and can
  *                          be used with any (X, Y) coordinates.
- *
- * Examples:
- * @code
- *      const ring = [[0, 0], [0, 1], [1, 1], [0.5, 0.5], [1, 0], [0, 0]];
- *      isWithinPolygon([0, 0], ring, false) === true
- *      isWithinPolygon([0, 0], ring, true) === false
- *      isWithinPolygon([0.25, 0.25], ring, false) === true
- *      isWithinPolygon([0.25, 0.25], ring, true) === true
- *      isWithinPolygon([0.8, 0.6], ring, true) === false
- *      isWithinPolygon([0.8, 0.6], ring, false) === false
- *      isWithinPolygon([2, 2], ring, false) === false
- *      isWithinPolygon([2, 2], ring, true) === false
- * @endcode
  */
 export function isWithinPolygon(latLng, polygon, ignoreBoundary) {
     const shouldIgnoreBoundary = ignoreBoundary || false;
@@ -175,7 +135,6 @@ export function isWithinPolygon(latLng, polygon, ignoreBoundary) {
 }
 
 
-/* eslint-disable max-len */
 /**
  * Cheap distance computation between two points based on
  * https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016.
@@ -184,18 +143,7 @@ export function isWithinPolygon(latLng, polygon, ignoreBoundary) {
  * @param latLng1   A [latitude, longitude] array for the first point.
  * @param latLng2   A [latitude, longitude] array for the second point.
  * @return          The distance in meters.
- *
- * Examples
- * @code
- *      // Vincenty's formula gives 5177.692 meters
- *      Math.abs(pointToPointDistance([48.8171, 2.3186], [48.8454, 2.3746]) - 5177.692) / pointToPointDistance([48.8171, 2.3186], [48.8454, 2.3746]) < 1 / 100
- *      // Vincenty's formula gives 7720.121 meters
- *      Math.abs(pointToPointDistance([50.6314, 3.0027], [50.6271, 3.1116]) - 7720.121) / pointToPointDistance([50.6314, 3.0027], [50.6271, 3.1116]) < 1 / 100
- *      // Vincenty's formula gives 10443.762 meters
- *      Math.abs(pointToPointDistance([42.6722, 2.8508], [42.7093, 2.9679]) -  10443.762) / pointToPointDistance([42.6722, 2.8508], [42.7093, 2.9679]) < 1 / 100
- * @endcode
  */
-/* eslint-enable max-len */
 export function pointToPointDistance(latLng1, latLng2) {
     const cos = Math.cos((latLng1[0] + latLng2[0]) / 2 * Math.PI / 180);
     const cos2 = 2 * cos * cos - 1;
@@ -221,20 +169,12 @@ export function pointToPointDistance(latLng1, latLng2) {
  * @param u     Array of coordinates of the first vector.
  * @param v     Array of coordinates of the second vector.
  * @return      The dot product of the two vectors.
- *
- * Examples:
- * @code
- *      Math.abs(dot([1, 0], [0, 0]) - 0) < Number.EPSILON
- *      Math.abs(dot([1, 0], [1, 0]) - 1) < Number.EPSILON
- *      Math.abs(dot([1, 1], [1, 2]) - 3) < Number.EPSILON
- * @endcode
  */
 export function dot(u, v) {
     return (u[0] * v[0] + u[1] * v[1]);
 }
 
 
-/* eslint-disable max-len */
 /**
  * Compute the distance between a point and a polyLine.
  * Adapted from https://github.com/Turfjs/turf/, licensed under MIT.
@@ -244,26 +184,7 @@ export function dot(u, v) {
  * @param polyLine      A list of [latitude, longitude] arrays for each vertex
  *                      of the polyLine.
  * @return              The distance between the point and the polyLine.
- *
- * Examples:
- * @code
- *      const polyLine = [[48.8105, 2.3088], [48.8098, 2.3218]];
- *
- *      // Any point at the end
- *      Math.abs(pointToLineDistance([48.8105, 2.3088], polyLine) - 0) < Number.EPSILON
- *      Math.abs(pointToLineDistance([48.8098, 2.3218], polyLine) - 0) < Number.EPSILON
- *
- *      // Points in misc positions
- *      Math.abs(pointToLineDistance([48.8170, 2.3188], polyLine) - 780) / 780 < 1 / 100
- *      Math.abs(pointToLineDistance([48.8121, 2.3074], polyLine) - 205) / 205 < 1 / 100
- *      Math.abs(pointToLineDistance([48.8089, 2.3315], polyLine) - 720) / 720 < 5 / 100
- *
- *      // Longer polyLine
- *      Math.abs(pointToLineDistance([48.8098, 2.3218], [[48.8105, 2.3088], [48.8098, 2.3218], [48.8089, 2.3315]]) - 0) < Number.EPSILON
- *      Math.abs(pointToLineDistance([48.82787, 2.32686], [[48.809982, 2.3190774], [48.8176872, 2.3320935], [48.8182127, 2.3323712], [48.8222148, 2.3143633], [48.8222632, 2.314133], [48.8115136, 2.3002323], [48.8113242, 2.3000166], [48.809982, 2.3190774]]) - 900) / 900 < 1 / 100
- * @endcode
  */
-/* eslint-enable max-len */
 export function pointToLineDistance(latLng, polyLine) {
     let distance = Number.POSITIVE_INFINITY;
 
@@ -305,7 +226,6 @@ export function pointToLineDistance(latLng, polyLine) {
 }
 
 
-/* eslint-disable max-len */
 /**
  * Compute the distance between a point and a polygon.
  *
@@ -313,20 +233,7 @@ export function pointToLineDistance(latLng, polyLine) {
  * @param polygon   A list of [latitude, longitude] arrays of the vertices of
  *                  the polygon.
  * @return          The distance between the point and the polygon.
- *
- * Examples:
- * @code
- *      const polygon = [[48.809982, 2.3190774], [48.8176872, 2.3320935], [48.8182127, 2.3323712], [48.8222148, 2.3143633], [48.8222632, 2.314133], [48.8115136, 2.3002323], [48.8113242, 2.3000166], [48.809982, 2.3190774]];
- *
- *      // Point on the ring
- *      Math.abs(pointToPolygonDistance([48.809982, 2.3190774], polygon) - 0) < Number.EPSILON
- *      // Point in the inside
- *      Math.abs(pointToPolygonDistance([48.8161, 2.3169], polygon) - 0) < Number.EPSILON
- *      // Point outside of the ring
- *      Math.abs(pointToPolygonDistance([48.82787, 2.32686], polygon) -  900) / 900 < 1 / 100
- * @endcode
  */
-/* eslint-enable max-len */
 export function pointToPolygonDistance(latLng, polygon) {
     const polygonRing = polygon;
     // Ensure the polygon ring is a full loop
@@ -347,7 +254,6 @@ export function pointToPolygonDistance(latLng, polygon) {
 }
 
 
-/* eslint-disable max-len */
 /**
  * Compute the distance between a point and a GeoJSON geometry.
  *
@@ -356,25 +262,9 @@ export function pointToPolygonDistance(latLng, polygon) {
  *                  "coordinates" keys). Coordinates are GeoJSON-like,
  *                  longitude first and latitude then.
  * @return          The distance between the point and the geometry.
- *
- * Examples:
- * @code
- *      const point = { type: 'Point', coordinates: [2.3746, 48.8454] }
- *      Math.abs(pointToGeometryDistance([48.8171, 2.3186], point) - 5177.692) / 5177.692 < 1 / 100
- *
- *      const lineString = { type: 'LineString', coordinates: [[2.3088, 48.8105], [2.3218, 48.8098]] }
- *      Math.abs(pointToGeometryDistance([48.8170, 2.3188], lineString) - 780) / 780 < 1 / 100
- *
- *      const polygon = { type: 'Polygon', coordinates: [[2.3190774, 48.809982], [2.3320935, 48.8176872], [2.3323712, 48.8182127], [2.3143633, 48.8222148], [2.314133, 48.8222632], [2.3002323, 48.8115136], [2.3000166, 48.8113242], [2.3190774, 48.809982]] }
- *      Math.abs(pointToGeometryDistance([48.82787, 2.32686], polygon) -  900) / 900 < 1 / 100
- *
- *      const unknownGeometry = { type: 'Foobar', coordinates: [48.8454, 2.3746] }
- *      pointToGeometryDistance([48.82787, 2.32686], unknownGeometry) === null
- * @endcode
  */
-/* eslint-enable max-len */
 export function pointToGeometryDistance(latLng, geometry) {
-    const lngLatCoordinates = Array.concat([], geometry.coordinates);
+    const lngLatCoordinates = [].concat(geometry.coordinates);
 
     if (geometry.type === 'Point') {
         return pointToPointDistance(latLng, lngLatCoordinates.reverse());
