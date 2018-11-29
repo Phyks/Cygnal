@@ -579,7 +579,6 @@ export default {
             const isReportDetailsOpenedByUser = this.$store.state.reportDetails.userAsked;
             if (!isReportDetailsAlreadyShown || !isReportDetailsOpenedByUser) {
                 // Compute all markers distance, filter by max distance
-                // TODO: Compute distance to geometry, not to point
                 const distances = this.markers.map(
                     marker => ({
                         id: marker.id,

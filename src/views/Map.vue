@@ -9,7 +9,6 @@
                 :text="$t('geolocation.fetching')"
                 v-if="hasPromptedGeolocation && !hasGeolocationTracking && !hasGeolocationError"
                 ></Alert>
-            <!-- TODO: Show an alert when fetching geolocation -->
             <v-flex xs12 fill-height v-if="mapCenter">
                 <Map
                     :accuracy="currentLocation.hdop"
