@@ -586,8 +586,16 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
 
             # Check that the work is currently being done
             now = arrow.now('Europe/Paris')
-            start_date = arrow.get(fields['date_debut'])
-            end_date = arrow.get(fields['date_fin'])
+            if fields['date_debut']:
+                start_date = arrow.get(fields['date_debut'])
+            else:
+                # Defaults to now if start date is unknown
+                start_date = arrow.get(now)
+            if fields['date_fin']:
+                end_date = arrow.get(fields['date_fin'])
+            else:
+                # Defaults to in a week if start date is unknown
+                end_date = arrow.get(now).shift(days=+7)
             if not (start_date < now < end_date):
                 logging.info(
                     'Ignoring record %s, work not currently in progress.',
@@ -648,8 +656,9 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
                         item['recordid']
                     )
                     continue
-                # Check no similar reports is nearby
-                overlap_area = transform(project, position).buffer(
+                # Check no similar reports is within the area of the report, up
+                # to the report distance.
+                overlap_area = transform(project, geo_shape).buffer(
                     MIN_DISTANCE_REPORT_DETAILS
                 )
                 is_already_inserted = False
