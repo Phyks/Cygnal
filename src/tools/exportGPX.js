@@ -1,5 +1,5 @@
 import FileSaver from 'file-saver';
-import createGPX from 'gps-to-gpx';
+import createGPX from 'gps-to-gpx/es/createGpx';
 
 import { VERSION } from '@/constants';
 import { formatDate } from '@/tools/date';

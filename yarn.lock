@@ -4177,9 +4177,9 @@ got@^8.3.1:
     url-parse-lax "^3.0.0"
     url-to-options "^1.0.1"
 
-"gps-to-gpx@git://github.com/phyks/gps-to-gpx.git#2c9da24ca98ecd520ee75276714d4df337696475":
+"gps-to-gpx@git://github.com/phyks/gps-to-gpx.git#1cb5adf4dd382266d076d7df3cb5aa3a4d7dd27b":
   version "1.4.0"
-  resolved "git://github.com/phyks/gps-to-gpx.git#2c9da24ca98ecd520ee75276714d4df337696475"
+  resolved "git://github.com/phyks/gps-to-gpx.git#1cb5adf4dd382266d076d7df3cb5aa3a4d7dd27b"
   dependencies:
     babel-runtime "6.18.0"
     loose-envify "1.3.0"
