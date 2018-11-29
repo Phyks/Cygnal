@@ -21,7 +21,7 @@
             role="button"
             :aria-label="$t('buttons.recenterMap')"
             >
-            <v-icon>my_location</v-icon>
+            <v-icon>mdi-crosshairs-gps</v-icon>
         </v-btn>
     </v-layout>
 </template>

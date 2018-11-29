@@ -39,7 +39,7 @@
                     :aria-label="$t('buttons.reportProblem')"
                     v-if="!hasCenterProvidedByRoute && hasGeolocationTracking"
                     >
-                    <v-icon>report_problem</v-icon>
+                    <v-icon>mdi-alert</v-icon>
                 </v-btn>
                 <ReportDialog
                     v-model="isReportDialogVisible"

@@ -16,7 +16,7 @@
 
                 <p class="text-xs-center">
                     <i18n path="intro.reportIconDescription">
-                        <v-icon>report_problem</v-icon>
+                        <v-icon>mdi-alert</v-icon>
                     </i18n>
                 </p>
 

@@ -27,7 +27,7 @@
                         class="smallButton"
                         @click.stop="upvote"
                         >
-                        <v-icon>thumb_up</v-icon>
+                        <v-icon>mdi-thumb-up</v-icon>
                     </v-btn>
                 </v-flex>
 
@@ -42,7 +42,7 @@
                         class="mediumButton"
                         @click.stop="downvote"
                         >
-                        <v-icon>thumb_down</v-icon>
+                        <v-icon>mdi-thumb-down</v-icon>
                     </v-btn>
                 </v-flex>
 
@@ -59,7 +59,7 @@
                     role="button"
                     :aria-label="$t('buttons.close')"
                     >
-                    <v-icon>close</v-icon>
+                    <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-layout>
         </v-container>

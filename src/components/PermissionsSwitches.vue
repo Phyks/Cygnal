@@ -88,13 +88,13 @@ export default {
     data() {
         return {
             geolocationPermissionMessages: [
-                `<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${this.$t('permissions.geolocationDescription')}`,
+                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.geolocationDescription')}`,
             ],
             permanentNotificationMessages: [
-                `<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${this.$t('permissions.permanentNotificationDescription')}`,
+                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.permanentNotificationDescription')}`,
             ],
             preventSuspendMessages: [
-                `<i aria-hidden='true' class='v-icon material-icons' style='vertical-align: middle;'>help</i> ${this.$t('permissions.preventSuspendDescription')}`,
+                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.preventSuspendDescription')}`,
             ],
         };
     },

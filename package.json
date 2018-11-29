@@ -16,9 +16,9 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.0.0",
+        "@mdi/font": "^3.0.39",
         "file-saver": "^1.3.8",
         "gps-to-gpx": "git://github.com/phyks/gps-to-gpx.git#1cb5adf4dd382266d076d7df3cb5aa3a4d7dd27b",
-        "material-icons": "^0.2.3",
         "nosleep.js": "^0.7.0",
         "ol": "^5.3.0",
         "roboto-fontface": "^0.9.0",

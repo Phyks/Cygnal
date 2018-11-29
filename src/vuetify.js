@@ -44,4 +44,5 @@ Vue.use(Vuetify, {
         VTextField,
         VToolbar,
     },
+    iconfont: 'mdi',
 });

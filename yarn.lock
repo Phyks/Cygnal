@@ -676,6 +676,11 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
 
+"@mdi/font@^3.0.39":
+  version "3.0.39"
+  resolved "https://registry.yarnpkg.com/@mdi/font/-/font-3.0.39.tgz#8a388ec9816939eff2099120102073aecdf6e5f8"
+  integrity sha512-VnPxEXsiV+YP9NO7XyQEvs1tBxkmtPzib9dRq/1CqubaZy9oeP7Jmgd/IEya8Z3bVyj+NZpwS0YGZW1kvx2eFQ==
+
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -5720,10 +5725,6 @@ map-visit@^1.0.0:
   resolved "https://registry.yarnpkg.com/map-visit/-/map-visit-1.0.0.tgz#ecdca8f13144e660f1b5bd41f12f3479d98dfb8f"
   dependencies:
     object-visit "^1.0.0"
-
-material-icons@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-0.2.3.tgz#1f84d50effbb700287ba44a21bbce0339252ccaf"
 
 math-random@^1.0.1:
   version "1.0.1"

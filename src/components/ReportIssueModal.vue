@@ -27,7 +27,7 @@
                     large
                     role="button"
                     >
-                    {{ $t('reportIssueModal.send') }} <v-icon class="ml-1">email</v-icon>
+                    {{ $t('reportIssueModal.send') }} <v-icon class="ml-1">mdi-email</v-icon>
                 </v-btn>
 
                 <v-spacer></v-spacer>

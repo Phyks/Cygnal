@@ -21,7 +21,7 @@
                 >
                 <v-badge color="orange" left>
                     <span slot="badge">{{ unsentReportsLength }}</span>
-                    <v-icon>cloud_upload</v-icon>
+                    <v-icon>mdi-cloud-upload</v-icon>
                 </v-badge>
             </v-btn>
             <v-menu
@@ -30,7 +30,7 @@
                 v-if="showMenu"
                 >
                 <v-btn slot="activator" icon role="button" :aria-label="$t('buttons.menu')">
-                    <v-icon>more_vert</v-icon>
+                    <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
                 <v-list>
                     <v-list-tile @click="isSearchModalShown = true" v-if="isMapLoaded">
@@ -54,7 +54,7 @@
                 </v-list>
             </v-menu>
             <v-btn icon role="button" :aria-label="$t('buttons.back')" v-else @click="goBack">
-                <v-icon>arrow_back</v-icon>
+                <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
             <div>
                 <v-progress-linear
