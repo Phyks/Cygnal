@@ -42,7 +42,7 @@ export const KEEP_REPORTS_METERS_AROUND = 10000; // in meters
 
 export const DEFAULT_ZOOM = 17;
 export const MIN_ZOOM = 6;
-export const MAX_ZOOM = 18;
+export const MAX_ZOOM = 19;
 
 export const MAP_CENTER_WITHOUT_GEOLOCATION = [46.589, 2.944];
 export const MAP_ZOOM_WITHOUT_GEOLOCATION = 6;
@@ -50,14 +50,28 @@ export const MAP_ZOOM_WITHOUT_GEOLOCATION = 6;
 export const ACCURACY_DISPLAY_THRESHOLD = 100; // in meters
 export const POSITION_MARKER_RADIUS = 10; // in pixels
 
-let opencyclemapURL = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
-if (process.env.THUNDERFOREST_API_KEY) {
-    opencyclemapURL += `?apikey=${process.env.THUNDERFOREST_API_KEY}`;
-}
 export const TILE_SERVERS = {
-    'cartodb-voyager': 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-    opencyclemap: opencyclemapURL,
+    'cartodb-voyager': {
+        attribution: 'Tiles <a href= "https://carto.com/attributions" target="_blank">© CARTO</a>',
+        url: 'https://{a-c}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+    },
 };
+if (process.env.THUNDERFOREST_API_KEY) {
+    let opencyclemapURL = 'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png';
+    opencyclemapURL += `?apikey=${process.env.THUNDERFOREST_API_KEY}`;
+    TILE_SERVERS.opencyclemap = {
+        attribution: 'Tiles <a href="http://www.thunderforest.com" target="_blank">© Thunderforest</a>',
+        url: opencyclemapURL,
+    };
+}
+if (process.env.MAPTILER_API_KEY) {
+    let mapTilerStreetsURL = 'https://maps.tilehosting.com/styles/streets/{z}/{x}/{y}.png';
+    mapTilerStreetsURL += `?key=${process.env.MAPTILER_API_KEY}`;
+    TILE_SERVERS['maptiler-streets'] = {
+        attribution: 'Tiles <a href="https://www.maptiler.com/license/maps/" target="_blank">© MapTiler</a>',
+        url: mapTilerStreetsURL,
+    };
+}
 export const DEFAULT_TILE_SERVER = 'cartodb-voyager';
 
 export const GEOCODING_API_ENDPOINT = 'https://api-adresse.data.gouv.fr/search/';

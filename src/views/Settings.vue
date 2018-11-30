@@ -119,7 +119,7 @@ export default {
             },
         },
         tileServers() {
-            return [].concat(Object.keys(TILE_SERVERS), this.$t('settings.customTileServer'));
+            return [].concat(Object.keys(TILE_SERVERS).sort(), this.$t('settings.customTileServer'));
         },
     },
     data() {

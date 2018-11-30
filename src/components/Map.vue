@@ -122,10 +122,17 @@ export default {
             }
             return null;
         },
+        tileAttribution() {
+            const tileServerSetting = this.$store.state.settings.tileServer;
+            if (tileServerSetting in constants.TILE_SERVERS) {
+                return constants.TILE_SERVERS[tileServerSetting].attribution;
+            }
+            return null;
+        },
         tileServer() {
             const tileServerSetting = this.$store.state.settings.tileServer;
             if (tileServerSetting in constants.TILE_SERVERS) {
-                return constants.TILE_SERVERS[tileServerSetting];
+                return constants.TILE_SERVERS[tileServerSetting].url;
             }
             // Remove the protocol part, avoid easily avoidable unsecured
             // content over HTTPS.
@@ -423,7 +430,7 @@ export default {
                 new TileLayer({
                     source: new XYZ({
                         url: this.tileServer,
-                        attributions: this.attribution,
+                        attributions: this.tileAttribution ? `${this.tileAttribution}, ${this.attribution}` : this.attribution,
                     }),
                 }),
                 new VectorLayer({
