@@ -135,7 +135,7 @@ export default {
             this.hasReportError = false;
         },
         exportGPX() {
-            import('@/tools/exportGPX' /* webpackChunkName: "MapView" */).then((module) => {
+            import('@/tools/exportGPX' /* webpackChunkName: "MapView", webpackPrefetch: true */).then((module) => {
                 const activityName = this.$t('misc.activityName');
                 module.default(activityName, this.$store.state.location.gpx);
             });

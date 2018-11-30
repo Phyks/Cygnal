@@ -8,7 +8,7 @@ import Loading from '@/views/Loading.vue';
 export default {
     components: {
         Map: () => ({
-            component: import('@/views/Map.vue' /* webpackChunkName: "MapView" */),
+            component: import('@/views/Map.vue' /* webpackChunkName: "MapView", webpackPrefetch: true */),
             loading: Loading,
         }),
     },
