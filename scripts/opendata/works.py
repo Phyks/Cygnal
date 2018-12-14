@@ -560,7 +560,7 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
     current_reports_points = []
     active_reports_from_db = Report.select().where(
         # Load reports from db of the current type
-        (Report.type == REPORT_TYPE) &
+        (Report.type == report_type) &
         (
             # Either with an expiration_datetime in the future
             (
