@@ -172,8 +172,15 @@ export default {
         },
     },
     mounted() {
-        if ('serviceWorker' in navigator) {
-            runtime.register().catch((error) => {
+        // Service worker is for caching only, so it needs both SW support and
+        // caching API support.
+        if ('serviceWorker' in navigator && 'caches' in window) {
+            runtime.register().then(
+                // Clean expired tiles from the cache at startup
+                () => navigator.serviceWorker.controller.postMessage(JSON.stringify({
+                    action: 'PURGE_EXPIRED_TILES',
+                })),
+            ).catch((error) => {
                 console.log(`Registration failed with ${error}.`);
             });
         }
