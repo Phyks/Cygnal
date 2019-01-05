@@ -45,7 +45,7 @@ Object.keys(TILE_SERVERS).forEach((tileServer) => {
 
 // Get duration (in s) before (cache) expiration from headers of a fetch
 // request.
-function getExpiresFromHeaders(headers) {
+function _getExpiresFromHeaders(headers) {
     // Try to use the Cache-Control header (and max-age)
     if (headers.get('cache-control')) {
         const maxAge = headers.get('cache-control').match(/max-age=(\d+)/);
@@ -63,6 +63,60 @@ function getExpiresFromHeaders(headers) {
         );
     }
     return null;
+}
+
+// Get tile caching duration from config
+function _getTileCachingDurationPromise() {
+    // Get tile caching duration from settings
+    let tileCachingDurationPromise = (
+        Promise.resolve(0) // no caching by default
+    );
+    if (
+        localforage.driver() === localforage.INDEXEDDB
+    ) {
+        tileCachingDurationPromise = loadDataFromStorage(
+            'settings', 'tileCachingDuration',
+        );
+    }
+    return tileCachingDurationPromise;
+}
+
+// Check expiration of an item in cache
+// Return the response is not expired. Deletes it from cache and returns null
+// otherwise.
+function _checkExpiration(cache, request, response) {
+    return _getTileCachingDurationPromise().then((cachingDurationFromConfig) => {
+        const cachedDate = Date.parse(response.headers.get('sw-cached-date'));
+        const now = new Date();
+
+        // Check wether it is expired according to config
+        if (cachingDurationFromConfig > 0) {
+            const expirationDateFromConfig = new Date(cachedDate.valueOf());
+            expirationDateFromConfig.setSeconds(
+                expirationDateFromConfig.getSeconds() + cachingDurationFromConfig,
+            );
+            if (expirationDateFromConfig > now) {
+                DEBUG && console.log(`SW: Found ${request.url} in cache.`);
+                return response;
+            }
+            DEBUG && console.log(`SW: Deleting expired ${request.url} from cache.`);
+            cache.delete(request);
+        }
+
+        // If no special caching from config or not expired from config, check
+        // whether it is expired from HTTP headers.
+        const cachingDurationFromHeaders = response.headers.get('sw-http-cache-duration');
+        const expirationDateFromHeaders = new Date(cachedDate.valueOf());
+        expirationDateFromHeaders.setSeconds(
+            expirationDateFromHeaders.getSeconds() + cachingDurationFromHeaders,
+        );
+        if (expirationDateFromHeaders > now) {
+            return response;
+        }
+        DEBUG && console.log(`SW: Deleting expired ${request.url} from cache.`);
+        cache.delete(request);
+        return null;
+    });
 }
 
 global.self.addEventListener('install', (event) => {
@@ -135,81 +189,80 @@ global.self.addEventListener('fetch', (event) => {
         event.respondWith(global.caches.open(`${CACHE_NAME}-tiles`).then(
             cache => cache.match(request).then(
                 (response) => {
+                    // Helper function to fetch data from the network
+                    const _fetchFromNetwork = (
+                        // Note: We HAVE to use fetch(request.url) here to ensure we
+                        // have a CORS-compliant request. Otherwise, we could get back
+                        // an opaque response which we cannot inspect
+                        // (https://developer.mozilla.org/en-US/docs/Web/API/Response/type).
+                        () => fetch(request.url).then(
+                            liveResponse => _getTileCachingDurationPromise().then(
+                                (cachingDurationFromConfig) => {
+                                    // This is caching duration specified in HTTP headers
+                                    const cachingDurationFromHeaders = _getExpiresFromHeaders(
+                                        liveResponse.headers,
+                                    ) || 0;
+
+                                    // If any form of caching is possible, do it
+                                    if (
+                                        cachingDurationFromConfig > 0
+                                        || cachingDurationFromHeaders > 0
+                                    ) {
+                                        // Recreate a Response object from scratch to put
+                                        // it in the cache, with the extra header for
+                                        // managing cache expiration.
+                                        const cachedResponseFields = {
+                                            status: liveResponse.status,
+                                            statusText: liveResponse.statusText,
+                                            headers: {
+                                                'SW-Cached-Date': (new Date()).toUTCString(),
+                                                'SW-HTTP-Cache-Duration': cachingDurationFromHeaders,
+                                            },
+                                        };
+                                        liveResponse.headers.forEach((v, k) => {
+                                            cachedResponseFields.headers[k] = v;
+                                        });
+                                        // We will consume body of the live response, so
+                                        // clone it before to be able to return it
+                                        // afterwards.
+                                        const returnedResponse = liveResponse.clone();
+                                        return liveResponse.blob().then((body) => {
+                                            DEBUG && console.log(
+                                                `SW: caching tiles ${request.url}.`,
+                                            );
+                                            // Put the duplicated Response in the cache
+                                            cache.put(
+                                                request, new Response(body, cachedResponseFields),
+                                            );
+                                            // Return the live response from the network
+                                            return returnedResponse;
+                                        });
+                                    }
+                                    // Otherwise, just return the live result from the network
+                                    return liveResponse;
+                                },
+                            ),
+                        )
+                    );
+
                     // If there is a match from the cache
                     if (response) {
-                        DEBUG && console.log(`SW: serving ${request.url} from cache.`);
-                        const expirationDate = Date.parse(response.headers.get('sw-cache-expires'));
-                        const now = new Date();
-                        // Check it is not already expired and return from the
-                        // cache
-                        if (expirationDate > now) {
-                            return response;
-                        }
-                    }
+                        DEBUG && console.log(`SW: Found ${request.url} in cache.`);
 
+                        return _checkExpiration(cache, request, response).then(
+                            (notExpiredResponse) => {
+                                if (notExpiredResponse) {
+                                    DEBUG && console.log(`SW: Serving ${request.url} from cache.`);
+                                    return notExpiredResponse;
+                                }
+                                DEBUG && console.log(`SW: Serving ${request.url} from network, expired in cache.`);
+                                return _fetchFromNetwork();
+                            },
+                        );
+                    }
                     // Otherwise, let's fetch it from the network
                     DEBUG && console.log(`SW: no match in cache for ${request.url}, using network.`);
-                    return fetch(request.url).then((liveResponse) => {
-                        // Get tile caching duration from settings
-                        let tileCachingDurationPromise = (
-                            Promise.resolve(0) // no caching by default
-                        );
-                        if (
-                            localforage.driver() === localforage.INDEXEDDB
-                        ) {
-                            tileCachingDurationPromise = loadDataFromStorage(
-                                'settings', 'tileCachingDuration',
-                            );
-                        }
-                        return tileCachingDurationPromise.then((tileCachingDuration) => {
-                            // This is caching duration from settings
-                            const cachingDuration = (
-                                tileCachingDuration || 0
-                            );
-                            // This is caching duration specified in HTTP headers
-                            const cachingDurationFromHeaders = getExpiresFromHeaders(
-                                liveResponse.headers,
-                            ) || 0;
-
-                            // If any form of caching is possible, do it
-                            if (tileCachingDuration > 0 || cachingDurationFromHeaders > 0) {
-                                // Compute expires date from caching duration
-                                const expires = new Date();
-                                expires.setSeconds(
-                                    expires.getSeconds()
-                                    // Caching duration cannot be less than
-                                    // specified by HTTP headers.
-                                    + Math.max(cachingDuration, cachingDurationFromHeaders),
-                                );
-                                // Recreate a Response object from scratch to put
-                                // it in the cache, with the extra header for
-                                // managing cache expiration.
-                                const cachedResponseFields = {
-                                    status: liveResponse.status,
-                                    statusText: liveResponse.statusText,
-                                    headers: { 'SW-Cache-Expires': expires.toUTCString() },
-                                };
-                                liveResponse.headers.forEach((v, k) => {
-                                    cachedResponseFields.headers[k] = v;
-                                });
-                                // We will consume body of the live response, so
-                                // clone it before to be able to return it
-                                // afterwards.
-                                const returnedResponse = liveResponse.clone();
-                                return liveResponse.blob().then((body) => {
-                                    DEBUG && console.log(
-                                        `SW: caching tiles ${request.url} until ${expires.toUTCString()}.`,
-                                    );
-                                    // Put the duplicated Response in the cache
-                                    cache.put(request, new Response(body, cachedResponseFields));
-                                    // Return the live response from the network
-                                    return returnedResponse;
-                                });
-                            }
-                            // Otherwise, just return the live result from the network
-                            return liveResponse;
-                        });
-                    });
+                    return _fetchFromNetwork();
                 },
             ),
         ));
@@ -250,13 +303,7 @@ global.self.addEventListener('message', (event) => {
             cache => cache.keys().then(
                 keys => keys.forEach(
                     key => cache.match(key).then((cachedResponse) => {
-                        const expirationDate = Date.parse(cachedResponse.headers.get('sw-cache-expires'));
-                        const now = new Date();
-                        // Check it is not already expired
-                        if (expirationDate < now) {
-                            DEBUG && console.log(`SW: purging (expired) tile ${key.url} from cache.`);
-                            cache.delete(key);
-                        }
+                        _checkExpiration(cache, key, cachedResponse);
                     }),
                 ),
             ),
