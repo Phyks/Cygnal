@@ -9,6 +9,7 @@ import VCard from 'vuetify/es5/components/VCard';
 import VCheckbox from 'vuetify/es5/components/VCheckbox';
 import VCombobox from 'vuetify/es5/components/VCombobox';
 import VDialog from 'vuetify/es5/components/VDialog';
+import VDivider from 'vuetify/es5/components/VDivider';
 import VGrid from 'vuetify/es5/components/VGrid';
 import VIcon from 'vuetify/es5/components/VIcon';
 import VList from 'vuetify/es5/components/VList';
@@ -16,6 +17,7 @@ import VMenu from 'vuetify/es5/components/VMenu';
 import VProgressCircular from 'vuetify/es5/components/VProgressCircular';
 import VProgressLinear from 'vuetify/es5/components/VProgressLinear';
 import VSelect from 'vuetify/es5/components/VSelect';
+import VSubheader from 'vuetify/es5/components/VSubheader';
 import VSwitch from 'vuetify/es5/components/VSwitch';
 import VTextarea from 'vuetify/es5/components/VTextarea';
 import VTextField from 'vuetify/es5/components/VTextField';
@@ -32,6 +34,7 @@ Vue.use(Vuetify, {
         VCheckbox,
         VCombobox,
         VDialog,
+        VDivider,
         VGrid,
         VIcon,
         VList,
@@ -39,6 +42,7 @@ Vue.use(Vuetify, {
         VProgressCircular,
         VProgressLinear,
         VSelect,
+        VSubheader,
         VSwitch,
         VTextarea,
         VTextField,

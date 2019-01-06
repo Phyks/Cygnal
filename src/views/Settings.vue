@@ -2,7 +2,6 @@
     <v-container fluid class="no-padding">
         <v-layout row wrap>
             <v-flex xs12 sm4 offset-sm4 class="text-xs-center">
-                <h2>{{ $t('menu.Settings') }}</h2>
                 <form>
                     <v-select
                         :items="i18nItems"
@@ -50,9 +49,54 @@
                         :label="$t('settings.skipOnboarding')"
                         v-model="skipOnboarding"
                         ></v-checkbox>
-
-                    <PermissionsSwitches></PermissionsSwitches>
                 </form>
+
+                <v-list subheader>
+                    <v-subheader>Général</v-subheader>
+
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ $t('settings.locale') }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ $t('settings.tileServer') }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ $t('settings.defaultOrientationMode') }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ $t('settings.tileCachingDuration') }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+                <PermissionsSwitches></PermissionsSwitches>
+                <v-list subheader>
+                    <v-subheader>Divers</v-subheader>
+                    <v-list-tile>
+                        <v-list-tile-content>
+                            <v-list-tile-title>
+                                {{ $t('settings.skipOnboarding') }}
+                            </v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
             </v-flex>
         </v-layout>
     </v-container>

@@ -1,47 +1,104 @@
 <template>
-    <div>
-        <v-switch
-            class="switch"
-            :messages="preventSuspendMessages"
-            color="success"
-            :label="$t('permissions.preventSuspend')"
-            v-model="hasPreventSuspendPermission"
+    <v-list subheader three-line>
+        <v-subheader>Permissions</v-subheader>
+
+        <v-list-tile
+            @click.prevent="hasPlaySoundPermission = !hasPlaySoundPermission"
             >
-        </v-switch>
-        <v-switch
-            class="switch"
-            color="success"
-            :label="$t('permissions.playSound')"
-            v-model="hasPlaySoundPermission"
+            <v-list-tile-action>
+                <v-checkbox
+                    v-model="hasPlaySoundPermission"
+                    ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content
+                >
+                <v-list-tile-title>
+                    {{ $t('permissions.playSound') }}
+                </v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+            @click.prevent="hasVibratePermission = !hasVibratePermission"
             >
-        </v-switch>
-        <v-switch
-            class="switch"
-            color="success"
-            :label="$t('permissions.vibrate')"
-            v-model="hasVibratePermission"
+            <v-list-tile-action>
+                <v-checkbox
+                    v-model="hasVibratePermission"
+                    ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content
+                >
+                <v-list-tile-title>
+                    {{ $t('permissions.vibrate') }}
+                </v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+            @click.prevent="hasGeolocationPermission = !hasGeolocationPermission"
             >
-        </v-switch>
-        <v-switch
-            class="switch"
-            :messages="geolocationPermissionMessages"
-            color="success"
-            :label="$t('permissions.geolocation')"
-            v-model="hasGeolocationPermission"
+            <v-list-tile-action>
+                <v-checkbox
+                    v-model="hasGeolocationPermission"
+                    ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+                <v-list-tile-title>
+                    {{ $t('permissions.geolocation') }}
+                </v-list-tile-title>
+                <v-list-tile-sub-title>
+                    {{ $t('permissions.geolocationDescription') }}
+                </v-list-tile-sub-title>
+            </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+            @click.prevent="hasPreventSuspendPermission = !hasPreventSuspendPermission"
             >
-        </v-switch>
-        <v-switch
-            class="switch"
-            :messages="permanentNotificationMessages"
-            color="success"
-            :label="$t('permissions.permanentNotification')"
-            v-model="hasPermanentNotificationPermission"
+            <v-list-tile-action>
+                <v-checkbox
+                    v-model="hasPreventSuspendPermission"
+                    ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+                <v-list-tile-title>
+                    {{ $t('permissions.preventSuspend') }}
+                </v-list-tile-title>
+                <v-list-tile-sub-title>
+                    {{ $t('permissions.preventSuspendDescription') }}
+                </v-list-tile-sub-title>
+            </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile
+            @click.prevent="hasPermanentNotificationPermission = (
+                !hasPermanentNotificationPermission
+            )"
             >
-        </v-switch>
-    </div>
+            <v-list-tile-action>
+                <v-checkbox
+                    v-model="hasPermanentNotificationPermission"
+                    ></v-checkbox>
+            </v-list-tile-action>
+
+            <v-list-tile-content>
+                <v-list-tile-title>
+                    {{ $t('permissions.permanentNotification') }}
+                </v-list-tile-title>
+                <v-list-tile-sub-title>
+                    {{ $t('permissions.permanentNotificationDescription') }}
+                </v-list-tile-sub-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    </v-list>
 </template>
 
 <script>
+// TODO: Disable list items if function is not supported
 export default {
     computed: {
         hasGeolocationPermission: {
@@ -84,19 +141,6 @@ export default {
                 this.$store.dispatch('setSetting', { setting: 'hasVibratePermission', value });
             },
         },
-    },
-    data() {
-        return {
-            geolocationPermissionMessages: [
-                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.geolocationDescription')}`,
-            ],
-            permanentNotificationMessages: [
-                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.permanentNotificationDescription')}`,
-            ],
-            preventSuspendMessages: [
-                `<i aria-hidden='true' class='v-icon mdi mdi-help-circle' style='vertical-align: middle;' aria-hidden='true'></i> ${this.$t('permissions.preventSuspendDescription')}`,
-            ],
-        };
     },
 };
 </script>
