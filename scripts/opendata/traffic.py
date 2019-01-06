@@ -40,6 +40,7 @@ REPORT_DOWNVOTES_THRESHOLD = 1
 
 
 def preprocess_bordeaux(kmz_url):
+    # Note: The Bordeaux KML file is a daily dump, not realtime info...
     KML_NAMESPACES = {
         'kml': 'http://www.opengis.net/kml/2.2',
     }

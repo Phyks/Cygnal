@@ -10,7 +10,7 @@
         :hint="hint"
         persistent-hint
         clearable
-        append-icon="my_location"
+        append-icon="mdi-crosshairs-gps"
         :rules="rules"
         v-on:input="onInputHandler"
         :menu-props="{ auto: true, overflowY: true }"

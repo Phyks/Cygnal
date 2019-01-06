@@ -14,7 +14,7 @@
                     :hint="shareLinkHint"
                     @click="copyShareLink"
                     v-model="shareMapViewURL"
-                    prepend-icon="share"
+                    prepend-icon="mdi-share-variant"
                     ></v-text-field>
             </v-card-text>
 
