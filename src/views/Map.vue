@@ -52,9 +52,7 @@
 </template>
 
 <script>
-// Import directly from dist to avoid ES6 issues
-// See https://github.com/richtr/NoSleep.js/issues/46.
-import NoSleep from 'nosleep.js';
+import NoSleep from '@/tools/nosleep';
 
 import Alert from '@/components/Alert.vue';
 import Map from '@/components/Map.vue';
