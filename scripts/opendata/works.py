@@ -60,14 +60,14 @@ def preprocess_hauts_de_seine(data):
             new_fields['date_debut'] = arrow.get(
                 datetime.datetime(
                     now.year,
-                    (now.month // 3) * 3,
+                    max(1, min((now.month // 3) * 3, 12)),
                     1
                 )
             ).isoformat()
             new_fields['date_fin'] = arrow.get(
                 datetime.datetime(
                     now.year,
-                    (now.month // 3 + 1) * 3,
+                    max(1, min((now.month // 3 + 1) * 3, 12)),
                     1
                 )
             ).isoformat()
