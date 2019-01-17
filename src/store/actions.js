@@ -155,7 +155,7 @@ export function populateInitialStateFromStorage({ commit }) {
     });
 }
 
-export function fetchReports({ commit, state }) {
+export function fetchReports({ commit }, { center }) {
     commit(IS_LOADING);
     return api.getActiveReports()
         .then((reports) => {
@@ -167,7 +167,7 @@ export function fetchReports({ commit, state }) {
                     }
                     return pointToPointDistance(
                         [report.attributes.lat, report.attributes.lng],
-                        state.map.center,
+                        center,
                     ) < 10000;
                 },
             );

@@ -16,7 +16,7 @@
                     :hasGeolocationTracking="!hasCenterProvidedByRoute && hasGeolocationTracking"
                     :heading="currentLocation.heading"
                     :markers="reportsMarkers"
-                    :onMapCenterManualUpdate="onMapCenterManualUpdate"
+                    :onMapCenterUpdate="onMapCenterUpdate"
                     :onMapZoomManualUpdate="onMapZoomManualUpdate"
                     :onPress="showReportDialog"
                     :polyline="positionHistory"
@@ -260,7 +260,7 @@ export default {
             this.hasPromptedGeolocation = true;
             this.$store.dispatch('setLocationWatcherId', { id: watchID });
         },
-        onMapCenterManualUpdate(center) {
+        onMapCenterUpdate(center) {
             // Update reports by default
             let distanceFromPreviousPoint = constants.UPDATE_REPORTS_DISTANCE_THRESHOLD + 1;
 
@@ -282,10 +282,8 @@ export default {
                 store.dispatch('setLastReportFetchingLocation', {
                     locationLatLng: center,
                 });
-                store.dispatch('fetchReports');
+                store.dispatch('fetchReports', { center });
             }
-
-            this.$store.dispatch('setCurrentMapCenter', { center });
         },
         onMapZoomManualUpdate(zoom) {
             this.$store.dispatch('setCurrentMapZoom', { zoom });

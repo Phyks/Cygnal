@@ -275,7 +275,10 @@ export function pointToGeometryDistance(latLng, geometry) {
     }
 
     if (geometry.type === 'Polygon') {
-        return pointToPolygonDistance(latLng, lngLatCoordinates.map(item => item.reverse()));
+        return pointToPolygonDistance(
+            latLng,
+            lngLatCoordinates[0].map(item => [].concat(item).reverse()),
+        );
     }
 
     // Unsupported geometry

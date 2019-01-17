@@ -254,9 +254,13 @@ export default {
         },
         onMoveEnd() {
             const view = this.map.getView();
-            if (this.onMapCenterManualUpdate && !this.isProgrammaticMove) {
+            if (this.onMapCenterUpdate) {
                 const mapCenterLonLat = toLonLat(view.getCenter());
-                this.onMapCenterManualUpdate([mapCenterLonLat[1], mapCenterLonLat[0]]);
+                const center = [mapCenterLonLat[1], mapCenterLonLat[0]];
+                this.onMapCenterUpdate(center);
+                if (!this.isProgrammaticMove) {
+                    this.$store.dispatch('setCurrentMapCenter', { center });
+                }
             }
             // Show recenter button and call the callback if zoom is updated manually
             const zoom = view.getZoom();
@@ -486,7 +490,7 @@ export default {
         heading: Number, // in degrees, clockwise wrt north
         markers: Array,
         onPress: Function,
-        onMapCenterManualUpdate: Function,
+        onMapCenterUpdate: Function,
         onMapZoomManualUpdate: Function,
         polyline: Array,
         positionLatLng: Array,
@@ -601,10 +605,14 @@ export default {
                 // TODO: Take into account the history of positions for the direction
                 if (closestReport.id !== -1) {
                     // Only open the details if the box was not just closed
-                    if (this.$store.state.reportDetails.previousId !== closestReport.id) {
+                    // Don't dispatch useless actions if emphasized report is not updated
+                    if (
+                        this.$store.state.reportDetails.previousId !== closestReport.id
+                        && this.$store.state.reportDetails.id !== closestReport.id
+                    ) {
                         this.$store.dispatch('showReportDetails', { id: closestReport.id, userAsked: false });
                     }
-                } else {
+                } else if (isReportDetailsAlreadyShown) {
                     this.$store.dispatch('hideReportDetails');
                 }
             }
