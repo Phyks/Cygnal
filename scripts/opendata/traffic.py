@@ -37,70 +37,86 @@ logging.basicConfig(level=level)
 
 # Same as in src/constants.js
 REPORT_DOWNVOTES_THRESHOLD = 1
+GML_NAMESPACES = {
+    'gml': 'http://www.opengis.net/wfs',
+}
+
+# Get an API key from https://data.bordeaux-metropole.fr/key.php
+BORDEAUX_API_KEY = os.environ.get('BORDEAUX_API_KEY', None)
 
 
-def preprocess_bordeaux(kmz_url):
-    # Note: The Bordeaux KML file is a daily dump, not realtime info...
-    KML_NAMESPACES = {
-        'kml': 'http://www.opengis.net/kml/2.2',
-    }
-    EXTENDED_DATA_TO_FIELDS = {
-        'GID': {
-            'key': 'id',
-            'transform': lambda x: x,
-        },
-        'HEURE': {
-            'key': 'datetime',
-            'transform': lambda x: arrow.get(x, 'YYYYMMDDHHmmss').isoformat(),
-        },
-        'TYPEVOIE': {
-            'key': 'way',
-            'transform': lambda x: x,
-        },
-        'ETAT': {
-            'key': 'state',
-            'transform': lambda x: x,
-        },
-    }
-
-    items = []
-
-    kml = None
-    r = requests.get(kmz_url)
-    with zipfile.ZipFile(io.BytesIO(r.content), 'r') as fh:
-        kml = fh.read('doc.kml')
-
-    if not kml:
+def process_bordeaux(url):
+    # Requires an API key
+    if not BORDEAUX_API_KEY:
         return []
 
-    kml = etree.fromstring(kml)
-    folder = kml.find('.//kml:Folder', KML_NAMESPACES)
+    try:
+        r = requests.get(url, params={
+            'key': BORDEAUX_API_KEY,
+            'service': 'WFS',
+            'version': '1.0.0',
+            'request': 'GetFeature',
+            'typeNames': 'CI_TRAFI_L',
+        })
+    except (requests.RequestException, ValueError) as exc:
+        logging.warning('Error while fetching data for %s: %s.',
+                        name, exc)
+        return []
 
-    for placemark in folder.findall('.//kml:Placemark', KML_NAMESPACES):
+    xml = etree.fromstring(r.content)
+    items = []
+
+    for feature in xml.findall('.//{http://www.opengis.net/gml}featureMember'):
+        CI_TRAFI_L = feature.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}CI_TRAFI_L'
+        )
         fields = {}
 
-        extended_data = placemark.findall(
-            'kml:ExtendedData//kml:SimpleData', KML_NAMESPACES
-        )
-        for ed in extended_data:
-            name = ed.get('name')
-            if name in EXTENDED_DATA_TO_FIELDS:
-                key_transform = EXTENDED_DATA_TO_FIELDS[name]
-                fields[key_transform['key']] = (
-                    key_transform['transform'](ed.text)
-                )
-
-        linestring = placemark.find(
-            'kml:LineString//kml:coordinates', KML_NAMESPACES
+        # Fill-in fields
+        fields['id'] = CI_TRAFI_L.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}GID'
         ).text
-        lnglats = [
-            [float(y) for y in x.split(',')[:-1]] for x in linestring.split()
+        fields['datetime'] = arrow.get(CI_TRAFI_L.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}HEURE'
+        ).text).isoformat()
+        fields['state'] = CI_TRAFI_L.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}ETAT'
+        ).text
+        fields['way'] = CI_TRAFI_L.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}TYPEVOIE'
+        ).text
+
+        # Get geometry-related items
+        linestring = CI_TRAFI_L.find(
+            './/{http://data.bordeaux-metropole.fr/wfs}geometry'
+            '//{http://www.opengis.net/gml}LineString'
+        )
+        coordinates = [
+            [float(x) for x in item.split(',')]
+            for item in linestring.find(
+                './/{http://www.opengis.net/gml}coordinates'
+            ).text.split()
         ]
+        srs = linestring.attrib.get('srsName')
+
+        project = partial(
+            pyproj.transform,
+            pyproj.Proj(init=srs),  # source coordinates system
+            pyproj.Proj(init='epsg:4326')  # destination coordinates system
+        )
+        wgs84_points = [
+            transform(project, Point(*item))
+            for item in coordinates
+        ]
+
         items.append({
             'fields': fields,
             'geometry': {
                 'type': 'LineString',
-                'coordinates': lnglats,
+                'coordinates': [
+                    [point.x, point.y]
+                    for point in wgs84_points
+                ],
             },
             'recordid': fields.get('id'),
             'source': 'opendata-bordeaux',
@@ -115,8 +131,8 @@ OPENDATA_URLS = {
     # http://data.bordeaux-metropole.fr/data.php?layer=CI_TRAFI_L
     # Licence ODbL : https://data.bordeaux-metropole.fr/pdf/ODbL_fr.pdf
     "bordeaux": {
-        "preprocess": preprocess_bordeaux,
-        "url": "https://data.bordeaux-metropole.fr/files.php?layer=CI_TRAFI_L&ext=KMZ",
+        "process": process_bordeaux,
+        "url": "https://data.bordeaux-metropole.fr/wfs",
     },
 }
 REPORT_TYPE = 'traffic'
@@ -203,7 +219,7 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
             # Expires in an hour
             expiration_datetime = (
                 # TODO: Check the datetime value in the opendata file
-                arrow.get(fields['datetime']).shift(hours=+24).naive
+                arrow.get(fields['datetime']).shift(hours=+1).naive
             )
 
             # Add the report to the db
@@ -231,8 +247,8 @@ if __name__ == '__main__':
     for name, item in OPENDATA_URLS.items():
         logging.info('Processing opendata from %s', name)
         try:
-            if item['preprocess']:
-                data = item['preprocess'](item['url'])
+            if item['process']:
+                data = item['process'](item['url'])
             else:
                 r = requests.get(item['url'])
                 data = r.json()
