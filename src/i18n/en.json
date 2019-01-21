@@ -77,11 +77,11 @@
     },
     "relativeDate": {
         "ago": "{duration} ago",
-        "second": "one second | {count} seconds",
-        "minute": "one minute | {count} minutes",
-        "hour": "one hour | {count} hours",
         "day": "one day | {count} days",
+        "hour": "one hour | {count} hours",
+        "minute": "one minute | {count} minutes",
         "month": "one month | {count} months",
+        "second": "one second | {count} seconds",
         "year": "one year | {count} years"
     },
     "reportCard": {

@@ -3,7 +3,7 @@
         "availableReportsTitle": "Los senhalaments disponibles pel moment son :",
         "lastReportAdded": "Darri\u00e8ra senhalament ajustat {fromNow}.",
         "license": "Lic\u00e9ncia",
-        "licenseDescription": "Publicat jos la <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Ic\u00f2nas basadas sus de creacions de Wikimedia, Vecteezy, Pixabay o Flaticon. Los sons venon del trabalh de CC0 sus <a href=\"https://freesound.org/\">freesound.org</a>. Lo fons de la carta utiliza de teulas de <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contribuidors d\u2019OpenStreetMap</a> e <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments reculhits son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>. Lo posicionament manual utiliza una API tr\u00f2pa crana de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>. Las donadas liuras en Opendata tocant lo trafic actual son importats de Lilla, Lion, Nanc\u00ed, lo departament de S\u00e8ina Saint Denis, lo Sicoval e Versailles (totas disponibales jos Etalab Licence Ouverte) tot pari\u00e8r per Montpelhi\u00e8r, Par\u00eds, Rennes e Tolosa (totas disponiblas jos la lic\u00e9ncia ODbL) e del departament de Loiret. Totas las donadas son recuperadas cada jorn. Mai d\u2019informacions tocant las lic\u00e9ncias dins <a href=\"https://framagit.org/phyks/cyclassist/blob/master/README.md#license\">lo README</a>.",
+        "licenseDescription": "Publicat jos la <a href=\"https://opensource.org/licenses/MIT\">lic\u00e9ncia MIT</a> (<a href=\"https://framagit.org/phyks/cyclassist\">c\u00f2di font</a>). Ic\u00f2nas basadas sus de creacions de Wikimedia, Vecteezy, Pixabay o Flaticon. Los sons venon del trabalh de CC0 sus <a href=\"https://freesound.org/\">freesound.org</a>. Lo fons de la carta utiliza de teulas de <a href=\"https://carto.com/location-data-services/basemaps/\">Carto.com</a> o <a href=\"http://thunderforest.com/\">Thunderforest</a>, gr\u00e0cia als <a href=\"https://www.openstreetmap.org/copyright\">contribuidors d\u2019OpenStreetMap</a> e <a href=\"http://leafletjs.com/\">Leaflet</a>. Los senhalaments reculhits son disponibles jos <a href=\"https://opendatacommons.org/licenses/odbl/\">lic\u00e9ncia ODbL</a>. Lo posicionament manual utiliza una API tr\u00f2pa crana de <a href=\"https://adresse.data.gouv.fr\">adresse.data.gouv.fr</a>. Las donadas liuras en Opendata tocant lo trafic actual son importats de lo departament de Hauts-de-Seine, Lilla, Lion, Nanc\u00ed, lo departament de S\u00e8ina Saint Denis, lo Sicoval e Versailles (totas disponibales jos Etalab Licence Ouverte) tot pari\u00e8r per Montpelhi\u00e8r, Par\u00eds, Rennes e Tolosa (totas disponiblas jos la lic\u00e9ncia ODbL) e del departament de Loiret. Totas las donadas son recuperadas cada jorn. Mai d\u2019informacions tocant las lic\u00e9ncias dins <a href=\"https://framagit.org/phyks/cyclassist/blob/master/README.md#license\">lo README</a>.",
         "nbActiveReports": "Cap de senhalament actiu. |\u00a0Un senhalament actiu. | {nbActiveReports} senhalaments actius.",
         "nbReports": "Cap de senhalament. | Un senhalament. | {nbReports} senhalaments.",
         "stats": "Estatisticas",
@@ -52,6 +52,7 @@
         "Settings": "Prefer\u00e9ncias",
         "exportGPX": "Exportar en GPX",
         "reportIssue": "Senhalar un probl\u00e8ma",
+        "search": "Cercar",
         "shareMapView": "Partejar la vista de la mapa"
     },
     "misc": {
@@ -59,7 +60,6 @@
         "discard": "Anullar",
         "ok": "D\u2019acc\u00f2rdi",
         "or": "o",
-        "retry": "Ensajar tornamai",
         "spaceBeforeDoublePunctuations": "&nbsp;"
     },
     "notification": {
@@ -88,8 +88,7 @@
         "Reported": "Senhalat {fromNow}."
     },
     "reportDialog": {
-        "unableToSendDescription": "Una error ret empacha lo mandad\u00eds del darri\u00e8r senhalament.",
-        "unableToSendTitle": "Impossible d'enviar lo darri\u00e8r senhalament"
+        "unableToSend": "Una error ret empacha lo mandad\u00eds del darri\u00e8r senhalament."
     },
     "reportIssueModal": {
         "description": "Descripcion",
@@ -111,16 +110,22 @@
         "pothole": "Trauc",
         "potholeDescription": "Un trauc per la rota."
     },
+    "searchModal": {
+        "searchModal": "Cercar un l\u00f2c"
+    },
     "settings": {
         "autorotate": "Vira automaticament (direccion actuala amont)",
         "customTileServer": "Servidor de teulas personalizat",
         "customTileServerURL": "URL del servidor de teulas personalizat",
         "customTileServerURLHint": "Per exemple\u00a0: http://tile.thunderforest.com/cycle/{z}/{x}/{y}.png",
+        "defaultDuration": "Durada per defaut",
         "defaultOrientationMode": "M\u00f2de orientacion per defaut",
         "fixedNorth": "Fixada (N\u00f2rd amont)",
         "locale": "Lenga",
+        "noCaching": "Cap de mesa en cache",
         "skipOnboarding": "Passar l'introduccion",
-        "tileServer": "Servidor de teulas per la mapa"
+        "tileCachingDuration": "Metre en cache los teules per",
+        "tileServer": "Servidor de teules per la mapa"
     },
     "shareMapViewModal": {
         "copiedToClipboard": "Copiat al quichapapi\u00e8r\u00a0!",
