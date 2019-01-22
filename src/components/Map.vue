@@ -479,6 +479,11 @@ export default {
             });
             this.map.getTargetElement().style.cursor = hit ? 'pointer' : '';
         });
+
+        // Force the map to be centered on the current position if there is any
+        if (this.olPosition) {
+            this.recenterMap();
+        }
     },
     props: {
         accuracy: Number,
