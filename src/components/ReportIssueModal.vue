@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { CONTACT_EMAIL_ADDRESS } from '@/constants';
+import { APP_NAME, CONTACT_EMAIL_ADDRESS } from '@/constants';
 
 import Modal from '@/components/Modal.vue';
 
@@ -78,7 +78,7 @@ export default {
             if (this.shouldIncludeGPX) {
                 mailText += `\n\nGPX trace: ${JSON.stringify(this.$store.state.location.gpx)}.`;
             }
-            return `mailto:${CONTACT_EMAIL_ADDRESS}?subject=Issue%20with%20Cyclassist&body=${encodeURIComponent(mailText)}`;
+            return `mailto:${CONTACT_EMAIL_ADDRESS}?subject=Issue%20with%20${APP_NAME}&body=${encodeURIComponent(mailText)}`;
         },
     },
     data() {

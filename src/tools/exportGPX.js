@@ -1,7 +1,7 @@
 import FileSaver from 'file-saver';
 import createGPX from 'gps-to-gpx/es/createGpx';
 
-import { VERSION } from '@/constants';
+import { APP_NAME, VERSION } from '@/constants';
 import { formatDate } from '@/tools/date';
 
 export default function (activityName, locationGPX) {
@@ -40,7 +40,7 @@ export default function (activityName, locationGPX) {
     });
     const gpx = createGPX(waypoints, {
         activityName,
-        creator: `Cycl'Assist v${VERSION}`,
+        creator: `${APP_NAME} v${VERSION}`,
         eleKey,
         extKey,
         hdopKey,
@@ -52,6 +52,6 @@ export default function (activityName, locationGPX) {
     });
     FileSaver.saveAs(
         new Blob([gpx], { type: 'application/gpx+xml;charset=utf-8' }),
-        `cyclassist_${formatDate(new Date(), 'YYYY-MM-DD_HH-mm_ddd')}.gpx`,
+        `${APP_NAME.toLowerCase()}_${formatDate(new Date(), 'YYYY-MM-DD_HH-mm_ddd')}.gpx`,
     );
 }

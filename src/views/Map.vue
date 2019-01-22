@@ -205,8 +205,8 @@ export default {
         createNotification() {
             const $t = this.$t.bind(this);
             this.notification = new Notification(
-                'Cycl\'Assist',
-                { body: $t('notification.body'), icon: AppLogo, tag: 'CyclassistMap' },
+                constants.APP_NAME,
+                { body: $t('notification.body'), icon: AppLogo, tag: `${constants.APP_NAME}Map` },
             );
             this.notification.addEventListener('click', () => {
                 this.showReportDialog();
