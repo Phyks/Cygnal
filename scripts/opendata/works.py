@@ -115,6 +115,10 @@ def preprocess_lille(data):
 
 def preprocess_loiret(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Loiret.')
+        return out
+
     for item in data['features']:
         try:
             if 'paths' in item['geometry']:
@@ -168,6 +172,10 @@ def preprocess_loiret(data):
 
 def preprocess_lyon(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Lyon.')
+        return out
+
     for item in data['features']:
         try:
             new_item = {
@@ -197,6 +205,10 @@ def preprocess_lyon(data):
 
 def preprocess_montpellier(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Montpellier.')
+        return out
+
     for item in data['features']:
         try:
             new_item = {
@@ -226,6 +238,10 @@ def preprocess_montpellier(data):
 
 def preprocess_nancy(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Nancy.')
+        return out
+
     for item in data['features']:
         try:
             geometry = {
@@ -289,6 +305,10 @@ def preprocess_paris(data):
 
 def preprocess_rennes(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Rennes.')
+        return out
+
     for item in data['features']:
         try:
             new_item = {
@@ -317,6 +337,10 @@ def preprocess_rennes(data):
 
 def preprocess_seine_saint_denis(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Seine-Saint-Denis.')
+        return out
+
     for item in data['features']:
         try:
             new_item = {
@@ -400,6 +424,10 @@ def preprocess_toulouse(data):
 
 def preprocess_versailles(data):
     out = []
+    if not 'features' in data:
+        logging.warning('Invalid data for Versailles.')
+        return out
+
     for item in data['features']:
         try:
             if 'paths' in item['geometry']:
