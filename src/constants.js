@@ -66,7 +66,7 @@ if (process.env.THUNDERFOREST_API_KEY) {
     };
 }
 if (process.env.MAPTILER_API_KEY) {
-    let mapTilerStreetsURL = 'https://maps.tilehosting.com/styles/streets/{z}/{x}/{y}.png';
+    let mapTilerStreetsURL = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png';
     mapTilerStreetsURL += `?key=${process.env.MAPTILER_API_KEY}`;
     TILE_SERVERS['maptiler-streets'] = {
         attribution: 'Tiles <a href="https://www.maptiler.com/license/maps/" target="_blank">© MapTiler</a>',
