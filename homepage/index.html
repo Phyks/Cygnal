@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Cygnal - Track and share issues in realtime on bike lanes!</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+
+        <meta name=description content="Track and share issues in realtime on bike lanes!">
+        <meta name=twitter:card content=summary>
+        <meta name=twitter:creator content=@PhyksIsHere>
+        <meta property=og:type content=website>
+        <meta property=og:title content="Cygnal">
+        <meta property=og:description content="Track and share issues in realtime on bike lanes!">
+        <meta property=og:url content=".">
+        <meta property=og:image content="./images/icons/ogIcon.png">
+
+        <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="228x228" href="./img/coast-228x228.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+        <link rel="shortcut icon" href="./images/icons/favicon.ico">
+        <style type="text/css">
+            body {
+                font-family: Roboto;
+            }
+
+            header, main, footer {
+                margin: auto;
+            }
+
+            #logoTitle {
+                width: 100%;
+                max-width: 400px;
+                margin: auto;
+                display: flex;
+                align-items: flex-end;
+            }
+
+            #logoTitle img {
+                width: 140px;
+                height: 140px;
+            }
+
+            #logoTitle h1 {
+                margin-top: 0;
+                margin-bottom: 0;
+                margin-left: 20px;
+                width: 200px;
+                color: #2E4369;
+                font-size: 60px;
+                font-weight: 300;
+                line-height: 60px;
+            }
+
+            #logo {
+                width: 140px;
+                height: auto;
+            }
+
+            h2 {
+                color: #999999;
+                font-size: 32px;
+                font-weight: bold;
+                line-height: 38px;
+                text-align: center;
+            }
+
+            #features {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .feature {
+                width: 300px;
+            }
+
+            #features .feature:first-child {
+                margin-bottom: 50px;
+            }
+
+            .feature h3, .feature p {
+                margin: 0;
+            }
+
+            .left-feature {
+                text-align: right;
+                margin-right: 50px;
+            }
+
+            .right-feature {
+                text-align: left;
+                margin-left: 50px;
+            }
+
+            .feature h3 {
+                color: #2E4369;
+                font-size: 20px;
+                font-weight: bold;
+                line-height: 26px;
+            }
+
+            .feature p {
+                color: #7E7E7E;
+                font-size: 16px;
+                line-height: 21px;
+            }
+
+            main .button {
+                height: 50px;
+                width: 220px;
+                border-radius: 10px;
+                background-color: #FFCC66;
+                border: none;
+                font-size: 24px;
+                font-weight: 300;
+                line-height: 50px;
+                cursor: pointer;
+                margin: auto;
+                text-align: center;
+            }
+
+            main .button a {
+                color: #2E4369;
+                text-decoration: none;
+            }
+
+            footer ul {
+                margin-top: 50px;
+                list-style-type: none;
+                text-align: center;
+                padding: 0;
+            }
+
+            footer ul li {
+                display: inline-block;
+                margin-left: 1em;
+                margin-right: 1em;
+            }
+
+            footer ul li a {
+                color: #9B9B9B;
+                font-size: 12px;
+                line-height: 16px;
+            }
+
+            @media screen and (max-width: 1024px) {
+                #features {
+                    flex-direction: column;
+                }
+
+                .left-feature, .right-feature {
+                    text-align: center;
+                    margin-bottom: 50px;
+                    margin-left: 0;
+                    margin-right: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div id="logoTitle">
+                <img id="logo" src="img/logo.svg" alt="Logo"/>
+                <h1>Cygnal app</h1>
+            </div>
+            <h2>Get realtime infos on your bike route.</h2>
+        </header>
+
+        <main>
+            <div id="features">
+                <div class="left-feature">
+                    <div class="feature">
+                        <img src="img/signal.svg" alt="Report"/>
+                        <h3>Track and share issues</h3>
+                        <p>Report on realtime issues on bike routes: road works, obstacles, accidents, etc.</p>
+                    </div>
+
+                    <div class="feature">
+                        <img src="img/openData.svg" alt="OpenData"/>
+                        <h3>Based on available OpenData</h3>
+                        <p>Always up to date to inform you about road works ahead while you bike!</p>
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <img src="img/iPhone/@1-black.png" alt="Screenshot"/>
+                </div>
+
+                <div class="right-feature">
+                    <div class="feature">
+                        <img src="img/open.svg" alt="Open-source"/>
+                        <h3>Free and open-source</h3>
+                        <p>From one fellow cyclist to another!</p>
+                    </div>
+
+                    <div class="feature">
+                        <img src="img/privacy.svg" alt="Privacy"/>
+                        <h3>Respecting your privacy</h3>
+                        <p>Handles your geolocation with care, keeping it as much as possible within your device.</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="button">
+                <a href="https://app.cygnal.eu/">Go to app</a>
+            </p>
+        </main>
+
+        <footer>
+            <nav>
+                <ul>
+                    <li><a href="mailto:phyks+cygnal@phyks.me">contact</a></li>
+                    <li><a href="https://framagit.org/phyks/cygnal">source</a></li>
+                </ul>
+            </nav>
+        </footer>
+    </body>
+</html>
