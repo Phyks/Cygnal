@@ -104,7 +104,7 @@ def get_all_reports():
     if filters:
         query = query.where(*filters)
     query = query.order_by(*sorting)
-    if page_number and page_size:
+    if page_number is not None and page_size is not None:
         query = query.paginate(page_number, page_size)
 
     if (
