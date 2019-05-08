@@ -107,12 +107,24 @@ def get_all_reports():
     if page_number and page_size:
         query = query.paginate(page_number, page_size)
 
-    return {
-        "data": [
-            r.to_json()
-            for r in query
-        ]
-    }
+    if (
+        'format' in bottle.request.query and
+        bottle.request.query['format'] == 'geojson'
+    ):
+        return {
+            "type": "FeatureCollection",
+            "features": [
+                r.to_geojson_feature()
+                for r in query
+            ]
+        }
+    else:
+        return {
+            "data": [
+                r.to_json()
+                for r in query
+            ]
+        }
 
 
 @bottle.route('/api/v1/reports', ["POST", "OPTIONS"])

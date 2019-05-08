@@ -3,6 +3,7 @@
 """
 Models and database definition
 """
+import json
 import os
 
 import bottle
@@ -61,4 +62,25 @@ class Report(BaseModel):
                 k: v for k, v in model_to_dict(self).items()
                 if k != "id"
             }
+        }
+
+    def to_geojson_feature(self):
+        properties = {
+            "type": "reports",
+        }
+        for k, v in model_to_dict(self).items():
+            properties[k] = v
+
+        geometry = None
+        if self.shape_geojson:
+            geometry = json.loads(self.shape_geojson)
+        else:
+            geometry = {
+                "type": "Point",
+                "coordinates": [self.lng, self.lat]
+            }
+        return {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": geometry,
         }
