@@ -261,6 +261,9 @@ def preprocess_nancy(data):
             # Homogeneize geo_shape
             new_fields['geo_shape'] = geometry
             # Homogeneize start and end date spelling
+            if not new_fields['DATE_DEBUT'] or not new_fields['DATE_FIN']:
+                # Invalid start / end date
+                continue
             new_fields['date_debut'] = arrow.get(
                 float(new_fields['DATE_DEBUT']) / 1000
             ).isoformat()
