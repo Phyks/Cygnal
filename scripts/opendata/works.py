@@ -369,6 +369,11 @@ def preprocess_seine_saint_denis(data):
 
 def preprocess_sicoval(data):
     out = []
+
+    if 'error' in data:
+        logging.warning('Invalid data for Sicoval.')
+        return out
+
     for item in data:
         try:
             new_item = {
