@@ -550,7 +550,7 @@ OPENDATA_URLS = {
     # Licence Ouverte : https://www.etalab.gouv.fr/licence-ouverte-open-licence
     "seine-saint-denis": {
         "preprocess": preprocess_seine_saint_denis,
-        "url": "https://backend.geo.data.gouv.fr/api/geogw/services/5bfd5c69cb932f878100817d/feature-types/C1296/download?format=GeoJSON&projection=WGS84"
+        "url": "https://geoportail93.fr/SERV/DATA/?TYPENAME=1570&FORMAT=GEOJSON&COL=id;titre&FORMAT=GEOJSON&COL=ALL&MODE=2"
     },
     # Work in Sicoval (South of Toulouse)
     # https://data.sicoval.fr/explore/dataset/travauxincidents/
