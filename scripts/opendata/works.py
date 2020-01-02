@@ -623,12 +623,12 @@ def process_opendata(name, data, report_type=REPORT_TYPE):
             # Check that the work is currently being done
             now = arrow.now('Europe/Paris')
             if fields['date_debut']:
-                start_date = arrow.get(fields['date_debut'])
+                start_date = arrow.get(fields['date_debut'].replace('/', '-'))
             else:
                 # Defaults to now if start date is unknown
                 start_date = arrow.get(now)
             if fields['date_fin']:
-                end_date = arrow.get(fields['date_fin'])
+                end_date = arrow.get(fields['date_fin'].replace('/', '-'))
             else:
                 # Defaults to in a week if start date is unknown
                 end_date = arrow.get(now).shift(days=+7)
